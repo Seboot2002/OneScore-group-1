@@ -1,0 +1,32 @@
+{
+  "songs": [
+    {
+      "title": "Blinding Lights",
+      "artist": "The Weeknd",
+      "duration": "3:20",
+      "album": "After Hours",
+      "year": 2020
+    },
+    {
+      "title": "Levitating",
+      "artist": "Dua Lipa",
+      "duration": "3:23",
+      "album": "Future Nostalgia",
+      "year": 2020
+    },
+    {
+      "title": "Bad Guy",
+      "artist": "Billie Eilish",
+      "duration": "3:14",
+      "album": "When We All Fall Asleep, Where Do We Go?",
+      "year": 2019
+    },
+    {
+      "title": "Shape of You",
+      "artist": "Ed Sheeran",
+      "duration": "3:53",
+      "album": "Divide",
+      "year": 2017
+    }
+  ]
+}
