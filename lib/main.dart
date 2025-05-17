@@ -3,6 +3,7 @@ import 'package:onescore/components/BackButtonWidget.dart';
 import 'package:onescore/components/ButtonWidget.dart';
 import 'package:onescore/components/EditableAvatarWidget.dart';
 import 'package:onescore/components/FieldTextWidget.dart';
+import 'package:onescore/components/StatisticsButton.dart';
 import 'package:onescore/components/TitleWidget.dart';
 
 void main() {
@@ -41,15 +42,24 @@ class _MyHomePageState extends State<MyHomePage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
-      body: Column(
-        children: [
-          TitleWidgetPreview(),
-          FieldTextWidgetPreview(),
-          ButtonWidgetPreview(),
-          ButtonWidgetPreview2(),
-          EditableAvatarWidgetPreview(),
-          BackButtonWidgetPreview(),
-        ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            TitleWidgetPreview(),
+            FieldTextWidgetPreview(),
+            ButtonWidgetPreview(),
+            ButtonWidgetPreview2(),
+            EditableAvatarWidgetPreview(),
+            BackButtonWidgetPreview(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                StatisticsButtonWidgetPreview(),
+                StatisticsButtonWidgetPreview2()
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
