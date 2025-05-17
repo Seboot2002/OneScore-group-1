@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:onescore/components/ButtonImageWidget.dart';
+import 'package:onescore/components/BackButtonWidget.dart';
 import 'package:onescore/components/ButtonWidget.dart';
 import 'package:onescore/components/EditableAvatarWidget.dart';
 import 'package:onescore/components/FieldTextWidget.dart';
@@ -48,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ButtonWidgetPreview(),
           ButtonWidgetPreview2(),
           EditableAvatarWidgetPreview(),
-          ButtonImageWidgetPreview()
+          BackButtonWidgetPreview(),
         ],
       ),
     );
