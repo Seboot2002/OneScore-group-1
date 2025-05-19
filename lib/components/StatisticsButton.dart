@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class StatisticsButtonWidget extends StatelessWidget {
@@ -22,13 +21,7 @@ class StatisticsButtonWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              color: Colors.grey[700],
-              fontSize: 14,
-            ),
-          ),
+          Text(label, style: TextStyle(color: Colors.grey[700], fontSize: 14)),
           const SizedBox(height: 8),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -38,8 +31,9 @@ class StatisticsButtonWidget extends StatelessWidget {
             ),
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                  horizontal: 32.0,
-                  vertical: 8.0),
+                horizontal: 32.0,
+                vertical: 8.0,
+              ),
               child: Text(
                 numberLabel,
                 style: TextStyle(
@@ -64,10 +58,7 @@ class StatisticsButtonWidgetPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: StatisticsButtonWidget(
-        label: 'N° de artistas',
-        numberLabel: '22',
-      ),
+      child: StatisticsButtonWidget(label: 'N° de artistas', numberLabel: '22'),
     );
   }
 }

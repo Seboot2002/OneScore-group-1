@@ -1,20 +1,19 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ButtonWidget extends StatelessWidget {
-
   final String text;
   final VoidCallback onPressed;
   final Color backgroundColor;
   final Color textColor;
   final bool hasBorder;
 
-  const ButtonWidget({super.key,
+  const ButtonWidget({
+    super.key,
     required this.text,
     required this.onPressed,
     this.backgroundColor = Colors.red,
     this.textColor = Colors.white,
-    this.hasBorder = false
+    this.hasBorder = false,
   });
 
   @override
@@ -29,9 +28,10 @@ class ButtonWidget extends StatelessWidget {
           elevation: 0,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(20),
-            side: hasBorder
-                ? BorderSide(color: Colors.grey.shade700, width: 1)
-                : BorderSide.none,
+            side:
+                hasBorder
+                    ? BorderSide(color: Colors.grey.shade700, width: 1)
+                    : BorderSide.none,
           ),
           padding: const EdgeInsets.symmetric(vertical: 16),
         ),

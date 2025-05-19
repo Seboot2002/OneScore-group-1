@@ -1,13 +1,9 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class TitleWidget extends StatelessWidget {
-
   final String text;
 
-  const TitleWidget({super.key,
-    required this.text
-  });
+  const TitleWidget({super.key, required this.text});
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +31,7 @@ class TitleWidgetPreview extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: TitleWidget(
-        text: 'Titulo',
-      ),
+      child: TitleWidget(text: 'Titulo'),
     );
   }
 }
