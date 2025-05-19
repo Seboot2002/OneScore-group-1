@@ -5,6 +5,8 @@ import 'package:onescore/components/EditableAvatarWidget.dart';
 import 'package:onescore/components/FieldTextWidget.dart';
 import 'package:onescore/components/StatisticsButton.dart';
 import 'package:onescore/components/TitleWidget.dart';
+import 'package:onescore/components/TrackListItemWidget.dart';
+import 'package:onescore/components/BottomNavigationBar.dart'; // <-- asegúrate que este sea el nuevo
 
 void main() {
   runApp(const MyApp());
@@ -19,6 +21,8 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        scaffoldBackgroundColor: Colors.white,
+        useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
     );
@@ -35,6 +39,40 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<String> trackNames = [
+    'Overcompensate',
+    'Next semester',
+    'Backslide',
+    'Midwest Indigo',
+    'Routines in the Night',
+    'Vignette',
+    'The Craving',
+    'Lavish',
+    'Navigating',
+    'Snap Back',
+    'Oldies Station',
+    'At the Risk of Feeling Dumb',
+    'Paladin Strait',
+  ];
+
+  final List<TextEditingController> controllers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (var i = 0; i < trackNames.length; i++) {
+      controllers.add(TextEditingController());
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final controller in controllers) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -55,12 +93,31 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 StatisticsButtonWidgetPreview(),
-                StatisticsButtonWidgetPreview2()
+                StatisticsButtonWidgetPreview2(),
               ],
-            )
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Lista de Canciones',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 10),
+            Column(
+              children: List.generate(trackNames.length, (index) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4.0),
+                  child: TrackListItemWidget(
+                    trackName: trackNames[index],
+                    ratingController: controllers[index],
+                  ),
+                );
+              }),
+            ),
+            TitleWidgetPreview(),
           ],
         ),
       ),
+      bottomNavigationBar: const CustomMenuBar(), // 👈 Aquí está tu componente
     );
   }
 }
