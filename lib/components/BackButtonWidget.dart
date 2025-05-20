@@ -11,8 +11,8 @@ class BackButtonWidget extends StatelessWidget {
     super.key,
     this.assetPath = 'assets/imgs/BackButtonImage.png',
     required this.onPressed,
-    this.width = 100,
-    this.height = 100,
+    this.width = 35,
+    this.height = 35,
     this.fit = BoxFit.cover,
   });
 
@@ -37,8 +37,6 @@ class BackButtonWidgetPreview extends StatelessWidget {
         onPressed: () {
           print('Botón de imagen presionado');
         },
-        width: 80,
-        height: 80,
         fit: BoxFit.contain,
       ),
     );

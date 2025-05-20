@@ -102,3 +102,19 @@ class UserCard extends StatelessWidget {
     return _buildContext(context);
   }
 }
+
+// Esto se usa solo para testear la visualización
+class UserCardPreview extends StatelessWidget {
+  const UserCardPreview({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+        padding: const EdgeInsets.all(16),
+        child: UserCard(
+            name: "Michael",
+            image: "assets/imgs/mod1_01.jpg"
+        )
+    );
+  }
+}

@@ -11,41 +11,41 @@ class StatisticsButtonWidget extends StatelessWidget {
     required this.label,
     required this.numberLabel,
     this.backgroundColor = const Color(0xFFE0E0E0),
-    this.textColor = Colors.black,
+    this.textColor = const Color(0xFF272727),
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(label, style: TextStyle(color: Colors.grey[700], fontSize: 14)),
-          const SizedBox(height: 8),
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(8),
+
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(label, style: TextStyle(color: Colors.grey[700], fontSize: 10)),
+        const SizedBox(height: 5),
+        Container(
+          decoration: BoxDecoration(
+            color: backgroundColor,
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              vertical: screenHeight * 0.015,
+              horizontal: screenWidth * 0.085
             ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 32.0,
-                vertical: 8.0,
-              ),
-              child: Text(
-                numberLabel,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+            child: Text(
+              numberLabel,
+              style: TextStyle(
+                color: textColor,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -56,9 +56,9 @@ class StatisticsButtonWidgetPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: StatisticsButtonWidget(label: 'N° de artistas', numberLabel: '22'),
+    return StatisticsButtonWidget(
+        label: 'N° Artistas',
+        numberLabel: '22'
     );
   }
 }
@@ -69,14 +69,11 @@ class StatisticsButtonWidgetPreview2 extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: StatisticsButtonWidget(
-        label: 'N° de Albums',
-        numberLabel: '98',
-        backgroundColor: Color(0xFF777777),
-        textColor: Colors.white,
-      ),
+    return StatisticsButtonWidget(
+      label: 'N° Albums',
+      numberLabel: '98',
+      backgroundColor: Color(0xFF6E6E6E),
+      textColor: Colors.white,
     );
   }
 }

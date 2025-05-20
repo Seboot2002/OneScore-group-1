@@ -41,11 +41,11 @@ class FieldTextWidget extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.grey, width: 1.2),
+              borderSide: const BorderSide(color: Color(0xFF6E6E6E), width: 2.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Colors.black87, width: 1.8),
+              borderSide: const BorderSide(color: Colors.black, width: 2.5),
             ),
             contentPadding: const EdgeInsets.symmetric(
               horizontal: 16,

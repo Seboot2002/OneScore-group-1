@@ -23,7 +23,7 @@ class EditableAvatarWidget extends StatelessWidget {
           height: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            border: Border.all(color: Colors.grey.shade700, width: 5),
+            border: Border.all(color: Colors.grey.shade700, width: 10),
             image: DecorationImage(image: image, fit: BoxFit.cover),
           ),
         ),
@@ -35,14 +35,14 @@ class EditableAvatarWidget extends StatelessWidget {
           child: GestureDetector(
             onTap: onEdit,
             child: Container(
-              padding: const EdgeInsets.all(4),
+              padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.grey.shade700,
               ),
               child: const Icon(
                 Icons.edit,
-                size: 16,
+                size: 20,
                 color: Colors.white,
               ),
             ),
@@ -62,7 +62,7 @@ class EditableAvatarWidgetPreview extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: EditableAvatarWidget(
-        size: 120,
+        size: 190,
         image: const AssetImage('assets/imgs/mod1_01.jpg'),
         onEdit: () {
           print('Cambiar imagen');

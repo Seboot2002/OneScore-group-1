@@ -99,3 +99,16 @@ class ArtistCard extends StatelessWidget {
     return _buildContext(context);
   }
 }
+
+// Esto se usa solo para testear la visualización
+class ArtistCardPreview extends StatelessWidget {
+  const ArtistCardPreview({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ArtistCard(name: "Michael", image: "assets/imgs/mod1_01.jpg")
+    );
+  }
+}

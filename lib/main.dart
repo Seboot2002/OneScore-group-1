@@ -6,7 +6,10 @@ import 'package:onescore/components/FieldTextWidget.dart';
 import 'package:onescore/components/StatisticsButton.dart';
 import 'package:onescore/components/TitleWidget.dart';
 import 'package:onescore/components/TrackListItemWidget.dart';
-import 'package:onescore/components/BottomNavigationBar.dart'; // <-- asegúrate que este sea el nuevo
+import 'package:onescore/components/BottomNavigationBar.dart';
+import 'package:onescore/components/album_card.dart';
+import 'package:onescore/components/artist_card.dart';
+import 'package:onescore/components/user_card.dart'; // <-- asegúrate que este sea el nuevo
 
 void main() {
   runApp(const MyApp());
@@ -89,11 +92,14 @@ class _MyHomePageState extends State<MyHomePage> {
             ButtonWidgetPreview2(),
             EditableAvatarWidgetPreview(),
             BackButtonWidgetPreview(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+            Wrap(
+              spacing: MediaQuery.of(context).size.width * 0.08,
+              runSpacing: 12,
+              alignment: WrapAlignment.center,
               children: [
                 StatisticsButtonWidgetPreview(),
                 StatisticsButtonWidgetPreview2(),
+                StatisticsButtonWidgetPreview(),
               ],
             ),
             const SizedBox(height: 20),
@@ -114,6 +120,9 @@ class _MyHomePageState extends State<MyHomePage> {
               }),
             ),
             TitleWidgetPreview(),
+            ArtistCardPreview(),
+            AlbumCardPreview(),
+            UserCardPreview()
           ],
         ),
       ),
