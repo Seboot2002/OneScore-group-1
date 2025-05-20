@@ -3,6 +3,8 @@ import 'package:onescore/components/BackButtonWidget.dart';
 import 'package:onescore/components/ButtonWidget.dart';
 import 'package:onescore/components/EditableAvatarWidget.dart';
 import 'package:onescore/components/FieldTextWidget.dart';
+import 'package:onescore/components/MusicItemsGrid.dart';
+import 'package:onescore/components/SearchingBarWidget.dart';
 import 'package:onescore/components/StatisticsButton.dart';
 import 'package:onescore/components/TitleWidget.dart';
 import 'package:onescore/components/TrackListItemWidget.dart';
@@ -122,7 +124,9 @@ class _MyHomePageState extends State<MyHomePage> {
             TitleWidgetPreview(),
             ArtistCardPreview(),
             AlbumCardPreview(),
-            UserCardPreview()
+            UserCardPreview(),
+            SearchingBarWidgetPreview(),
+            MusicItemsGridPreview()
           ],
         ),
       ),
