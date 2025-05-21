@@ -21,7 +21,12 @@ class MusicItemsGrid extends StatelessWidget {
             color: Color(0xFF6E6E6E),
             width: 2.5,
           ),
-          borderRadius: BorderRadius.circular(16)
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(0),
+            topRight: Radius.circular(16),
+            bottomLeft: Radius.circular(0),
+            bottomRight: Radius.circular(16),
+          )
         ),
         child: GridView.builder(
           physics: const AlwaysScrollableScrollPhysics(),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:onescore/components/BackButtonWidget.dart';
 import 'package:onescore/components/ButtonWidget.dart';
+import 'package:onescore/components/CoverAlbumWidget.dart';
 import 'package:onescore/components/EditableAvatarWidget.dart';
 import 'package:onescore/components/FieldTextWidget.dart';
 import 'package:onescore/components/MusicItemsGrid.dart';
+import 'package:onescore/components/OneScoreCheckbox.dart';
 import 'package:onescore/components/SearchingBarWidget.dart';
 import 'package:onescore/components/StatisticsButton.dart';
 import 'package:onescore/components/TitleWidget.dart';
@@ -80,6 +82,11 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+
+    void _onCheckboxChanged(List<Map<String, dynamic>> updatedCheckboxes) {
+      print(updatedCheckboxes);
+    }
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -126,11 +133,21 @@ class _MyHomePageState extends State<MyHomePage> {
             AlbumCardPreview(),
             UserCardPreview(),
             SearchingBarWidgetPreview(),
-            MusicItemsGridPreview()
+            MusicItemsGridPreview(),
+            CoverAlbumWidgetPreview(),
+            OneScoreCheckBoxPreview(
+              checkboxesData: [
+                {'value': true, 'label': 'Todos'},
+                {'value': false, 'label': 'Albums'},
+                {'value': false, 'label': 'Artistas'},
+                {'value': false, 'label': 'Usuarios'},
+              ],
+              onCheckboxChanged: _onCheckboxChanged
+            )
           ],
         ),
       ),
-      bottomNavigationBar: const CustomMenuBar(), // 👈 Aquí está tu componente
+      bottomNavigationBar: const CustomMenuBar(),
     );
   }
 }
