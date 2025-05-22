@@ -82,8 +82,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-
-    void _onCheckboxChanged(List<Map<String, dynamic>> updatedCheckboxes) {
+    void onCheckboxChanged(List<Map<String, dynamic>> updatedCheckboxes) {
       print(updatedCheckboxes);
     }
 
@@ -142,8 +141,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 {'value': false, 'label': 'Artistas'},
                 {'value': false, 'label': 'Usuarios'},
               ],
-              onCheckboxChanged: _onCheckboxChanged
-            )
+              onCheckboxChanged: onCheckboxChanged,
+            ),
           ],
         ),
       ),
