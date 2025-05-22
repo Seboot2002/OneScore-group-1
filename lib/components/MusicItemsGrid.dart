@@ -1,14 +1,10 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:onescore/components/album_card.dart';
 
 class MusicItemsGrid extends StatelessWidget {
   final List<Widget> musicWidgets;
 
-  const MusicItemsGrid({
-    super.key,
-    required this.musicWidgets,
-  });
+  const MusicItemsGrid({super.key, required this.musicWidgets});
 
   @override
   Widget build(BuildContext context) {
@@ -17,16 +13,13 @@ class MusicItemsGrid extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border.all(
-            color: Color(0xFF6E6E6E),
-            width: 2.5,
-          ),
+          border: Border.all(color: Color(0xFF6E6E6E), width: 2.5),
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(0),
             topRight: Radius.circular(16),
             bottomLeft: Radius.circular(0),
             bottomRight: Radius.circular(16),
-          )
+          ),
         ),
         child: GridView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -65,12 +58,36 @@ class MusicItemsGridPreview extends StatelessWidget {
         height: 400,
         child: MusicItemsGrid(
           musicWidgets: [
-            AlbumCard(name: "AAAA", image: "https://via.placeholder.com/150", rating: 12),
-            AlbumCard(name: "BBBB", image: "https://via.placeholder.com/150", rating: 14),
-            AlbumCard(name: "CCCC", image: "https://via.placeholder.com/150", rating: 17),
-            AlbumCard(name: "DDDD", image: "https://via.placeholder.com/150", rating: 21),
-            AlbumCard(name: "EEEE", image: "https://via.placeholder.com/150", rating: 9),
-            AlbumCard(name: "FFFF", image: "https://via.placeholder.com/150", rating: 11),
+            AlbumCard(
+              name: "AAAA",
+              image: "https://via.placeholder.com/150",
+              rating: 12,
+            ),
+            AlbumCard(
+              name: "BBBB",
+              image: "https://via.placeholder.com/150",
+              rating: 14,
+            ),
+            AlbumCard(
+              name: "CCCC",
+              image: "https://via.placeholder.com/150",
+              rating: 17,
+            ),
+            AlbumCard(
+              name: "DDDD",
+              image: "https://via.placeholder.com/150",
+              rating: 21,
+            ),
+            AlbumCard(
+              name: "EEEE",
+              image: "https://via.placeholder.com/150",
+              rating: 9,
+            ),
+            AlbumCard(
+              name: "FFFF",
+              image: "https://via.placeholder.com/150",
+              rating: 11,
+            ),
           ],
         ),
       ),
