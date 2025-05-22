@@ -2,14 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SearchingBarWidget extends StatelessWidget {
-
   final TextEditingController controller;
   final VoidCallback onSearch;
 
   const SearchingBarWidget({
     super.key,
     required this.controller,
-    required this.onSearch
+    required this.onSearch,
   });
 
   @override
@@ -36,13 +35,17 @@ class SearchingBarWidget extends StatelessWidget {
           ),
           InkWell(
             onTap: onSearch,
-            borderRadius: const BorderRadius.horizontal(right: Radius.circular(6.0)),
+            borderRadius: const BorderRadius.horizontal(
+              right: Radius.circular(6.0),
+            ),
             child: Container(
               height: double.infinity,
               width: 50,
               decoration: BoxDecoration(
                 color: Colors.grey[700],
-                borderRadius: const BorderRadius.horizontal(right: Radius.circular(6.0)),
+                borderRadius: const BorderRadius.horizontal(
+                  right: Radius.circular(6.0),
+                ),
               ),
               child: const Icon(Icons.search, color: Colors.white),
             ),
@@ -59,15 +62,14 @@ class SearchingBarWidgetPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    TextEditingController _searchController = TextEditingController();
+    TextEditingController searchController = TextEditingController();
 
     return Padding(
       padding: const EdgeInsets.all(16),
       child: SearchingBarWidget(
-        controller: _searchController,
+        controller: searchController,
         onSearch: () {
-          print("Buscando: ${_searchController.text}");
+          print("Buscando: ${searchController.text}");
         },
       ),
     );
