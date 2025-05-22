@@ -41,12 +41,20 @@ class SearchingBarWidget extends StatelessWidget {
               height: double.infinity,
               width: 50,
               decoration: BoxDecoration(
-                color: Colors.grey[700],
+                color: Color(0xFF6E6E6E),
                 borderRadius: const BorderRadius.horizontal(
                   right: Radius.circular(6.0),
                 ),
               ),
-              child: const Icon(Icons.search, color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.all(13.0),
+                child: Image.asset(
+                  "assets/imgs/icon_menubar_02.png",
+                  width: 16,
+                  height: 16,
+                  fit: BoxFit.cover,
+                ),
+              )
             ),
           ),
         ],

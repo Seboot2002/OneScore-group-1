@@ -86,6 +86,70 @@ class _MyHomePageState extends State<MyHomePage> {
       print(updatedCheckboxes);
     }
 
+    void onButtonChanged(List<Map<String, dynamic>> updatedButtons) {
+      print(updatedButtons);
+    }
+
+    List<Widget> musicWidgets = [
+      AlbumCard(
+        name: "AAAA",
+        image: "https://via.placeholder.com/150",
+        rating: 12,
+      ),
+      AlbumCard(
+        name: "BBBB",
+        image: "https://via.placeholder.com/150",
+        rating: 14,
+      ),
+      AlbumCard(
+        name: "CCCC",
+        image: "https://via.placeholder.com/150",
+        rating: 17,
+      ),
+      AlbumCard(
+        name: "DDDD",
+        image: "https://via.placeholder.com/150",
+        rating: 21,
+      ),
+      AlbumCard(
+        name: "EEEE",
+        image: "https://via.placeholder.com/150",
+        rating: 9,
+      ),
+      AlbumCard(
+        name: "FFFF",
+        image: "https://via.placeholder.com/150",
+        rating: 11,
+      ),
+    ];
+
+    List<Widget> alternateMusicWidgets = [
+      ArtistCard(
+        name: "GGGG",
+        image: "https://via.placeholder.com/150",
+      ),
+      ArtistCard(
+        name: "HHHH",
+        image: "https://via.placeholder.com/150",
+      ),
+      ArtistCard(
+        name: "IIII",
+        image: "https://via.placeholder.com/150",
+      ),
+      ArtistCard(
+        name: "JJJJ",
+        image: "https://via.placeholder.com/150",
+      ),
+      ArtistCard(
+        name: "KKKK",
+        image: "https://via.placeholder.com/150",
+      ),
+      ArtistCard(
+        name: "LLLL",
+        image: "https://via.placeholder.com/150",
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -132,7 +196,13 @@ class _MyHomePageState extends State<MyHomePage> {
             AlbumCardPreview(),
             UserCardPreview(),
             SearchingBarWidgetPreview(),
-            MusicItemsGridPreview(),
+            MusicItemsGridPreview(
+              buttonsData: [
+                {'value': true, 'label': 'Albums', 'data': musicWidgets},
+                {'value': false, 'label': 'Artistas', 'data': alternateMusicWidgets},
+              ],
+              onButtonChanged: onButtonChanged,
+            ),
             CoverAlbumWidgetPreview(),
             OneScoreCheckBoxPreview(
               checkboxesData: [

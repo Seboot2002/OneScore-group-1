@@ -4,7 +4,11 @@ class ArtistCard extends StatelessWidget {
   final String name;
   final String image;
 
-  const ArtistCard({super.key, required this.name, required this.image});
+  const ArtistCard({
+    super.key,
+    required this.name,
+    required this.image
+  });
 
   Widget _buildContext(BuildContext context) {
     return SizedBox(

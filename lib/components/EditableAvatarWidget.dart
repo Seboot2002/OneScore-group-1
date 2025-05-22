@@ -40,11 +40,15 @@ class EditableAvatarWidget extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Colors.grey.shade700,
               ),
-              child: const Icon(
-                Icons.edit,
-                size: 20,
-                color: Colors.white,
-              ),
+              child: Padding(
+                padding: const EdgeInsets.all(3.0),
+                child: Image.asset(
+                  "assets/imgs/icon_edit.png",
+                  width: 16,
+                  height: 16,
+                  fit: BoxFit.cover,
+                ),
+              )
             ),
           ),
         ),

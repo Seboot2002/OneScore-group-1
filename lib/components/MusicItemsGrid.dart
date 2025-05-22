@@ -1,92 +1,198 @@
 import 'package:flutter/material.dart';
 import 'package:onescore/components/album_card.dart';
 
-class MusicItemsGrid extends StatelessWidget {
+class MusicItemsGrid extends StatefulWidget {
+
   final List<Widget> musicWidgets;
 
-  const MusicItemsGrid({super.key, required this.musicWidgets});
+  const MusicItemsGrid({
+    super.key,
+    required this.musicWidgets,
+  });
+
+  @override
+  State<MusicItemsGrid> createState() => _MusicItemsGridState();
+}
+
+class _MusicItemsGridState extends State<MusicItemsGrid> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border.all(color: Color(0xFF6E6E6E), width: 2.5),
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(0),
-            topRight: Radius.circular(16),
-            bottomLeft: Radius.circular(0),
-            bottomRight: Radius.circular(16),
+    return Expanded(
+      child: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border.all(color: Color(0xFF6E6E6E), width: 2.5),
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(0),
+              topRight: Radius.circular(16),
+              bottomLeft: Radius.circular(0),
+              bottomRight: Radius.circular(16),
+            ),
           ),
-        ),
-        child: GridView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 0,
-            mainAxisSpacing: 24,
-            childAspectRatio: 0.75,
+          child: GridView.builder(
+            physics: const AlwaysScrollableScrollPhysics(),
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              crossAxisSpacing: 0,
+              mainAxisSpacing: 8,
+              childAspectRatio: 0.65,
+            ),
+            itemCount: widget.musicWidgets.length,
+            itemBuilder: (context, index) {
+              return Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                alignment: Alignment.center,
+                child: widget.musicWidgets[index],
+              );
+            },
           ),
-          itemCount: musicWidgets.length,
-          itemBuilder: (context, index) {
-            return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              alignment: Alignment.center,
-              child: musicWidgets[index],
-            );
-          },
         ),
       ),
     );
   }
 }
 
-class MusicItemsGridPreview extends StatelessWidget {
-  const MusicItemsGridPreview({super.key});
+class GridButtonWidget extends StatelessWidget {
+  final bool value;
+  final String label;
+  final ValueChanged<bool> onChanged;
+
+  const GridButtonWidget({
+    super.key,
+    required this.value,
+    required this.label,
+    required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final Color selectedColor = Color(0xFF6E6E6E);
+    final Color unselectedColor = Color(0xFFD2D2D2);
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double buttomWidth = screenWidth * 0.25;
+    final double buttomHeight = screenHeight * 0.055;
+
+    return GestureDetector(
+      onTap: () => onChanged(!value),
+      child: Container(
+        width: buttomWidth,
+        height: buttomHeight,
+        decoration: BoxDecoration(
+          color: value ? selectedColor : unselectedColor,
+          borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(0),
+            bottomRight: Radius.circular(0),
+            topLeft: Radius.circular(12),
+            topRight: Radius.circular(12),
+          ),
+        ),
+        child: Center(
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              color: value ? Color(0xFFF1F1F1) : Color(0xFF535353),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Este es el Preview para testear
+class MusicItemsGridPreview extends StatefulWidget {
+
+  final List<Map<String, dynamic>> buttonsData;
+  final Function(List<Map<String, dynamic>>) onButtonChanged;
+
+  const MusicItemsGridPreview({
+    super.key,
+    required this.buttonsData,
+    required this.onButtonChanged
+  });
+
+  @override
+  State<MusicItemsGridPreview> createState() => _MusicItemsGridPreviewState();
+}
+
+class _MusicItemsGridPreviewState extends State<MusicItemsGridPreview> {
+
+  late List<Widget> musicWidgets;
+
+  @override
+  void initState() {
+    musicWidgets = widget.buttonsData[0]['data'];
+    super.initState();
+  }
+
+  void _onChanged(int index) {
+    setState(() {
+      for (int i = 0; i < widget.buttonsData.length; i++) {
+        if (i == index) {
+          widget.buttonsData[i]['value'] = true;
+        } else {
+          widget.buttonsData[i]['value'] = false;
+        }
+      }
+
+      if (widget.buttonsData[index]['value']) {
+        musicWidgets = widget.buttonsData[index]['data'];
+      }
+    });
+
+    widget.onButtonChanged(widget.buttonsData);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    List<GridButtonWidget> buttons = [];
+
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+    double horizontalPadding = screenWidth * 0.10;
+    double verticalPadding = screenHeight * 0.05;
+
+    for (int i = 0; i < widget.buttonsData.length; i++) {
+      bool value = widget.buttonsData[i]['value'];
+      String label = widget.buttonsData[i]['label'];
+
+      buttons.add(
+        GridButtonWidget(
+          value: value,
+          label: label,
+          onChanged: (val) {
+            _onChanged(i);
+          },
+        ),
+      );
+    }
+
     return Padding(
-      padding: const EdgeInsets.all(24.0),
+      padding: EdgeInsets.symmetric(
+        horizontal: horizontalPadding,
+        vertical: verticalPadding
+      ),
       child: SizedBox(
         height: 400,
-        child: MusicItemsGrid(
-          musicWidgets: [
-            AlbumCard(
-              name: "AAAA",
-              image: "https://via.placeholder.com/150",
-              rating: 12,
+        child: Column(
+          children: [
+            Row(
+              spacing: 15,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: buttons,
             ),
-            AlbumCard(
-              name: "BBBB",
-              image: "https://via.placeholder.com/150",
-              rating: 14,
-            ),
-            AlbumCard(
-              name: "CCCC",
-              image: "https://via.placeholder.com/150",
-              rating: 17,
-            ),
-            AlbumCard(
-              name: "DDDD",
-              image: "https://via.placeholder.com/150",
-              rating: 21,
-            ),
-            AlbumCard(
-              name: "EEEE",
-              image: "https://via.placeholder.com/150",
-              rating: 9,
-            ),
-            AlbumCard(
-              name: "FFFF",
-              image: "https://via.placeholder.com/150",
-              rating: 11,
+            MusicItemsGrid(
+              musicWidgets: musicWidgets
             ),
           ],
         ),
