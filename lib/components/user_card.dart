@@ -20,12 +20,12 @@ class UserCard extends StatelessWidget {
               decoration: BoxDecoration(
                 color: Color.fromRGBO(110, 110, 110, 1),
                 shape: BoxShape.circle,
-                border: Border.all(color: Color.fromRGBO(210, 210, 210, 1)),
+                border: Border.all(
+                  color: Color.fromRGBO(110, 110, 110, 1),
+                  width: 8
+                  ),
               ),
-              child: Icon(
-                Icons.album_rounded,
-                color: Color.fromRGBO(210, 210, 210, 1),
-              ),
+              child: Image.asset('assets/imgs/icon_user_search.png',),
             ),
           ),
           Positioned(
