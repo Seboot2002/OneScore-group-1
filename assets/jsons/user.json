@@ -22,5 +22,14 @@
         "nickname": "carlitos",
         "mail": "carlos@example.com",
         "password": "mysecret789"
+    },
+    {
+
+        "userId": 4,
+        "name": "Tyler",
+        "lastName": "Joseph",
+        "nickname": "Clancy",
+        "mail": "clancy@example.com",
+        "password": "bandito"
     }
 ]
