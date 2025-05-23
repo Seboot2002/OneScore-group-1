@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'sign_up_controller.dart';
+import 'home_controller.dart';
 
-class SignUpPage extends StatelessWidget {
-  SignUpController control = Get.put(SignUpController());
+class HomePage extends StatelessWidget {
+  HomeController control = Get.put(HomeController());
 
-  SignUpPage({super.key});
+  HomePage({super.key});
 
   Widget _buildBody(BuildContext context) {
-    return SafeArea(child: Text('Página de registro de usuario'));
+    return SafeArea(child: Text('Página de inicio de OneScore'));
   }
 
   @override
