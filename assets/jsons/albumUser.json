@@ -1,0 +1,20 @@
+[
+    {
+        "userId": 1,
+        "albumId": 1,
+        "rankDate": "2023-05-15T10:30:00Z",
+        "rankState": "valued"
+    },
+    {
+        "userId": 2,
+        "albumId": 2,
+        "rankDate": "2023-06-20T14:45:00Z",
+        "rankState": "pending"
+    },
+    {
+        "userId": 3,
+        "albumId": 3,
+        "rankDate": "2023-07-10T09:15:00Z",
+        "rankState": "valued"
+    }
+]

@@ -1,0 +1,178 @@
+[
+    {
+        "songId": 1,
+        "title": "Wanna Be Startin' Somethin'",
+        "nTrack": 1,
+        "albumId": 1
+    },
+    {
+        "songId": 2,
+        "title": "Baby Be Mine",
+        "nTrack": 2,
+        "albumId": 1
+    },
+    {
+        "songId": 3,
+        "title": "The Girl Is Mine",
+        "nTrack": 3,
+        "albumId": 1
+    },
+    {
+        "songId": 4,
+        "title": "Thriller",
+        "nTrack": 4,
+        "albumId": 1
+    },
+    {
+        "songId": 5,
+        "title": "Beat It",
+        "nTrack": 5,
+        "albumId": 1
+    },
+    {
+        "songId": 6,
+        "title": "Billie Jean",
+        "nTrack": 6,
+        "albumId": 1
+    },
+    {
+        "songId": 7,
+        "title": "Human Nature",
+        "nTrack": 7,
+        "albumId": 1
+    },
+    {
+        "songId": 8,
+        "title": "P.Y.T. (Pretty Young Thing)",
+        "nTrack": 8,
+        "albumId": 1
+    },
+    {
+        "songId": 9,
+        "title": "The Lady in My Life",
+        "nTrack": 9,
+        "albumId": 1
+    },
+
+    {
+        "songId": 10,
+        "title": "Speak to Me",
+        "nTrack": 1,
+        "albumId": 2
+    },
+    {
+        "songId": 11,
+        "title": "Breathe (In the Air)",
+        "nTrack": 2,
+        "albumId": 2
+    },
+    {
+        "songId": 12,
+        "title": "On the Run",
+        "nTrack": 3,
+        "albumId": 2
+    },
+    {
+        "songId": 13,
+        "title": "Time",
+        "nTrack": 4,
+        "albumId": 2
+    },
+    {
+        "songId": 14,
+        "title": "The Great Gig in the Sky",
+        "nTrack": 5,
+        "albumId": 2
+    },
+    {
+        "songId": 15,
+        "title": "Money",
+        "nTrack": 6,
+        "albumId": 2
+    },
+    {
+        "songId": 16,
+        "title": "Us and Them",
+        "nTrack": 7,
+        "albumId": 2
+    },
+    {
+        "songId": 17,
+        "title": "Any Colour You Like",
+        "nTrack": 8,
+        "albumId": 2
+    },
+    {
+        "songId": 18,
+        "title": "Brain Damage",
+        "nTrack": 9,
+        "albumId": 2
+    },
+    {
+        "songId": 19,
+        "title": "Eclipse",
+        "nTrack": 10,
+        "albumId": 2
+    },
+
+    {
+        "songId": 20,
+        "title": "Hells Bells",
+        "nTrack": 1,
+        "albumId": 3
+    },
+    {
+        "songId": 21,
+        "title": "Shoot to Thrill",
+        "nTrack": 2,
+        "albumId": 3
+    },
+    {
+        "songId": 22,
+        "title": "What Do You Do for Money Honey",
+        "nTrack": 3,
+        "albumId": 3
+    },
+    {
+        "songId": 23,
+        "title": "Givin the Dog a Bone",
+        "nTrack": 4,
+        "albumId": 3
+    },
+    {
+        "songId": 24,
+        "title": "Let Me Put My Love into You",
+        "nTrack": 5,
+        "albumId": 3
+    },
+    {
+        "songId": 25,
+        "title": "Back in Black",
+        "nTrack": 6,
+        "albumId": 3
+    },
+    {
+        "songId": 26,
+        "title": "You Shook Me All Night Long",
+        "nTrack": 7,
+        "albumId": 3
+    },
+    {
+        "songId": 27,
+        "title": "Have a Drink on Me",
+        "nTrack": 8,
+        "albumId": 3
+    },
+    {
+        "songId": 28,
+        "title": "Shake a Leg",
+        "nTrack": 9,
+        "albumId": 3
+    },
+    {
+        "songId": 29,
+        "title": "Rock and Roll Ain't Noise Pollution",
+        "nTrack": 10,
+        "albumId": 3
+    }
+]

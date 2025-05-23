@@ -1,0 +1,149 @@
+[
+    {
+        "userId": 1,
+        "songId": 1,
+        "score": 85
+    },
+    {
+        "userId": 1,
+        "songId": 2,
+        "score": 70
+    },
+    {
+        "userId": 1,
+        "songId": 3,
+        "score": 75
+    },
+    {
+        "userId": 1,
+        "songId": 4,
+        "score": 95
+    },
+    {
+        "userId": 1,
+        "songId": 5,
+        "score": 90
+    },
+    {
+        "userId": 1,
+        "songId": 6,
+        "score": 100
+    },
+    {
+        "userId": 1,
+        "songId": 7,
+        "score": 80
+    },
+    {
+        "userId": 1,
+        "songId": 8,
+        "score": 78
+    },
+    {
+        "userId": 1,
+        "songId": 9,
+        "score": 72
+    },
+
+    {
+        "userId": 2,
+        "songId": 10,
+        "score": 65
+    },
+    {
+        "userId": 2,
+        "songId": 11,
+        "score": 88
+    },
+    {
+        "userId": 2,
+        "songId": 12,
+        "score": 70
+    },
+    {
+        "userId": 2,
+        "songId": 13,
+        "score": 90
+    },
+    {
+        "userId": 2,
+        "songId": 14,
+        "score": 85
+    },
+    {
+        "userId": 2,
+        "songId": 15,
+        "score": 100
+    },
+    {
+        "userId": 2,
+        "songId": 16,
+        "score": 92
+    },
+    {
+        "userId": 2,
+        "songId": 17,
+        "score": 75
+    },
+    {
+        "userId": 2,
+        "songId": 18,
+        "score": 83
+    },
+    {
+        "userId": 2,
+        "songId": 19,
+        "score": 88
+    },
+
+    {
+        "userId": 3,
+        "songId": 20,
+        "score": 92
+    },
+    {
+        "userId": 3,
+        "songId": 21,
+        "score": 85
+    },
+    {
+        "userId": 3,
+        "songId": 22,
+        "score": 78
+    },
+    {
+        "userId": 3,
+        "songId": 23,
+        "score": 80
+    },
+    {
+        "userId": 3,
+        "songId": 24,
+        "score": 75
+    },
+    {
+        "userId": 3,
+        "songId": 25,
+        "score": 98
+    },
+    {
+        "userId": 3,
+        "songId": 26,
+        "score": 100
+    },
+    {
+        "userId": 3,
+        "songId": 27,
+        "score": 82
+    },
+    {
+        "userId": 3,
+        "songId": 28,
+        "score": 77
+    },
+    {
+        "userId": 3,
+        "songId": 29,
+        "score": 85
+    }
+]

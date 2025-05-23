@@ -1,0 +1,26 @@
+[
+    {
+        "albumId": 1,
+        "title": "Thriller",
+        "releaseYear": 1982,
+        "genreId": 1,
+        "coverUrl": "https://example.com/covers/thriller.jpg",
+        "artistId": 1
+    },
+    {
+        "albumId": 2,
+        "title": "The Dark Side of the Moon",
+        "releaseYear": 1973,
+        "genreId": 2,
+        "coverUrl": "https://example.com/covers/darkside.jpg",
+        "artistId": 2
+    },
+    {
+        "albumId": 3,
+        "title": "Back in Black",
+        "releaseYear": 1980,
+        "genreId": 3,
+        "coverUrl": "https://example.com/covers/backinblack.jpg",
+        "artistId": 3
+    }
+]
