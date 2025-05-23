@@ -1,21 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:onescore/components/album_card.dart';
 
 class MusicItemsGrid extends StatefulWidget {
-
   final List<Widget> musicWidgets;
 
-  const MusicItemsGrid({
-    super.key,
-    required this.musicWidgets,
-  });
+  const MusicItemsGrid({super.key, required this.musicWidgets});
 
   @override
   State<MusicItemsGrid> createState() => _MusicItemsGridState();
 }
 
 class _MusicItemsGridState extends State<MusicItemsGrid> {
-
   @override
   Widget build(BuildContext context) {
     return Expanded(
@@ -111,14 +105,13 @@ class GridButtonWidget extends StatelessWidget {
 
 // Este es el Preview para testear
 class MusicItemsGridPreview extends StatefulWidget {
-
   final List<Map<String, dynamic>> buttonsData;
   final Function(List<Map<String, dynamic>>) onButtonChanged;
 
   const MusicItemsGridPreview({
     super.key,
     required this.buttonsData,
-    required this.onButtonChanged
+    required this.onButtonChanged,
   });
 
   @override
@@ -126,7 +119,6 @@ class MusicItemsGridPreview extends StatefulWidget {
 }
 
 class _MusicItemsGridPreviewState extends State<MusicItemsGridPreview> {
-
   late List<Widget> musicWidgets;
 
   @override
@@ -180,7 +172,7 @@ class _MusicItemsGridPreviewState extends State<MusicItemsGridPreview> {
     return Padding(
       padding: EdgeInsets.symmetric(
         horizontal: horizontalPadding,
-        vertical: verticalPadding
+        vertical: verticalPadding,
       ),
       child: SizedBox(
         height: 400,
@@ -191,9 +183,7 @@ class _MusicItemsGridPreviewState extends State<MusicItemsGridPreview> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: buttons,
             ),
-            MusicItemsGrid(
-              musicWidgets: musicWidgets
-            ),
+            MusicItemsGrid(musicWidgets: musicWidgets),
           ],
         ),
       ),
