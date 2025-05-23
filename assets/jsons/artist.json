@@ -1,0 +1,23 @@
+[
+  {
+    "artistId": 1,
+    "name": "Michael Jackson",
+    "genreId": 1,
+    "pictureUrl": "https://example.com/artists/mj.jpg",
+    "debutYear": 1964
+  },
+  {
+    "artistId": 2,
+    "name": "Pink Floyd",
+    "genreId": 2,
+    "pictureUrl": "https://example.com/artists/pinkfloyd.jpg",
+    "debutYear": 1965
+  },
+  {
+    "artistId": 3,
+    "name": "AC/DC",
+    "genreId": 3,
+    "pictureUrl": "https://example.com/artists/acdc.jpg",
+    "debutYear": 1973
+  }
+]
