@@ -1,0 +1,26 @@
+[
+    {
+        "userId": 1,
+        "name": "Juan",
+        "lastName": "Pérez",
+        "nickname": "juanpe",
+        "mail": "juan@example.com",
+        "password": "pass123"
+    },
+    {
+        "userId": 2,
+        "name": "María",
+        "lastName": "Gómez",
+        "nickname": "mgomez",
+        "mail": "maria@example.com",
+        "password": "secure456"
+    },
+    {
+        "userId": 3,
+        "name": "Carlos",
+        "lastName": "López",
+        "nickname": "carlitos",
+        "mail": "carlos@example.com",
+        "password": "mysecret789"
+    }
+]

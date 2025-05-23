@@ -1,0 +1,18 @@
+[
+    {
+    "genreId": 1,
+    "name": "Pop"
+    },
+    {
+    "genreId": 2,
+    "name": "Rock"
+    },
+    {
+    "genreId": 3,
+    "name": "Hard Rock"
+    },
+    {
+    "genreId": 4,
+    "name": "Electronic"
+    }
+]
