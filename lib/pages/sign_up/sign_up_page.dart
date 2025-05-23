@@ -27,7 +27,6 @@ class SignUpPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Botón de retroceso con imagen
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
@@ -44,7 +43,6 @@ class SignUpPage extends StatelessWidget {
                     const TitleWidget(text: "OneScore"),
                     const SizedBox(height: 30),
 
-                    // Nombre
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -57,7 +55,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Apellido
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -70,7 +67,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Nickname
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -83,7 +79,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Correo
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -96,7 +91,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Contraseña
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -110,7 +104,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Repetir contraseña
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -126,7 +119,6 @@ class SignUpPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // Botón de registro con indicador de carga
                     Obx(
                       () =>
                           control.isLoading.value

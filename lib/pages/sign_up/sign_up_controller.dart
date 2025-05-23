@@ -22,7 +22,6 @@ class SignUpController extends GetxController {
     final password = passwordController.text;
     final repeatPassword = repeatPasswordController.text;
 
-    // Validaciones básicas
     if (name.isEmpty ||
         lastname.isEmpty ||
         nickname.isEmpty ||
@@ -62,7 +61,7 @@ class SignUpController extends GetxController {
       Get.snackbar(
         'Éxito',
         'Usuario registrado correctamente',
-        backgroundColor: Colors.green.shade300,
+        backgroundColor: Color(0xFF524E4E),
         colorText: Colors.white,
       );
 
@@ -75,7 +74,7 @@ class SignUpController extends GetxController {
       Get.snackbar(
         'Error',
         response.body.toString(),
-        backgroundColor: Colors.red.shade300,
+        backgroundColor: Color(0xFF524E4E),
         colorText: Colors.white,
       );
     }
