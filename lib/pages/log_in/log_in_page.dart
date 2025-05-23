@@ -50,9 +50,9 @@ class LogInPage extends StatelessWidget {
                         vertical: 8,
                       ),
                       child: FieldTextWidget(
-                        label: 'Usuario',
-                        hintText: 'Ingrese su nombre de usuario',
-                        controller: control.usernameController,
+                        label: 'Nickname / Correo',
+                        hintText: 'Escriba aquí',
+                        controller: control.mailController,
                       ),
                     ),
 
@@ -66,7 +66,7 @@ class LogInPage extends StatelessWidget {
                       ),
                       child: FieldTextWidget(
                         label: 'Contraseña',
-                        hintText: 'Ingrese su contraseña',
+                        hintText: 'Escriba aquí',
                         controller: control.passwordController,
                         obscureText: true,
                       ),
@@ -77,7 +77,7 @@ class LogInPage extends StatelessWidget {
                     // Botón de inicio de sesión
                     ButtonWidget(
                       text: 'Iniciar sesión',
-                      onPressed: control.login,
+                      onPressed: control.logIn,
                     ),
 
                     const SizedBox(height: 30),
@@ -88,27 +88,24 @@ class LogInPage extends StatelessWidget {
                         Navigator.pushNamed(context, '/sign-up');
                       },
                       style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero, // Elimina padding adicional
-                        minimumSize:
-                            Size.zero, // Reduce el área de toque al mínimo
+                        padding: EdgeInsets.zero,
+                        minimumSize: Size.zero,
                         tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       ),
                       child: RichText(
                         text: TextSpan(
                           style: TextStyle(
-                            fontFamily: 'Roboto', // Fuente Roboto
-                            fontWeight:
-                                FontWeight.w200, // ExtraLight (peso 200)
-                            fontSize: 14, // 14px
-                            color: Color(0xFF524E4E), // Hex #524E4E
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w200,
+                            fontSize: 14,
+                            color: Color(0xFF524E4E),
                           ),
                           children: const [
                             TextSpan(text: 'Crea una cuenta '),
                             TextSpan(
                               text: 'aquí',
                               style: TextStyle(
-                                decoration:
-                                    TextDecoration.underline, // Subrayado
+                                decoration: TextDecoration.underline,
                               ),
                             ),
                           ],

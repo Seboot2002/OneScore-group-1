@@ -1,6 +1,6 @@
 class ServiceHttpResponse {
   int? status;
-  dynamic? body;
+  dynamic body;
 
   ServiceHttpResponse({this.status, this.body});
 

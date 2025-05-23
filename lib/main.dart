@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'pages/log_in/log_in_page.dart';
 import 'pages/sign_up/sign_up_page.dart';
 import 'pages/home/home_page.dart';
@@ -10,16 +11,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Onescore',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       initialRoute: '/log-in',
-      routes: {
-        '/log-in': (context) => LogInPage(),
-        '/sign-up': (context) => SignUpPage(),
-        '/home': (context) => HomePage(),
-      },
+      getPages: [
+        GetPage(name: '/log-in', page: () => LogInPage()),
+        GetPage(name: '/sign-up', page: () => SignUpPage()),
+        GetPage(name: '/home', page: () => HomePage()),
+      ],
     );
   }
 }

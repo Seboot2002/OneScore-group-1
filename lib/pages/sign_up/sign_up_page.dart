@@ -1,23 +1,144 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'sign_up_controller.dart';
+import '../../components/TitleWidget.dart';
+import '../../components/FieldTextWidget.dart';
+import '../../components/ButtonWidget.dart';
 
 class SignUpPage extends StatelessWidget {
-  SignUpController control = Get.put(SignUpController());
-
   SignUpPage({super.key});
-
-  Widget _buildBody(BuildContext context) {
-    return SafeArea(child: Text('Página de registro de usuario'));
-  }
+  final SignUpController control = Get.put(SignUpController());
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: null,
-        body: _buildBody(context),
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        color: Colors.white,
+        child: SafeArea(
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.only(top: screenHeight * 0.05),
+              width: screenWidth * 0.9,
+              height: screenHeight * 0.90,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // Botón de retroceso con imagen
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: GestureDetector(
+                        onTap: () => Get.back(),
+                        child: Container(
+                          margin: const EdgeInsets.only(left: 10, bottom: 10),
+                          width: 20,
+                          height: 30,
+                          child: Image.asset('assets/imgs/BackButtonImage.png'),
+                        ),
+                      ),
+                    ),
+
+                    const TitleWidget(text: "OneScore"),
+                    const SizedBox(height: 30),
+
+                    // Nombre
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 8,
+                      ),
+                      child: FieldTextWidget(
+                        label: 'Nombre',
+                        hintText: 'Escriba aquí',
+                        controller: control.nameController,
+                      ),
+                    ),
+
+                    // Apellido
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 8,
+                      ),
+                      child: FieldTextWidget(
+                        label: 'Apellido',
+                        hintText: 'Escriba aquí',
+                        controller: control.lastnameController,
+                      ),
+                    ),
+
+                    // Nickname
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 8,
+                      ),
+                      child: FieldTextWidget(
+                        label: 'Nickname',
+                        hintText: 'Escriba aquí',
+                        controller: control.nicknameController,
+                      ),
+                    ),
+
+                    // Correo
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 8,
+                      ),
+                      child: FieldTextWidget(
+                        label: 'Correo',
+                        hintText: 'Escriba aquí',
+                        controller: control.emailController,
+                      ),
+                    ),
+
+                    // Contraseña
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 8,
+                      ),
+                      child: FieldTextWidget(
+                        label: 'Contraseña',
+                        hintText: '********',
+                        obscureText: true,
+                        controller: control.passwordController,
+                      ),
+                    ),
+
+                    // Repetir contraseña
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 40,
+                        vertical: 8,
+                      ),
+                      child: FieldTextWidget(
+                        label: 'Repetir contraseña',
+                        hintText: '********',
+                        obscureText: true,
+                        controller: control.repeatPasswordController,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    // Botón de registro
+                    ButtonWidget(
+                      text: 'Registrarse',
+                      onPressed: control.signUp,
+                    ),
+
+                    const SizedBox(height: 30),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
