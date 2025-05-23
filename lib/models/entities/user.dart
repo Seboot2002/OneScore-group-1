@@ -17,13 +17,23 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      userId: json['userId'],
-      name: json['name'],
-      lastName: json['lastName'],
-      nickname: json['nickname'],
-      mail: json['mail'],
-      password: json['password'],
+      userId: _parseUserId(json['userId']),
+      name: json['name']?.toString() ?? '',
+      lastName: json['lastName']?.toString() ?? '',
+      nickname: json['nickname']?.toString() ?? '',
+      mail: json['mail']?.toString() ?? '',
+      password: json['password']?.toString() ?? '',
     );
+  }
+
+  static int _parseUserId(dynamic value) {
+    if (value == null) return 0;
+    if (value is int) return value;
+    if (value is String) {
+      if (value.isEmpty) return 0;
+      return int.tryParse(value) ?? 0;
+    }
+    return 0;
   }
 
   Map<String, dynamic> toJson() {
@@ -36,6 +46,15 @@ class User {
       'password': password,
     };
   }
+
+  // Constructor para crear un usuario vacío (para validaciones)
+  User.empty()
+    : userId = 0,
+      name = '',
+      lastName = '',
+      nickname = '',
+      mail = '',
+      password = '';
 
   @override
   String toString() {

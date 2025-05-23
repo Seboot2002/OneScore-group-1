@@ -27,7 +27,6 @@ class SignUpPage extends StatelessWidget {
               child: SingleChildScrollView(
                 child: Column(
                   children: [
-                    // Botón de retroceso con imagen
                     Align(
                       alignment: Alignment.centerLeft,
                       child: GestureDetector(
@@ -44,7 +43,6 @@ class SignUpPage extends StatelessWidget {
                     const TitleWidget(text: "OneScore"),
                     const SizedBox(height: 30),
 
-                    // Nombre
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -57,7 +55,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Apellido
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -70,7 +67,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Nickname
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -83,7 +79,6 @@ class SignUpPage extends StatelessWidget {
                       ),
                     ),
 
-                    // Correo
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -91,12 +86,11 @@ class SignUpPage extends StatelessWidget {
                       ),
                       child: FieldTextWidget(
                         label: 'Correo',
-                        hintText: 'Escriba aquí',
+                        hintText: 'ejemplo@correo.com',
                         controller: control.emailController,
                       ),
                     ),
 
-                    // Contraseña
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -104,13 +98,12 @@ class SignUpPage extends StatelessWidget {
                       ),
                       child: FieldTextWidget(
                         label: 'Contraseña',
-                        hintText: '********',
+                        hintText: 'Mínimo 6 caracteres',
                         obscureText: true,
                         controller: control.passwordController,
                       ),
                     ),
 
-                    // Repetir contraseña
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -118,7 +111,7 @@ class SignUpPage extends StatelessWidget {
                       ),
                       child: FieldTextWidget(
                         label: 'Repetir contraseña',
-                        hintText: '********',
+                        hintText: 'Confirma tu contraseña',
                         obscureText: true,
                         controller: control.repeatPasswordController,
                       ),
@@ -126,10 +119,14 @@ class SignUpPage extends StatelessWidget {
 
                     const SizedBox(height: 20),
 
-                    // Botón de registro
-                    ButtonWidget(
-                      text: 'Registrarse',
-                      onPressed: control.signUp,
+                    Obx(
+                      () =>
+                          control.isLoading.value
+                              ? const CircularProgressIndicator()
+                              : ButtonWidget(
+                                text: 'Registrarse',
+                                onPressed: control.signUp,
+                              ),
                     ),
 
                     const SizedBox(height: 30),
