@@ -33,7 +33,7 @@ class LogInPage extends StatelessWidget {
                     const SizedBox(height: 30),
 
                     // Logo
-                    Container(
+                    SizedBox(
                       width: screenWidth * 0.35,
                       height: screenWidth * 0.35,
                       child: Image.asset(
