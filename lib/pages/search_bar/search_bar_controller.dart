@@ -51,7 +51,6 @@ class SearchBarController extends GetxController {
           resultados = await SearchService.searchUsers(textoBusqueda);
           break;
         case 'Todos':
-          // Buscar en todas las categorías
           final albums = await SearchService.searchAlbums(textoBusqueda);
           final artists = await SearchService.searchArtists(textoBusqueda);
           final users = await SearchService.searchUsers(textoBusqueda);
