@@ -19,5 +19,12 @@
     "genreId": 3,
     "pictureUrl": "https://example.com/artists/acdc.jpg",
     "debutYear": 1973
+    },
+    {
+    "artistId": 4,
+    "name": "Twenty one Pilots",
+    "genreId": 5,
+    "pictureUrl": "https://untoldency.de/wp-content/uploads/2024/03/top-overcompensate.jpg",
+    "debutYear": 2009
     }
 ]

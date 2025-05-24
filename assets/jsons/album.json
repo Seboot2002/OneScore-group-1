@@ -22,5 +22,13 @@
         "genreId": 3,
         "coverUrl": "https://example.com/covers/backinblack.jpg",
         "artistId": 3
+    },
+    {
+        "albumId": 4,
+        "title": "Clancy",
+        "releaseYear": 2024,
+        "genreId": 5,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/8b/39/c6/8b39c655-00fd-1b52-52ea-a98de686f3ae/075679659729.jpg/600x600bf-60.jpg",
+        "artistId": 4
     }
 ]

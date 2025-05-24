@@ -51,6 +51,8 @@ class SignUpController extends GetxController {
       nickname: nickname,
       mail: email,
       password: password,
+      photoUrl:
+          'https://www.shutterstock.com/image-vector/sakura-cherry-tree-blossom-enso-600nw-2442234723.jpg',
     );
 
     final response = await _userService.registerUser(newUser);

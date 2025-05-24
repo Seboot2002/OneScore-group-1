@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Onescore',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
-      initialRoute: '/searching',
+      initialRoute: '/log-in',
       getPages: [
         GetPage(name: '/log-in', page: () => LogInPage()),
         GetPage(name: '/sign-up', page: () => SignUpPage()),

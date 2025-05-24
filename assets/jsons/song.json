@@ -174,5 +174,83 @@
         "title": "Rock and Roll Ain't Noise Pollution",
         "nTrack": 10,
         "albumId": 3
+    },
+    {
+        "songId": 30,
+        "title": "Overcompensate",
+        "nTrack": 1,
+        "albumId": 4
+    },
+    {
+        "songId": 31,
+        "title": "Next Semester",
+        "nTrack": 2,
+        "albumId": 4
+    },
+    {
+        "songId": 32,
+        "title": "Backslide",
+        "nTrack": 3,
+        "albumId": 4
+    },
+    {
+        "songId": 33,
+        "title": "Midwest Indigo",
+        "nTrack": 4,
+        "albumId": 4
+    },
+    {
+        "songId": 34,
+        "title": "Routines in the Night",
+        "nTrack": 5,
+        "albumId": 4
+    },
+    {
+        "songId": 35,
+        "title": "Vignette",
+        "nTrack": 6,
+        "albumId": 4
+    },
+    {
+        "songId": 36,
+        "title": "The Craving (Jenna's Verion)",
+        "nTrack": 7,
+        "albumId": 4
+    },
+    {
+        "songId": 37,
+        "title": "Lavish",
+        "nTrack": 8,
+        "albumId": 4
+    },
+    {
+        "songId": 38,
+        "title": "Navigating",
+        "nTrack": 9,
+        "albumId": 4
+    },
+    {
+        "songId": 39,
+        "title": "Snap Back",
+        "nTrack": 10,
+        "albumId": 4
+    },
+    {
+        "songId": 40,
+        "title": "Oldies Station",
+        "nTrack": 11,
+        "albumId": 4
+    },
+    {
+        "songId": 41,
+        "title": "At the Risk of Feeling Dumb",
+        "nTrack": 12,
+        "albumId": 4
+    },
+    {
+        "songId": 42,
+        "title": "Paladin Strait",
+        "nTrack": 13,
+        "albumId": 4
     }
 ]

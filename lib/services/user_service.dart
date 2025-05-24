@@ -133,7 +133,6 @@ class UserService {
   Future<ServiceHttpResponse> registerUser(User newUser) async {
     try {
       final allUsers = await _readUsers();
-
       final localUsers = await _loadLocalUsers();
 
       print('Current total users count: ${allUsers.length}');
@@ -165,6 +164,7 @@ class UserService {
         nickname: newUser.nickname,
         mail: newUser.mail,
         password: newUser.password,
+        photoUrl: newUser.photoUrl,
       );
 
       localUsers.add(userWithId);

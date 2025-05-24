@@ -52,7 +52,6 @@ class SearchBarPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
 
-                    // Checkboxes con estado reactivo
                     GetBuilder<SearchBarController>(
                       builder:
                           (ctrl) => Padding(

@@ -5,7 +5,8 @@
         "lastName": "Pérez",
         "nickname": "juanpe",
         "mail": "juan@example.com",
-        "password": "pass123"
+        "password": "pass123",
+        "photoUrl": "https://example.com/juan.jpg"
     },
     {
         "userId": 2,
@@ -13,7 +14,8 @@
         "lastName": "Gómez",
         "nickname": "mgomez",
         "mail": "maria@example.com",
-        "password": "secure456"
+        "password": "secure456",
+        "photoUrl": "https://example.com/maria.jpg"
     },
     {
         "userId": 3,
@@ -21,15 +23,16 @@
         "lastName": "López",
         "nickname": "carlitos",
         "mail": "carlos@example.com",
-        "password": "mysecret789"
+        "password": "mysecret789",
+        "photoUrl": "https://example.com/carlos.jpg"
     },
     {
-
         "userId": 4,
         "name": "Tyler",
         "lastName": "Joseph",
         "nickname": "Clancy",
         "mail": "clancy@example.com",
-        "password": "bandito"
+        "password": "bandito",
+        "photoUrl": "https://example.com/tyler.jpg"
     }
 ]
