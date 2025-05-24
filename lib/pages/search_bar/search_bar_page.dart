@@ -4,6 +4,8 @@ import '../../components/TitleWidget.dart';
 import '../../components/SearchingBarWidget.dart';
 import '../../components/OneScoreCheckbox.dart';
 import '../../components/BottomNavigationBar.dart';
+import '../../components/BackButtonWidget.dart';
+import '../../controllers/bottom_navigation_controller.dart';
 import 'search_bar_controller.dart';
 
 class SearchBarPage extends StatelessWidget {
@@ -14,6 +16,15 @@ class SearchBarPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
+
+    // Asegurar que el navbar se actualice correctamente al entrar
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final navController = Get.find<BottomNavigationController>();
+      if (navController.selectedIndex != 1) {
+        navController.selectedIndex = 1;
+        navController.update();
+      }
+    });
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -29,18 +40,9 @@ class SearchBarPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: GestureDetector(
-                        onTap: () => Get.back(),
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10, bottom: 10),
-                          width: 20,
-                          height: 30,
-                          child: Image.asset('assets/imgs/BackButtonImage.png'),
-                        ),
-                      ),
-                    ),
+                    // Usar el componente BackButtonWidget
+                    const BackButtonWidget(),
+
                     const TitleWidget(text: "Búsqueda"),
                     const SizedBox(height: 40),
                     Padding(

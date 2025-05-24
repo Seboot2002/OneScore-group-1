@@ -1,43 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../controllers/bottom_navigation_controller.dart';
 
 class BackButtonWidget extends StatelessWidget {
-  final String assetPath;
-  final VoidCallback onPressed;
-  final double width;
-  final double height;
-  final BoxFit fit;
+  final String? imagePath;
+  final double? width;
+  final double? height;
+  final EdgeInsetsGeometry? margin;
+  final VoidCallback? onPressed; // Callback opcional para lógica adicional
 
   const BackButtonWidget({
     super.key,
-    this.assetPath = 'assets/imgs/BackButtonImage.png',
-    required this.onPressed,
-    this.width = 35,
-    this.height = 35,
-    this.fit = BoxFit.cover,
+    this.imagePath = 'assets/imgs/BackButtonImage.png',
+    this.width = 20,
+    this.height = 30,
+    this.margin = const EdgeInsets.only(left: 10, bottom: 10),
+    this.onPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onPressed,
-      child: Image.asset(assetPath, width: width, height: height, fit: fit),
-    );
-  }
-}
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: GestureDetector(
+        onTap: () {
+          // Ejecutar callback personalizado si existe
+          if (onPressed != null) {
+            onPressed!();
+          }
 
-// Esto se usa solo para testear la visualización
-class BackButtonWidgetPreview extends StatelessWidget {
-  const BackButtonWidgetPreview({super.key});
+          try {
+            final navController = Get.find<BottomNavigationController>();
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: BackButtonWidget(
-        onPressed: () {
-          print('Botón de imagen presionado');
+            // Obtener la ruta anterior de la pila de navegación
+            if (Get.routing.previous.isNotEmpty) {
+              String previousRoute = Get.routing.previous;
+              int targetIndex = navController.routes.indexOf(previousRoute);
+
+              // Si la ruta anterior está en el navbar, actualizar ANTES de retroceder
+              if (targetIndex != -1) {
+                navController.selectedIndex = targetIndex;
+                navController.update();
+              }
+            }
+
+            // Ahora retroceder
+            Get.back();
+          } catch (e) {
+            // Si hay error, solo retroceder normalmente
+            print("⚠️ Error en BackButtonWidget: $e");
+            Get.back();
+          }
         },
-        fit: BoxFit.contain,
+        child: Container(
+          margin: margin,
+          width: width,
+          height: height,
+          child: Image.asset(imagePath!),
+        ),
       ),
     );
   }
