@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
+import '../../components/BottomNavigationBar.dart';
+import '../../controllers/bottom_navigation_controller.dart';
 
 class HomePage extends StatelessWidget {
   HomePage({super.key});
@@ -11,7 +13,6 @@ class HomePage extends StatelessWidget {
         if (!authController.isLoggedIn) {
           return const SizedBox.shrink();
         }
-
         final user = authController.user!;
         return Column(
           children: [
@@ -54,6 +55,7 @@ class HomePage extends StatelessWidget {
             _buildWelcomeSection(),
             // Resto de tu contenido...
             const Text('Página de inicio de OneScore'),
+            const SizedBox(height: 80), // Espacio para el navbar
           ],
         ),
       ),
@@ -62,6 +64,16 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(resizeToAvoidBottomInset: false, body: _buildBody(context));
+    // Asegurar que el navbar muestre el home como seleccionado
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final navController = Get.find<BottomNavigationController>();
+      navController.updateSelectedIndex(0); // 0 = home
+    });
+
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      body: _buildBody(context),
+      bottomNavigationBar: const CustomMenuBar(),
+    );
   }
 }
