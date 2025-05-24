@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../controllers/auth_controller.dart'; // Importa el AuthController
 import '../../models/entities/user.dart';
 import '../../services/user_service.dart';
 import '../../models/httpresponse/service_http_response.dart';
@@ -31,7 +32,6 @@ class LogInController extends GetxController {
     print('Password: "$password"');
 
     if (identifier.isEmpty || password.isEmpty) {
-      print('Login failed: Empty fields');
       Get.snackbar(
         'Error',
         'Por favor ingresa tu email/nickname y contraseña',
@@ -44,17 +44,13 @@ class LogInController extends GetxController {
     isLoading.value = true;
 
     try {
-      final ServiceHttpResponse response = await _userService.logIn(
-        identifier,
-        password,
-      );
-
-      print('Login response status: ${response.status}');
-      print('Login response body type: ${response.body.runtimeType}');
+      final response = await _userService.logIn(identifier, password);
 
       if (response.status == 200 && response.body is User) {
         final user = response.body as User;
-        print('Login successful for user: ${user.name} ${user.lastName}');
+
+        // Guarda el usuario en el AuthController global
+        AuthController.to.login(user);
 
         Get.snackbar(
           'Bienvenido',
@@ -66,9 +62,8 @@ class LogInController extends GetxController {
         mailController.clear();
         passwordController.clear();
 
-        Get.offNamed('/home', arguments: user);
+        Get.offNamed('/home'); // Ya no necesitas pasar arguments
       } else {
-        print('Login failed with response: ${response.body}');
         Get.snackbar(
           'Error',
           response.body.toString(),
@@ -77,7 +72,6 @@ class LogInController extends GetxController {
         );
       }
     } catch (e) {
-      print('Login exception: $e');
       Get.snackbar(
         'Error',
         'Error inesperado: $e',
@@ -87,10 +81,6 @@ class LogInController extends GetxController {
     } finally {
       isLoading.value = false;
     }
-  }
-
-  Future<void> showAvailableUsers() async {
-    await _userService.debugPrintUsers();
   }
 
   @override

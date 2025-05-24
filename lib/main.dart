@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onescore/controllers/auth_controller.dart';
 import 'package:onescore/pages/results/results_page.dart';
 import 'pages/log_in/log_in_page.dart';
 import 'pages/sign_up/sign_up_page.dart';
@@ -18,6 +19,10 @@ class MyApp extends StatelessWidget {
       title: 'Onescore',
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       initialRoute: '/log-in',
+      initialBinding: BindingsBuilder(() {
+        // Inicializa controladores globales
+        Get.put(AuthController());
+      }),
       getPages: [
         GetPage(name: '/log-in', page: () => LogInPage()),
         GetPage(name: '/sign-up', page: () => SignUpPage()),

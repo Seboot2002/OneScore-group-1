@@ -1,24 +1,67 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'home_controller.dart';
+import '../../controllers/auth_controller.dart';
 
 class HomePage extends StatelessWidget {
-  HomeController control = Get.put(HomeController());
-
   HomePage({super.key});
 
+  Widget _buildWelcomeSection() {
+    return GetBuilder<AuthController>(
+      builder: (authController) {
+        if (!authController.isLoggedIn) {
+          return const SizedBox.shrink();
+        }
+
+        final user = authController.user!;
+        return Column(
+          children: [
+            const SizedBox(height: 20),
+            if (user.photoUrl.isNotEmpty)
+              CircleAvatar(
+                radius: 40,
+                backgroundImage: NetworkImage(user.photoUrl),
+              ),
+            const SizedBox(height: 16),
+            Text(
+              '¡Bienvenido a OneScore!',
+              style: Get.textTheme.headlineSmall?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '${user.name} ${user.lastName}',
+              style: Get.textTheme.titleMedium,
+            ),
+            Text(
+              '@${user.nickname}',
+              style: Get.textTheme.bodyMedium?.copyWith(
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildBody(BuildContext context) {
-    return SafeArea(child: Text('Página de inicio de OneScore'));
+    return SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            _buildWelcomeSection(),
+            // Resto de tu contenido...
+            const Text('Página de inicio de OneScore'),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: null,
-        body: _buildBody(context),
-      ),
-    );
+    return Scaffold(resizeToAvoidBottomInset: false, body: _buildBody(context));
   }
 }
