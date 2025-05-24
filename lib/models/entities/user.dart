@@ -5,6 +5,7 @@ class User {
   final String nickname;
   final String mail;
   final String password;
+  final String photoUrl;
 
   User({
     required this.userId,
@@ -13,6 +14,7 @@ class User {
     required this.nickname,
     required this.mail,
     required this.password,
+    required this.photoUrl,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class User {
       nickname: json['nickname']?.toString() ?? '',
       mail: json['mail']?.toString() ?? '',
       password: json['password']?.toString() ?? '',
+      photoUrl: json['photoUrl']?.toString() ?? '',
     );
   }
 
@@ -44,6 +47,7 @@ class User {
       'nickname': nickname,
       'mail': mail,
       'password': password,
+      'photoUrl': photoUrl,
     };
   }
 
@@ -54,10 +58,11 @@ class User {
       lastName = '',
       nickname = '',
       mail = '',
-      password = '';
+      password = '',
+      photoUrl = '';
 
   @override
   String toString() {
-    return 'User(userId: $userId, name: $name, lastName: $lastName, nickName: $nickname, mail: $mail, password: $password)';
+    return 'User(userId: $userId, name: $name, lastName: $lastName, nickName: $nickname, mail: $mail, password: $password, photoUrl: $photoUrl)';
   }
 }
