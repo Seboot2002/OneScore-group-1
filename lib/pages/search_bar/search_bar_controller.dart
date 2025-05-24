@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../services/search_service.dart';
 
 class SearchBarController extends GetxController {
   final searchController = TextEditingController();
@@ -19,24 +20,68 @@ class SearchBarController extends GetxController {
     print("🔘 Se clickeó la opción ${checkboxes[index]['label']}");
   }
 
-  void onSearchPressed() {
+  Future<void> onSearchPressed() async {
     String tipoBusqueda =
         checkboxes.firstWhere((c) => c['value'] == true)['label'];
     String textoBusqueda = searchController.text.trim();
 
+    if (textoBusqueda.isEmpty) {
+      Get.snackbar(
+        'Búsqueda vacía',
+        'Por favor ingresa un término de búsqueda',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      return;
+    }
+
     print("🔍 Tipo de búsqueda seleccionada: $tipoBusqueda");
     print("📝 Texto ingresado: $textoBusqueda");
 
-    // Simular resultados
-    List<String> resultados = [
-      "$tipoBusqueda Resultado 1",
-      "$tipoBusqueda Resultado 2",
-      "$tipoBusqueda Resultado 3",
-    ];
+    try {
+      List<dynamic> resultados = [];
 
-    print("📦 Resultados encontrados:");
-    for (var r in resultados) {
-      print("• $r");
+      switch (tipoBusqueda) {
+        case 'Albums':
+          resultados = await SearchService.searchAlbums(textoBusqueda);
+          break;
+        case 'Artistas':
+          resultados = await SearchService.searchArtists(textoBusqueda);
+          break;
+        case 'Usuarios':
+          resultados = await SearchService.searchUsers(textoBusqueda);
+          break;
+        case 'Todos':
+          // Buscar en todas las categorías
+          final albums = await SearchService.searchAlbums(textoBusqueda);
+          final artists = await SearchService.searchArtists(textoBusqueda);
+          final users = await SearchService.searchUsers(textoBusqueda);
+
+          resultados = [
+            ...albums.map((album) => {'type': 'album', 'data': album}),
+            ...artists.map((artist) => {'type': 'artist', 'data': artist}),
+            ...users.map((user) => {'type': 'user', 'data': user}),
+          ];
+          break;
+      }
+
+      print("📦 Resultados encontrados: ${resultados.length}");
+
+      // Navegar a la página de resultados pasando los datos
+      Get.toNamed(
+        '/results',
+        arguments: {
+          'results': resultados,
+          'searchType': tipoBusqueda,
+          'searchQuery': textoBusqueda,
+        },
+      );
+    } catch (e) {
+      print("❌ Error en la búsqueda: $e");
+      Get.snackbar(
+        'Error',
+        'Ha ocurrido un error durante la búsqueda',
+        snackPosition: SnackPosition.BOTTOM,
+      );
     }
   }
 }
