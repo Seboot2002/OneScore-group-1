@@ -26,22 +26,19 @@ class StatisticsButtonWidget extends StatelessWidget {
         Text(label, style: TextStyle(color: Colors.grey[700], fontSize: 10)),
         const SizedBox(height: 5),
         Container(
+          alignment: Alignment.center,
+          width: screenWidth * 0.22,
+          height: screenHeight * 0.055,
           decoration: BoxDecoration(
             color: backgroundColor,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(
-              vertical: screenHeight * 0.015,
-              horizontal: screenWidth * 0.085
-            ),
-            child: Text(
-              numberLabel,
-              style: TextStyle(
-                color: textColor,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
+          child: Text(
+            numberLabel,
+            style: TextStyle(
+              color: textColor,
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
             ),
           ),
         ),

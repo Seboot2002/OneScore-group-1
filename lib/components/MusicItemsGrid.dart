@@ -103,22 +103,21 @@ class GridButtonWidget extends StatelessWidget {
   }
 }
 
-// Este es el Preview para testear
-class MusicItemsGridPreview extends StatefulWidget {
+class MusicItemsGridStructure extends StatefulWidget {
   final List<Map<String, dynamic>> buttonsData;
   final Function(List<Map<String, dynamic>>) onButtonChanged;
 
-  const MusicItemsGridPreview({
+  const MusicItemsGridStructure({
     super.key,
     required this.buttonsData,
     required this.onButtonChanged,
   });
 
   @override
-  State<MusicItemsGridPreview> createState() => _MusicItemsGridPreviewState();
+  State<MusicItemsGridStructure> createState() => _MusicItemsGridStructureState();
 }
 
-class _MusicItemsGridPreviewState extends State<MusicItemsGridPreview> {
+class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
   late List<Widget> musicWidgets;
 
   @override
@@ -169,23 +168,17 @@ class _MusicItemsGridPreviewState extends State<MusicItemsGridPreview> {
       );
     }
 
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: horizontalPadding,
-        vertical: verticalPadding,
-      ),
-      child: SizedBox(
-        height: 400,
-        child: Column(
-          children: [
-            Row(
-              spacing: 15,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: buttons,
-            ),
-            MusicItemsGrid(musicWidgets: musicWidgets),
-          ],
-        ),
+    return SizedBox(
+      height: 400,
+      child: Column(
+        children: [
+          Row(
+            spacing: 15,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: buttons,
+          ),
+          MusicItemsGrid(musicWidgets: musicWidgets),
+        ],
       ),
     );
   }
