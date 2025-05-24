@@ -145,5 +145,25 @@
         "userId": 3,
         "songId": 29,
         "score": 85
+    },
+    {
+        "userId": 4,
+        "songId": 26,
+        "score": 100
+    },
+    {
+        "userId": 4,
+        "songId": 27,
+        "score": 82
+    },
+    {
+        "userId": 4,
+        "songId": 28,
+        "score": 77
+    },
+    {
+        "userId": 4,
+        "songId": 29,
+        "score": 85
     }
 ]

@@ -5,17 +5,17 @@ import 'package:onescore/components/EditableAvatarWidget.dart';
 import 'package:onescore/components/MusicItemsGrid.dart';
 import 'package:onescore/components/StatisticsButton.dart';
 import 'package:onescore/components/TitleWidget.dart';
+import 'package:onescore/controllers/auth_controller.dart';
 import 'profile_controller.dart';
 import '../../components/BottomNavigationBar.dart';
 import '../../controllers/bottom_navigation_controller.dart';
 
 class ProfilePage extends StatelessWidget {
-  ProfileController control = Get.put(ProfileController());
-  ProfilePage({super.key});
 
-  Widget _buildBody(BuildContext context) {
-    return SafeArea(child: Text('Este es PROFILE'));
-  }
+  ProfileController control = Get.put(ProfileController());
+  AuthController authControl = Get.put(AuthController());
+
+  ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,18 +25,12 @@ class ProfilePage extends StatelessWidget {
       navController.updateSelectedIndex(2); // 2 = profile
     });
 
-    Future.microtask(() => control.getUserData());
+    Future.microtask(() => control.getUserMusicData());
+    final user = authControl.user!;
 
     void onButtonChanged(List<Map<String, dynamic>> updatedButtons) {
       print(updatedButtons);
     }
-
-    /*return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: null,
-      body: _buildBody(context),
-      bottomNavigationBar: const CustomMenuBar(),
-    );*/
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -51,8 +45,6 @@ class ProfilePage extends StatelessWidget {
               )
           );
         }
-
-        final data = control.userData;
 
         return SingleChildScrollView(
           child: Container(
@@ -73,7 +65,7 @@ class ProfilePage extends StatelessWidget {
 
                       EditableAvatarWidget(
                           size: 190,
-                          image: const AssetImage('assets/imgs/mod1_01.jpg'),
+                          image: NetworkImage('${user.photoUrl}'),
                           onEdit: () {
                             print('Cambiar imagen');
                           }),
@@ -81,7 +73,7 @@ class ProfilePage extends StatelessWidget {
                       SizedBox(height: 16),
 
                       Text(
-                        data['username'] ?? '',
+                        '@${user.nickname}' ?? '',
                         style: TextStyle(
                             color: Color(0xFF535353),
                             fontSize: 18,
@@ -90,7 +82,7 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        data['name'] ?? '',
+                        '${user.name} ${user.lastName}' ?? '',
                         style: TextStyle(
                           fontFamily: 'Roboto',
                         ),
@@ -101,29 +93,23 @@ class ProfilePage extends StatelessWidget {
                       Container(
                         width: double.infinity,
                         child: Wrap(
-                          spacing: MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.08,
+                          spacing: MediaQuery.of(context).size.width * 0.08,
                           runSpacing: 12,
                           alignment: WrapAlignment.center,
                           children: [
                             StatisticsButtonWidget(
-                                label: 'N° Artistas',
-                                numberLabel: data['statistics']?['artists']
-                                    ?.toString() ?? '0'
+                              label: 'N° Artistas',
+                              numberLabel: control.artistCount.toString(),
                             ),
                             StatisticsButtonWidget(
                               label: 'N° Albums',
-                              numberLabel: data['statistics']?['albums']
-                                  ?.toString() ?? '0',
+                              numberLabel: control.albumCount.toString(),
                               backgroundColor: Color(0xFF6E6E6E),
                               textColor: Colors.white,
                             ),
                             StatisticsButtonWidget(
-                                label: 'N° Canciones',
-                                numberLabel: data['statistics']?['songs']
-                                    ?.toString() ?? '0'
+                              label: 'N° Canciones',
+                              numberLabel: control.songCount.toString(),
                             ),
                           ],
                         ),

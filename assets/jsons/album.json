@@ -5,7 +5,8 @@
         "releaseYear": 1982,
         "genreId": 1,
         "coverUrl": "https://example.com/covers/thriller.jpg",
-        "artistId": 1
+        "artistId": 1,
+        "rating": 19
     },
     {
         "albumId": 2,
@@ -13,7 +14,8 @@
         "releaseYear": 1973,
         "genreId": 2,
         "coverUrl": "https://example.com/covers/darkside.jpg",
-        "artistId": 2
+        "artistId": 2,
+        "rating": 18
     },
     {
         "albumId": 3,
@@ -21,7 +23,8 @@
         "releaseYear": 1980,
         "genreId": 3,
         "coverUrl": "https://example.com/covers/backinblack.jpg",
-        "artistId": 3
+        "artistId": 3,
+        "rating": 17
     },
     {
         "albumId": 4,
@@ -29,6 +32,7 @@
         "releaseYear": 2024,
         "genreId": 5,
         "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/8b/39/c6/8b39c655-00fd-1b52-52ea-a98de686f3ae/075679659729.jpg/600x600bf-60.jpg",
-        "artistId": 4
+        "artistId": 4,
+        "rating": 15
     }
 ]
