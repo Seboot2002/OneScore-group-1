@@ -213,7 +213,7 @@ class ResultsPage extends StatelessWidget {
     String searchType,
     String searchQuery,
   ) {
-    print('\n' + '=' * 50);
+    print('\n${'=' * 50}');
     print('🔍 RESULTADOS DE BÚSQUEDA');
     print('=' * 50);
     print('📝 Query: "$searchQuery"');
