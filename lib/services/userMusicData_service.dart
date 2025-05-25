@@ -27,6 +27,7 @@ class UserMusicDataService {
     print('🎯 Albums filtrados para el usuario: $filteredAlbums');
 
     return filteredAlbums.map<Map<String, dynamic>>((album) => {
+      'albumId': album['albumId'] ?? 0,
       'name': album['title'] ?? '',
       'image': album['coverUrl'] ?? '',
       'rating': album['rating'] ?? 0,
@@ -72,22 +73,27 @@ class UserMusicDataService {
     print('🎨 Todas las canciones: $allSongs');
     print('🔗 Relaciones usuario-cancion: $userSongRelations');
 
-    final userSongIds = userSongRelations
-        .where((relation) => relation['userId'] == userId)
-        .map((relation) => relation['songId'])
-        .toSet();
+    final Map<int, int> userScores = {
+      for (var rel in userSongRelations)
+        if (rel['userId'] == userId) rel['songId']: rel['score']
+    };
 
-    print('🆔 SongIds del usuario $userId: $userSongIds');
+    final userSongIds = userScores.keys.toSet();
 
     final filteredSongs = allSongs
-        .where((artist) => userSongIds.contains(artist['songId']))
-        .toList();
+        .where((song) => userSongIds.contains(song['songId']))
+        .map<Map<String, dynamic>>((song) => {
+      'songId': song['songId'],
+      'title': song['title'] ?? '',
+      'nTrack': song['nTrack'],
+      'albumId': song['albumId'],
+      'score': userScores[song['songId']] ?? 0,
+    }).toList();
 
     print('🎯 Canciones filtradas para el usuario: $filteredSongs');
 
-    return filteredSongs.map<Map<String, dynamic>>((artist) => {
-      'name': artist['name'] ?? '',
-      'image': artist['pictureUrl'] ?? '',
-    }).toList();
+    return filteredSongs;
   }
+
+
 }

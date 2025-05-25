@@ -45,11 +45,30 @@ class ProfileController extends GetxController {
       artistCount.value = artistData.length;
       songCount.value = songData.length;
 
-      albums.value = albumData.map((album) => AlbumCard(
-        name: album['name'],
-        image: album['image'],
-        rating: (album['rating'] as num).toDouble(),
-      )).toList();
+      Map<int, List<double>> albumScores = {};
+
+      albums.value = albumData.map((album) {
+        final albumId = album['albumId'] as int;
+
+        for (var song in songData) {
+          final score = (song['score'] ?? 0).toDouble();
+
+          if (!albumScores.containsKey(albumId)) {
+            albumScores[albumId] = [];
+          }
+          albumScores[albumId]!.add(score);
+        }
+        final scores = albumScores[albumId] ?? [];
+        final avgScore = scores.isNotEmpty
+            ? scores.reduce((a, b) => a + b) / scores.length
+            : 0.0;
+
+        return AlbumCard(
+          name: album['name'],
+          image: album['image'],
+          rating: avgScore,
+        );
+      }).toList();
 
       artists.value = artistData.map((artist) => ArtistCard(
         name: artist['name'],
