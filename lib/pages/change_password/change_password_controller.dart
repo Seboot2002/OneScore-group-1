@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onescore/models/entities/user.dart';
 import 'package:onescore/models/httpResponse/service_http_response.dart';
@@ -22,18 +23,32 @@ class ChangePasswordController extends GetxController {
   // Asumimos que tienes el nickname o email disponible (por ejemplo desde sesión)
   String emailOrNickname = ''; // <-- debes asignarlo desde sesión o login
 
-  void changePassword(BuildContext context) async {
+  goBack (BuildContext context){
+    Navigator.pushNamed(context, '/profile', arguments:currentUser );
+  }
+
+  Future<void> changePassword() async {
     final contrasenaVieja = txtContrasenaVieja.text.trim();
     final contrasenaNueva = txtContrasenaNueva.text.trim();
     final repiteContrasena = txtRepiteContrasena.text.trim();
 
     if (contrasenaVieja.isEmpty || contrasenaNueva.isEmpty || repiteContrasena.isEmpty) {
-      message.value = 'Favor de llenar todos los campos';
+      Get.snackbar(
+        'Error',
+        'Favor de llenar todos los campos',
+        backgroundColor: const Color(0xFF524E4E),
+        colorText: Colors.white,
+        );
       return;
     }
 
     if (contrasenaNueva != repiteContrasena) {
-      message.value = 'Las contraseñas nuevas no coinciden';
+       Get.snackbar(
+        'Error',
+        'Contraseñas no coinciden',
+        backgroundColor: const Color(0xFF524E4E),
+        colorText: Colors.white,
+        );
       return;
     }
 
@@ -45,12 +60,28 @@ class ChangePasswordController extends GetxController {
       );
 
       if (response.status == 200) {
-        message.value = 'Cambio de contraseña efectuado';
+        Get.snackbar(
+          'Operacion exitosa',
+          'Cambio de contraseña efectuado',
+          backgroundColor: const Color(0xFF524E4E),
+          colorText: Colors.white,
+        );
+;
       } else {
-        message.value = response.body ?? 'Cambio de contraseña negado';
+        Get.snackbar(
+        'Error',
+        'Cambio de contraseña negado',
+        backgroundColor: const Color(0xFF524E4E),
+        colorText: Colors.white,
+      );
       }
     } catch (e) {
-      message.value = 'Error al cambiar la contraseña: $e';
+      Get.snackbar(
+        'Error',
+        'Error inesperado: $e',
+        backgroundColor: const Color(0xFF524E4E),
+        colorText: Colors.white,
+      );
     }
   }
 }

@@ -19,9 +19,7 @@ class ChangePasswordPage extends StatelessWidget {
           alignment: Alignment.topLeft,
           child: (
             BackButtonWidget(
-              onPressed: (){
-                Navigator.pushNamed(context, routeName)
-              },
+              onPressed:controller.goBack(context),
               width: 25,
               height: 25,
             )
@@ -46,28 +44,31 @@ class ChangePasswordPage extends StatelessWidget {
               ),
               FieldTextWidget(
                 label:'Contraseña Antigua', 
-                controller: controller
+                controller: controller.txtContrasenaVieja,
+                obscureText: true,
               ),
               SizedBox(
                 height: 20,
               ),
               FieldTextWidget(
                 label:'Contraseña Nueva', 
-                controller: controller
+                controller: controller.txtContrasenaNueva,
+                obscureText: true ,
               ),
               SizedBox(
                 height: 20,
               ),
               FieldTextWidget(
-                label:'Repetir Contraseña Nueva', 
-                controller: controller
+                label:'Repetir Contraseña Nueva',
+                controller: controller.txtRepiteContrasena,
+                obscureText: true,
               ),
               SizedBox(
                 height: 20,
               ),
               ButtonWidget(
                 text: 'Guardar Cambios',
-                 onPressed: onPressed
+                 onPressed: controller.changePassword,
               )
 
             ],)

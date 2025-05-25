@@ -1,31 +1,17 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:onescore/components/BottomNavigationBar.dart';
 import '../../components/album_card.dart';
 import '../../components/BackButtonWidget.dart';
 import '../../components/MusicItemsGrid.dart';
 import '../../models/entities/user.dart';
+import '../../models/entities/album.dart';
 
-class Album {
-  final int albumId;
-  final String title;
-  final String coverUrl;
-
-  Album({required this.albumId, required this.title, required this.coverUrl});
-
-  factory Album.fromJson(Map<String, dynamic> json) {
-    return Album(
-      albumId: json['albumId'],
-      title: json['title'],
-      coverUrl: json['coverUrl'],
-    );
-  }
-}
 
 class AllAlbumsPage extends StatelessWidget {
-  final User user;
-  AllAlbumsPage({Key? key, required this.user}) : super(key: key);
+  AllAlbumsPage({Key? key}) : super(key: key);
 
   Future<Map<String, List<Album>>> loadAlbums(int currentUserId) async {
     final albumsJson = await rootBundle.loadString('assets/jsons/albums.json');
@@ -68,7 +54,7 @@ class AllAlbumsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) { 
-
+    final User user = Get.arguments as User;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: null,
@@ -119,12 +105,15 @@ class AllAlbumsPage extends StatelessWidget {
                   style: TextStyle(fontSize: 36, color: Color.fromRGBO(110, 110, 110, 1)),
                 ),
                 const SizedBox(height: 20),
-                MusicItemsGridStructure(
+                Container(
+                  alignment: Alignment.center,
+                  child: MusicItemsGridStructure(
                   buttonsData: buttonsData,
                   onButtonChanged: (newButtonsData) {
                     // Lógica si se desea reaccionar al cambio
                   },
                 ),
+                )
               ],
             );
           },
