@@ -6,13 +6,14 @@ import 'package:onescore/components/FieldTextWidget.dart';
 import 'change_password_controller.dart';
 
 class ChangePasswordPage extends StatelessWidget {
-  ChangePasswordController control = Get.put(ChangePasswordController());
+  
+  final ChangePasswordController controller = Get.put(ChangePasswordController());
 
   ChangePasswordPage({super.key});
 
   Widget _buildBody(BuildContext context) {
 
-    return Column(
+    return SafeArea(child: Column(
       children: [
         Align(
           alignment: Alignment.topLeft,
@@ -73,7 +74,9 @@ class ChangePasswordPage extends StatelessWidget {
           ),
         )
 
-    ],);
+    ],)
+    );
+    
   }
 
 
