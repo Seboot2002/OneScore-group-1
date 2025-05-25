@@ -31,12 +31,26 @@ class ChangePasswordPage extends StatelessWidget {
         Align(
           alignment: Alignment.center,
           child: (
-            Column(children: [
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
               Text(
                 'Edición', 
                 style: TextStyle(
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.w600
+                ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              Container(
+                height: 98,
+                child:SizedBox(
+                  width: 122,
+                  height: 98,
+                  child: Image.asset('assets/icon_password.png',
+                  fit: BoxFit.cover,),
                 ),
               ),
               SizedBox(

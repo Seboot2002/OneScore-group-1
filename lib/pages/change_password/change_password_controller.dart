@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onescore/models/entities/user.dart';
-import 'package:onescore/models/httpResponse/service_http_response.dart';
 import '../../services/user_service.dart';
 
 class ChangePasswordController extends GetxController {
@@ -66,7 +65,7 @@ class ChangePasswordController extends GetxController {
           backgroundColor: const Color(0xFF524E4E),
           colorText: Colors.white,
         );
-;
+
       } else {
         Get.snackbar(
         'Error',
