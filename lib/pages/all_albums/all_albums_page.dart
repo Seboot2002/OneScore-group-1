@@ -108,7 +108,12 @@ class AllAlbumsPage extends StatelessWidget {
                 const SizedBox(height: 20),
                 const Text(
                   'Albums',
-                  style: TextStyle(fontSize: 36, color: Color.fromRGBO(110, 110, 110, 1)),
+                  style: TextStyle(
+                    fontSize: 36,
+                    color: Color.fromRGBO(110, 110, 110, 1),
+                    fontWeight: FontWeight.w600,
+                    fontFamily: 'Roboto'
+                     ),
                 ),
                 const SizedBox(height: 20),
                 Container(

@@ -97,7 +97,12 @@ class AllArtistsPage extends StatelessWidget {
                 const Center(
                   child: Text(
                     'Artistas',
-                    style: TextStyle(fontSize: 36, color: Color.fromRGBO(110, 110, 110, 1)),
+                    style: TextStyle(
+                      fontSize: 36,
+                      color: Color.fromRGBO(110, 110, 110, 1),
+                      fontWeight: FontWeight.w600,
+                      fontFamily: 'Roboto'
+                      ),
                   ),
                 ),
                 const SizedBox(height: 20),
