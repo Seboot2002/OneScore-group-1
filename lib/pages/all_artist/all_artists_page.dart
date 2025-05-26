@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../components/artist_card.dart';
 import 'package:onescore/components/BottomNavigationBar.dart';
+import '../../controllers/bottom_navigation_controller.dart';
 import '../../components/BackButtonWidget.dart';
 import '../../components/MusicItemsGrid.dart';
 import '../../models/entities/user.dart';
@@ -50,6 +51,10 @@ class AllArtistsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final User user = Get.arguments as User;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final navController = Get.find<BottomNavigationController>();
+      navController.updateSelectedIndex(0); // 0 = home
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: null,

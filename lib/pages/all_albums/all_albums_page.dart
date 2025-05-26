@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:onescore/components/BottomNavigationBar.dart';
+import '../../controllers/bottom_navigation_controller.dart';
 import '../../components/album_card.dart';
 import '../../components/BackButtonWidget.dart';
 import '../../components/MusicItemsGrid.dart';
@@ -52,9 +53,14 @@ class AllAlbumsPage extends StatelessWidget {
     }).toList();
   }
 
+
   @override
   Widget build(BuildContext context) { 
     final User user = Get.arguments as User;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final navController = Get.find<BottomNavigationController>();
+      navController.updateSelectedIndex(0); // 0 = home
+    });
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: null,
