@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onescore/controllers/auth_controller.dart';
+import 'package:onescore/pages/all_albums/all_albums_page.dart';
+import 'package:onescore/pages/all_artist/all_artists_page.dart';
+import 'package:onescore/pages/change_password/change_password_page.dart';
 import 'package:onescore/pages/profile/profile_page.dart';
 import 'package:onescore/pages/results/results_page.dart';
 import 'package:onescore/pages/suggest/suggest_page.dart';
@@ -41,6 +44,9 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/searching', page: () => SearchBarPage()),
         GetPage(name: '/profile', page: () => ProfilePage()),
         GetPage(name: '/suggest', page: () => SuggestPage()),
+        GetPage(name: '/all_albums', page: ()=> AllAlbumsPage()),
+        GetPage(name: '/all_artists', page: () => AllArtistsPage()),
+        GetPage(name:'/change_password', page: ()=>ChangePasswordPage())
       ],
     );
   }

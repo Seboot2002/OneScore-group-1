@@ -28,8 +28,10 @@ class ProfilePage extends StatelessWidget {
     Future.microtask(() => control.getUserMusicData());
     final user = authControl.user!;
 
+    final RxString selectedOption = 'Albums'.obs;
     void onButtonChanged(List<Map<String, dynamic>> updatedButtons) {
-      print(updatedButtons);
+      final selected = updatedButtons.firstWhere((btn) => btn['value'] == true);
+      selectedOption.value = selected['label'];
     }
 
     return Scaffold(
@@ -139,8 +141,12 @@ class ProfilePage extends StatelessWidget {
                         alignment: Alignment.centerRight,
                         child: GestureDetector(
                           onTap: () {
-                            print("Haz hecho clic en 'Ver todos'");
-                          },
+                              if (selectedOption.value == 'Albums') {
+                                  Get.toNamed('/all_albums', arguments: user);
+                                } else {
+                                  Get.toNamed('/all_artists', arguments: user);
+                                }
+                              },
                           child: Text(
                             'Ver todos',
                             style: TextStyle(

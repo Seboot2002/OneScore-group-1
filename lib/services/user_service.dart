@@ -103,6 +103,7 @@ class UserService {
       return [];
     }
   }
+  
 
   Future<void> _saveLocalUsers(List<User> localUsers) async {
     try {
@@ -185,6 +186,51 @@ class UserService {
       );
     }
   }
+  Future<ServiceHttpResponse> changePassword({
+    required usuario,
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    try {
+      final user_nickname = usuario.nickName;
+      final localUsers = await _loadLocalUsers();
+
+      final userIndex = localUsers.indexWhere((u) =>
+          (u.mail.toLowerCase() == user_nickname.toLowerCase() ||
+          u.nickname.toLowerCase() == user_nickname.toLowerCase()) &&
+          u.password == currentPassword);
+
+      if (userIndex == -1) {
+        return ServiceHttpResponse(
+          status: 403,
+          body: 'Credenciales incorrectas',
+        );
+      }
+
+      final updatedUser = User(
+          userId: usuario.userId,
+          name: usuario.name,
+          lastName: usuario.lastName,
+          nickname: usuario.nickname,
+          mail: usuario.mail,
+          password: newPassword,
+          photoUrl: usuario.photoUrl,
+      );
+      localUsers[userIndex] = updatedUser;
+      await _saveLocalUsers(localUsers);
+
+      return ServiceHttpResponse(
+        status: 200,
+        body: 'Contraseña actualizada exitosamente',
+      );
+    } catch (e) {
+      return ServiceHttpResponse(
+        status: 500,
+        body: 'Error al cambiar la contraseña: $e',
+      );
+    }
+  }
+
 
   Future<ServiceHttpResponse> logIn(String identifier, String password) async {
     try {
@@ -254,6 +300,7 @@ class UserService {
       print('Error resetting local users: $e');
     }
   }
+
 
   Future<void> debugPrintUsers() async {
     final users = await _readUsers();
