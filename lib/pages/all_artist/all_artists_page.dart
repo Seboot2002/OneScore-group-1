@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:onescore/components/TitleWidget.dart';
 import '../../components/artist_card.dart';
 import 'package:onescore/components/BottomNavigationBar.dart';
 import '../../controllers/bottom_navigation_controller.dart';
@@ -12,10 +13,13 @@ import 'package:get/get.dart';
 
 
 class AllArtistsPage extends StatelessWidget {
-  AllArtistsPage({Key? key}) : super(key: key);
+  final User user;
+  AllArtistsPage({Key? key}) : 
+  user = Get.arguments as User,
+  super(key: key);
 
   Future<Map<String, List<Artist>>> loadArtists(int currentUserId) async {
-    final artistsJson = await rootBundle.loadString('assets/jsons/user.json');
+    final artistsJson = await rootBundle.loadString('assets/jsons/artist.json');
     final artistUserJson = await rootBundle.loadString('assets/jsons/artistUser.json');
 
     final List<dynamic> artistsData = json.decode(artistsJson);
@@ -50,7 +54,9 @@ class AllArtistsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final User user = Get.arguments as User;
+    
+    print("Se recibe el user");
+    print(user);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       navController.updateSelectedIndex(0); // 0 = home
@@ -83,7 +89,13 @@ class AllArtistsPage extends StatelessWidget {
               },
             ];
 
-            return Column(
+            return SafeArea
+            ( top: true,
+            bottom: true,
+            left: true,
+            right: true,
+            minimum: EdgeInsets.all(15),
+              child: Column(
               children: [
                 Align(
                   alignment: Alignment.topLeft,
@@ -95,14 +107,8 @@ class AllArtistsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 const Center(
-                  child: Text(
-                    'Artistas',
-                    style: TextStyle(
-                      fontSize: 36,
-                      color: Color.fromRGBO(110, 110, 110, 1),
-                      fontWeight: FontWeight.w600,
-                      fontFamily: 'Roboto'
-                      ),
+                  child: TitleWidget(
+                    text: 'Artistas',
                   ),
                 ),
                 const SizedBox(height: 20),
@@ -116,10 +122,13 @@ class AllArtistsPage extends StatelessWidget {
                   ),
                 )
               ],
+              )
             );
           },
         ),
       ),
     );
+    
+             
   }
 }
