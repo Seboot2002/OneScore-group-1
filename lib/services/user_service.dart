@@ -310,4 +310,25 @@ class UserService {
     }
     print('=======================');
   }
+
+  Future<User?> getUserById(int userId) async {
+    try {
+      final users = await _readUsers();
+
+      print('🔍 Buscando usuario con ID: $userId');
+      print('👥 Total usuarios disponibles: ${users.length}');
+
+      // Buscar el usuario específico por ID
+      final matchedUser = users.firstWhere(
+        (user) => user.userId == userId,
+        orElse: () => throw StateError('Usuario no encontrado'),
+      );
+
+      print('✅ Usuario encontrado: ${matchedUser.nickname}');
+      return matchedUser;
+    } catch (e) {
+      print('❌ Error al buscar usuario con ID $userId: $e');
+      return null;
+    }
+  }
 }

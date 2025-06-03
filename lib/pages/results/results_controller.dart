@@ -113,6 +113,7 @@ class ResultsController extends GetxController {
           (user) => UserCard(
             name: '${user.name} ${user.lastName}',
             image: user.photoUrl ?? '',
+            userId: user.userId,
           ),
         )
         .toList();
