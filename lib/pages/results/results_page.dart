@@ -2,150 +2,209 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../components/TitleWidget.dart';
 import '../../components/BottomNavigationBar.dart';
+import '../../components/BackButtonWidget.dart';
+import '../../controllers/bottom_navigation_controller.dart';
+import 'results_controller.dart';
 import '../../models/entities/album.dart';
 import '../../models/entities/artist.dart';
 import '../../models/entities/user.dart';
-import '../../components/MusicItemsGrid.dart';
 
 class ResultsPage extends StatelessWidget {
-  const ResultsPage({super.key});
+  ResultsPage({super.key});
+  final ResultsController control = Get.put(ResultsController());
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> arguments = Get.arguments ?? {};
-    final List<dynamic> results = arguments['results'] ?? [];
-    final String searchType = arguments['searchType'] ?? '';
-    final String searchQuery = arguments['searchQuery'] ?? '';
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
-    _printResults(results, searchType, searchQuery);
+    // Asegurar que el navbar se mantenga en la posición correcta
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final navController = Get.find<BottomNavigationController>();
+      if (navController.selectedIndex != 1) {
+        navController.selectedIndex = 1;
+        navController.update();
+      }
+    });
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: null,
-      bottomNavigationBar: const CustomMenuBar(),
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.all(34),
-          color: Colors.white,
-          child: SafeArea(
-            child: Center(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: GestureDetector(
-                      onTap: () => Get.back(),
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 10),
-                        width: 20,
-                        height: 30,
-                        child: Image.asset('assets/imgs/BackButtonImage.png'),
+      body: Container(
+        color: Colors.white,
+        child: SafeArea(
+          child: Center(
+            child: Container(
+              margin: EdgeInsets.only(top: screenHeight * 0.05),
+              width: screenWidth * 0.9,
+              height: screenHeight * 0.90,
+              child: GetBuilder<ResultsController>(
+                builder:
+                    (ctrl) => SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Back button
+                          const BackButtonWidget(),
+
+                          // Title
+                          const TitleWidget(text: "Resultados"),
+                          const SizedBox(height: 20),
+
+                          // Search info
+                          _buildSearchInfo(ctrl),
+                          const SizedBox(height: 30),
+
+                          // Results
+                          if (ctrl.hasResults) ...[
+                            _buildResultsList(ctrl),
+                          ] else ...[
+                            _buildNoResults(),
+                          ],
+
+                          const SizedBox(height: 30),
+                        ],
                       ),
                     ),
-                  ),
-                  TitleWidget(text: "Resultados"),
-                  const SizedBox(height: 10),
-                  Text('Búsqueda: "$searchQuery"',
-                      style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.grey)),
-                  Text('Categoría: $searchType',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      )),
-                  Text('Resultados encontrados: ${results.length}',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey,
-                      )),
-                  const SizedBox(height: 20),
-                  MusicItemsGridStructure(
-                    buttonsData: [
-                      {
-                        'value': true,
-                        'label': searchType,
-                        'data': results.map((r) => buildResultItem(r, searchType)).toList(),
-                      }
-                    ],
-                    onButtonChanged: (value) {},
-                  ),
-                ],
               ),
             ),
           ),
         ),
       ),
+      bottomNavigationBar: const CustomMenuBar(),
     );
   }
 
-  Widget buildResultItem(dynamic result, String searchType) {
-    if (searchType == 'Todos') {
-      final String type = result['type'];
-      final dynamic data = result['data'];
-      switch (type) {
-        case 'album':
-          return buildAlbumCard(data as Album);
-        case 'artist':
-          return buildArtistCard(data as Artist);
-        case 'user':
-          return buildUserCard(data as User);
-        default:
-          return const SizedBox.shrink();
-      }
-    } else {
-      switch (searchType) {
-        case 'Albums':
-          return buildAlbumCard(result as Album);
-        case 'Artistas':
-          return buildArtistCard(result as Artist);
-        case 'Usuarios':
-          return buildUserCard(result as User);
-        default:
-          return const SizedBox.shrink();
-      }
-    }
-  }
-
-  Widget buildAlbumCard(Album album) {
+  Widget _buildSearchInfo(ResultsController ctrl) {
     return Container(
-      width: 120,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF6E6E6E),
+        color: Colors.grey.shade100,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
       ),
-      padding: const EdgeInsets.all(10),
       child: Column(
-        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              album.coverUrl,
-              width: 80,
-              height: 80,
-              fit: BoxFit.cover,
-              errorBuilder: (_, __, ___) => const Icon(Icons.image),
-            ),
+          Row(
+            children: [
+              Icon(Icons.search, color: Colors.grey.shade600, size: 20),
+              const SizedBox(width: 8),
+              Text(
+                'Búsqueda realizada',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade700,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 10),
-          Text(album.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              )),
+          const SizedBox(height: 8),
+          Text(
+            'Tipo: ${ctrl.displaySearchType}',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
           const SizedBox(height: 4),
+          Text(
+            'Término: "${ctrl.searchQuery}"',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            'Resultados encontrados: ${ctrl.totalResults}',
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildResultsList(ResultsController ctrl) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Albums
+        if (ctrl.albumResults.isNotEmpty) ...[
+          _buildSectionTitle('Álbumes', ctrl.albumResults.length),
+          const SizedBox(height: 10),
+          ...ctrl.albumResults.map((album) => _buildAlbumItem(album)),
+          const SizedBox(height: 20),
+        ],
+
+        // Artists
+        if (ctrl.artistResults.isNotEmpty) ...[
+          _buildSectionTitle('Artistas', ctrl.artistResults.length),
+          const SizedBox(height: 10),
+          ...ctrl.artistResults.map((artist) => _buildArtistItem(artist)),
+          const SizedBox(height: 20),
+        ],
+
+        // Users
+        if (ctrl.userResults.isNotEmpty) ...[
+          _buildSectionTitle('Usuarios', ctrl.userResults.length),
+          const SizedBox(height: 10),
+          ...ctrl.userResults.map((user) => _buildUserItem(user)),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title, int count) {
+    return Text(
+      '$title ($count)',
+      style: const TextStyle(
+        fontSize: 18,
+        fontWeight: FontWeight.bold,
+        color: Colors.black87,
+      ),
+    );
+  }
+
+  Widget _buildAlbumItem(Album album) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+            width: 60,
+            height: 60,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(6),
+              color: Colors.blue.shade100,
+              borderRadius: BorderRadius.circular(8),
             ),
-            child: const Text(
-              "88.33",
-              style: TextStyle(fontSize: 12),
+            child: const Icon(Icons.album, color: Colors.blue, size: 30),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  album.title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Año: ${album.releaseYear}',
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+              ],
             ),
           ),
         ],
@@ -153,112 +212,141 @@ class ResultsPage extends StatelessWidget {
     );
   }
 
-  Widget buildArtistCard(Artist artist) {
+  Widget _buildArtistItem(Artist artist) {
     return Container(
-      width: 120,
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF6E6E6E),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
       ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: Row(
         children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(artist.pictureUrl),
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.purple.shade100,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(Icons.person, color: Colors.purple, size: 30),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  artist.name,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'Debut: ${artist.debutYear}',
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildUserItem(User user) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade300, width: 1),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.shade200,
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 60,
+            height: 60,
+            decoration: BoxDecoration(
+              color: Colors.green.shade100,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(
+              Icons.account_circle,
+              color: Colors.green,
+              size: 30,
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${user.name} ${user.lastName}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '@${user.nickname}',
+                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  user.mail,
+                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNoResults() {
+    return Center(
+      child: Column(
+        children: [
+          const SizedBox(height: 40),
+          Icon(Icons.search_off, size: 80, color: Colors.grey.shade400),
+          const SizedBox(height: 20),
+          Text(
+            'No se encontraron resultados',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey.shade600,
+            ),
           ),
           const SizedBox(height: 10),
-          Text(artist.name,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.white)),
-        ],
-      ),
-    );
-  }
-
-  Widget buildUserCard(User user) {
-    return Container(
-      width: 120,
-      decoration: BoxDecoration(
-        color: const Color(0xFF6E6E6E),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const CircleAvatar(
-            radius: 40,
-            backgroundColor: Colors.grey,
-            child: Icon(Icons.person, color: Colors.white),
+          Text(
+            'Intenta con otros términos de búsqueda',
+            style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
           ),
-          const SizedBox(height: 10),
-          Text(user.nickname,
-              style: const TextStyle(
-                  fontWeight: FontWeight.bold, color: Colors.white)),
         ],
       ),
     );
-  }
-
-  void _printResults(
-    List<dynamic> results,
-    String searchType,
-    String searchQuery,
-  ) {
-    print('\n${'=' * 50}');
-    print('🔍 RESULTADOS DE BÚSQUEDA');
-    print('${'=' * 50}');
-    print('📝 Query: "$searchQuery"');
-    print('🏷️ Tipo: $searchType');
-    print('📊 Total resultados: ${results.length}');
-    print('${'-' * 30}');
-
-    if (results.isEmpty) {
-      print('❌ No se encontraron resultados');
-    } else {
-      for (int i = 0; i < results.length; i++) {
-        print('📋 Resultado ${i + 1}:');
-
-        if (searchType == 'Todos') {
-          final String type = results[i]['type'];
-          final dynamic data = results[i]['data'];
-          print('   Tipo: $type');
-
-          switch (type) {
-            case 'album':
-              final Album album = data as Album;
-              print('   🎵 Album: ${album.title} (${album.releaseYear})');
-              break;
-            case 'artist':
-              final Artist artist = data as Artist;
-              print('   🎤 Artista: ${artist.name} (Debut: ${artist.debutYear})');
-              break;
-            case 'user':
-              final User user = data as User;
-              print('   👤 Usuario: ${user.name} ${user.lastName} (@${user.nickname})');
-              break;
-          }
-        } else {
-          switch (searchType) {
-            case 'Albums':
-              final Album album = results[i] as Album;
-              print('   🎵 ${album.title} - Año: ${album.releaseYear} - ID: ${album.albumId}');
-              break;
-            case 'Artistas':
-              final Artist artist = results[i] as Artist;
-              print('   🎤 ${artist.name} - Debut: ${artist.debutYear} - ID: ${artist.artistId}');
-              break;
-            case 'Usuarios':
-              final User user = results[i] as User;
-              print('   👤 ${user.name} ${user.lastName} (@${user.nickname}) - ${user.mail}');
-              break;
-          }
-        }
-        print('');
-      }
-    }
-    print('${'=' * 50}\n');
   }
 }
