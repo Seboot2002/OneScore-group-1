@@ -2,5 +2,9 @@
     {
         "userId": 4,
         "artistId": 4
+    },
+    {
+        "userId": 4,
+        "artistId": 5
     }
 ]

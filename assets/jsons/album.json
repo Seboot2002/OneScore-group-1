@@ -4,7 +4,7 @@
         "title": "Thriller",
         "releaseYear": 1982,
         "genreId": 1,
-        "coverUrl": "https://example.com/covers/thriller.jpg",
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/32/4f/fd/324ffda2-9e51-8f6a-0c2d-c6fd2b41ac55/074643811224.jpg/600x600bf-60.jpg",
         "artistId": 1
     },
     {
@@ -12,7 +12,7 @@
         "title": "The Dark Side of the Moon",
         "releaseYear": 1973,
         "genreId": 2,
-        "coverUrl": "https://example.com/covers/darkside.jpg",
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/3c/1b/a9/3c1ba9e1-15b1-03b3-3bfd-09dbd9f1705b/dj.mggvbaou.jpg/600x600bf-60.jpg",
         "artistId": 2
     },
     {
@@ -20,7 +20,7 @@
         "title": "Back in Black",
         "releaseYear": 1980,
         "genreId": 3,
-        "coverUrl": "https://example.com/covers/backinblack.jpg",
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/1e/14/58/1e145814-281a-58e0-3ab1-145f5d1af421/886443673441.jpg/600x600bf-60.jpg",
         "artistId": 3
     },
     {
@@ -30,5 +30,13 @@
         "genreId": 5,
         "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/8b/39/c6/8b39c655-00fd-1b52-52ea-a98de686f3ae/075679659729.jpg/600x600bf-60.jpg",
         "artistId": 4
+    },
+    {
+        "albumId": 5,
+        "title": "Smoke & Mirrors",
+        "releaseYear": 2014,
+        "genreId": 5,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/c1/16/59/c116596f-f3fd-3499-6cc2-bcb5b4931e6e/14UMGIM61459.rgb.jpg/600x600bf-60.jpg",
+        "artistId": 5
     }
 ]

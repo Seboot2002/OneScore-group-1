@@ -22,5 +22,11 @@
         "albumId": 4,
         "rankDate": "2025-05-24T09:15:00Z",
         "rankState": "valued"
+    },
+    {
+        "userId": 4,
+        "albumId": 5,
+        "rankDate": "2025-06-24T09:15:00Z",
+        "rankState": "pending"
     }
 ]

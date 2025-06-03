@@ -6,7 +6,7 @@
         "nickname": "juanpe",
         "mail": "juan@example.com",
         "password": "pass123",
-        "photoUrl": "https://example.com/juan.jpg"
+        "photoUrl": "https://s3p.sofifa.net/03c7b619d1ffc5253f35760e79da8447cbdf6db7.png"
     },
     {
         "userId": 2,
@@ -15,7 +15,7 @@
         "nickname": "mgomez",
         "mail": "maria@example.com",
         "password": "secure456",
-        "photoUrl": "https://example.com/maria.jpg"
+        "photoUrl": "https://www.shutterstock.com/image-vector/annunciation-blessed-virgin-mary-conception-260nw-2566163865.jpg"
     },
     {
         "userId": 3,
@@ -24,7 +24,7 @@
         "nickname": "carlitos",
         "mail": "carlos@example.com",
         "password": "mysecret789",
-        "photoUrl": "https://example.com/carlos.jpg"
+        "photoUrl": "https://cdn-images.dzcdn.net/images/cover/d03bc475b34f292b6a43e919dacfb8da/1900x1900-000000-80-0-0.jpg"
     },
     {
         "userId": 4,
@@ -33,6 +33,6 @@
         "nickname": "Clancy",
         "mail": "clancy@example.com",
         "password": "bandito",
-        "photoUrl": "https://pbs.twimg.com/profile_images/1910247994978340864/nLbe4Juz_400x400.jpg"
+        "photoUrl": "../imgs/clancy.png"
     }
 ]
