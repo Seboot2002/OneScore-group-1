@@ -11,50 +11,52 @@ import '../../models/entities/user.dart';
 import '../../models/entities/artist.dart';
 import 'package:get/get.dart';
 
-
 class AllArtistsPage extends StatelessWidget {
   final User user;
-  AllArtistsPage({Key? key}) : 
-  user = Get.arguments as User,
-  super(key: key);
+  AllArtistsPage({Key? key}) : user = Get.arguments as User, super(key: key);
 
   Future<Map<String, List<Artist>>> loadArtists(int currentUserId) async {
     final artistsJson = await rootBundle.loadString('assets/jsons/artist.json');
-    final artistUserJson = await rootBundle.loadString('assets/jsons/artistUser.json');
+    final artistUserJson = await rootBundle.loadString(
+      'assets/jsons/artistUser.json',
+    );
 
     final List<dynamic> artistsData = json.decode(artistsJson);
     final List<dynamic> artistUserData = json.decode(artistUserJson);
 
     final allArtists = artistsData.map((e) => Artist.fromJson(e)).toList();
 
-    final favoriteArtistIds = artistUserData
-        .where((e) => e['userId'] == currentUserId)
-        .map<int>((e) => e['artistId'])
-        .toSet();
+    final favoriteArtistIds =
+        artistUserData
+            .where((e) => e['userId'] == currentUserId)
+            .map<int>((e) => e['artistId'])
+            .toSet();
 
-    final favoriteArtists = allArtists
-        .where((artist) => favoriteArtistIds.contains(artist.artistId))
-        .toList();
+    final favoriteArtists =
+        allArtists
+            .where((artist) => favoriteArtistIds.contains(artist.artistId))
+            .toList();
 
-    return {
-      'allArtists': allArtists,
-      'favoriteArtists': favoriteArtists,
-    };
+    return {'allArtists': allArtists, 'favoriteArtists': favoriteArtists};
   }
 
   List<Widget> buildArtistCards(List<Artist> artists, BuildContext context) {
     return artists.map((artist) {
       return GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, '/artistResult', arguments: artist.artistId);
+          Navigator.pushNamed(
+            context,
+            '/artistResult',
+            arguments: artist.artistId,
+          );
         },
-        child:( ArtistCard(name: artist.name , image: artist.pictureUrl)));
+        child: (ArtistCard(name: artist.name, image: artist.pictureUrl)),
+      );
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-    
     print("Se recibe el user");
     print(user);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -89,46 +91,40 @@ class AllArtistsPage extends StatelessWidget {
               },
             ];
 
-            return SafeArea
-            ( top: true,
-            bottom: true,
-            left: true,
-            right: true,
-            minimum: EdgeInsets.all(15),
+            return SafeArea(
+              top: true,
+              bottom: true,
+              left: true,
+              right: true,
+              minimum: EdgeInsets.all(15),
               child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: BackButtonWidget(
-                    onPressed: () => Navigator.pop(context),
-                    width: 25,
-                    height: 25,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: BackButtonWidget(
+                      onPressed: () => Navigator.pop(context),
+                      width: 25,
+                      height: 25,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                const Center(
-                  child: TitleWidget(
-                    text: 'Artistas',
+                  const SizedBox(height: 20),
+                  const Center(child: TitleWidget(text: 'Artistas')),
+                  const SizedBox(height: 20),
+                  Container(
+                    alignment: Alignment.center,
+                    child: MusicItemsGridStructure(
+                      buttonsData: buttonsData,
+                      onButtonChanged: (newButtonsData) {
+                        // Aquí va la lógica opcional si deseas reaccionar al cambio
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                Container(
-                  alignment: Alignment.center,
-                  child: MusicItemsGridStructure(
-                    buttonsData: buttonsData,
-                    onButtonChanged: (newButtonsData) {
-                      // Aquí va la lógica opcional si deseas reaccionar al cambio
-                    },
-                  ),
-                )
-              ],
-              )
+                ],
+              ),
             );
           },
         ),
       ),
     );
-    
-             
   }
 }

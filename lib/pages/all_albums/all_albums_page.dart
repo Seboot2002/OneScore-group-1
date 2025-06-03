@@ -11,30 +11,37 @@ import '../../components/MusicItemsGrid.dart';
 import '../../models/entities/user.dart';
 import '../../models/entities/album.dart';
 
-
 class AllAlbumsPage extends StatelessWidget {
   final User user;
-  AllAlbumsPage({Key? key}) : 
-  user = Get.arguments as User,
-  super(key: key);
-  
+  AllAlbumsPage({super.key}) : user = Get.arguments as User;
 
   Future<Map<String, List<Album>>> loadAlbums(int currentUserId) async {
     final albumsJson = await rootBundle.loadString('assets/jsons/album.json');
-    final albumUserJson = await rootBundle.loadString('assets/jsons/albumUser.json');
+    final albumUserJson = await rootBundle.loadString(
+      'assets/jsons/albumUser.json',
+    );
 
     final List<dynamic> albumsData = json.decode(albumsJson);
     final List<dynamic> albumUserData = json.decode(albumUserJson);
 
     final allAlbums = albumsData.map((e) => Album.fromJson(e)).toList();
 
-    final ratedAlbumIds = albumUserData
-        .where((e) => e['userId'] == currentUserId && e['rankState'] == 'valued')
-        .map<int>((e) => e['albumId'])
-        .toSet();
+    final ratedAlbumIds =
+        albumUserData
+            .where(
+              (e) => e['userId'] == currentUserId && e['rankState'] == 'valued',
+            )
+            .map<int>((e) => e['albumId'])
+            .toSet();
 
-    final ratedAlbums = allAlbums.where((album) => ratedAlbumIds.contains(album.albumId)).toList();
-    final toRateAlbums = allAlbums.where((album) => !ratedAlbumIds.contains(album.albumId)).toList();
+    final ratedAlbums =
+        allAlbums
+            .where((album) => ratedAlbumIds.contains(album.albumId))
+            .toList();
+    final toRateAlbums =
+        allAlbums
+            .where((album) => !ratedAlbumIds.contains(album.albumId))
+            .toList();
 
     return {
       'allAlbums': allAlbums,
@@ -47,7 +54,11 @@ class AllAlbumsPage extends StatelessWidget {
     return albums.map((album) {
       return GestureDetector(
         onTap: () {
-          Navigator.pushNamed(context, '/albumResult', arguments: album.albumId);
+          Navigator.pushNamed(
+            context,
+            '/albumResult',
+            arguments: album.albumId,
+          );
         },
         child: AlbumCard(
           name: album.title,
@@ -58,9 +69,8 @@ class AllAlbumsPage extends StatelessWidget {
     }).toList();
   }
 
-
   @override
-  Widget build(BuildContext context) { 
+  Widget build(BuildContext context) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       navController.updateSelectedIndex(0); // 0 = home
@@ -106,34 +116,33 @@ class AllAlbumsPage extends StatelessWidget {
               right: true,
               minimum: EdgeInsets.all(15),
               child: Column(
-              children: [
-                Align(
-                  alignment: Alignment.topLeft,
-                  child: BackButtonWidget(
-                    onPressed: () => Navigator.pop(context),
-                    width: 25,
-                    height: 25,
+                children: [
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: BackButtonWidget(
+                      onPressed: () => Navigator.pop(context),
+                      width: 25,
+                      height: 25,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                const TitleWidget(text: 'Albums'),
-                const SizedBox(height: 20),
-                Container(
-                  alignment: Alignment.center,
-                  child: MusicItemsGridStructure(
-                  buttonsData: buttonsData,
-                  onButtonChanged: (newButtonsData) {
-                    // Lógica si se desea reaccionar al cambio
-                  },
-                ),
-                )
-              ],
-            )
-          );
+                  const SizedBox(height: 20),
+                  const TitleWidget(text: 'Albums'),
+                  const SizedBox(height: 20),
+                  Container(
+                    alignment: Alignment.center,
+                    child: MusicItemsGridStructure(
+                      buttonsData: buttonsData,
+                      onButtonChanged: (newButtonsData) {
+                        // Lógica si se desea reaccionar al cambio
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
           },
         ),
       ),
     );
-            
   }
 }

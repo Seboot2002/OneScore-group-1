@@ -172,7 +172,7 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
       child: Column(
         children: [
           // Contenedor con scroll horizontal para los botones
-          Container(
+          SizedBox(
             width: double.infinity,
             height: screenHeight * 0.055,
             child: SingleChildScrollView(
@@ -184,14 +184,12 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
                   // Espaciado inicial para mantener alineación a la izquierda
                   SizedBox(width: 0),
                   // Botones con espaciado entre ellos
-                  ...buttons
-                      .map(
-                        (button) => Padding(
-                          padding: const EdgeInsets.only(right: 15),
-                          child: button,
-                        ),
-                      )
-                      .toList(),
+                  ...buttons.map(
+                    (button) => Padding(
+                      padding: const EdgeInsets.only(right: 15),
+                      child: button,
+                    ),
+                  ),
                 ],
               ),
             ),
