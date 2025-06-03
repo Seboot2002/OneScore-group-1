@@ -114,7 +114,8 @@ class MusicItemsGridStructure extends StatefulWidget {
   });
 
   @override
-  State<MusicItemsGridStructure> createState() => _MusicItemsGridStructureState();
+  State<MusicItemsGridStructure> createState() =>
+      _MusicItemsGridStructureState();
 }
 
 class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
@@ -150,8 +151,6 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
 
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
-    double horizontalPadding = screenWidth * 0.10;
-    double verticalPadding = screenHeight * 0.05;
 
     for (int i = 0; i < widget.buttonsData.length; i++) {
       bool value = widget.buttonsData[i]['value'];
@@ -172,10 +171,30 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
       height: 400,
       child: Column(
         children: [
-          Row(
-            spacing: 15,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: buttons,
+          // Contenedor con scroll horizontal para los botones
+          Container(
+            width: double.infinity,
+            height: screenHeight * 0.055,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              physics: const BouncingScrollPhysics(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // Espaciado inicial para mantener alineación a la izquierda
+                  SizedBox(width: 0),
+                  // Botones con espaciado entre ellos
+                  ...buttons
+                      .map(
+                        (button) => Padding(
+                          padding: const EdgeInsets.only(right: 15),
+                          child: button,
+                        ),
+                      )
+                      .toList(),
+                ],
+              ),
+            ),
           ),
           MusicItemsGrid(musicWidgets: musicWidgets),
         ],

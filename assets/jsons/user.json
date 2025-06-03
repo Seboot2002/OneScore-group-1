@@ -33,6 +33,6 @@
         "nickname": "Clancy",
         "mail": "clancy@example.com",
         "password": "bandito",
-        "photoUrl": "../imgs/clancy.png"
+        "photoUrl": "https://i.pinimg.com/736x/8e/37/74/8e377443a55964052d087e2bc0acab01.jpg"
     }
 ]

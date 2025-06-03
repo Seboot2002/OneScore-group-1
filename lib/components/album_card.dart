@@ -49,7 +49,13 @@ class AlbumCard extends StatelessWidget {
                     width: 15,
                   ),
                 ),
-                child: ClipRect(child: Image.network(image, fit: BoxFit.cover)),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Opacity(
+                    opacity: 0.7,
+                    child: Image.network(image, fit: BoxFit.cover),
+                  ),
+                ),
               ),
             ),
             Positioned(
