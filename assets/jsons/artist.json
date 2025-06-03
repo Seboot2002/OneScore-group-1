@@ -3,21 +3,21 @@
     "artistId": 1,
     "name": "Michael Jackson",
     "genreId": 1,
-    "pictureUrl": "https://example.com/artists/mj.jpg",
+    "pictureUrl": "https://dovemibutto.wordpress.com/wp-content/uploads/2013/06/bad-michael-jacksons-short-films-11016298-1124-1054.jpg",
     "debutYear": 1964
     },
     {
     "artistId": 2,
     "name": "Pink Floyd",
     "genreId": 2,
-    "pictureUrl": "https://example.com/artists/pinkfloyd.jpg",
+    "pictureUrl": "https://upload.wikimedia.org/wikipedia/en/d/d6/Pink_Floyd_-_all_members.jpg",
     "debutYear": 1965
     },
     {
     "artistId": 3,
     "name": "AC/DC",
     "genreId": 3,
-    "pictureUrl": "https://example.com/artists/acdc.jpg",
+    "pictureUrl": "https://paulkingart.com/wp-content/uploads/2024/01/AC-DC-1979_PWKing.jpg",
     "debutYear": 1973
     },
     {
@@ -26,5 +26,12 @@
     "genreId": 5,
     "pictureUrl": "https://untoldency.de/wp-content/uploads/2024/03/top-overcompensate.jpg",
     "debutYear": 2009
+    },
+    {
+    "artistId": 5,
+    "name": "Imagine Dragons",
+    "genreId": 2,
+    "pictureUrl": "https://www.coca-cola.com/content/dam/onexp/global/central/offerings/coke-studio/artists/2_Imagine_Dragons_by_Eric_Ray_Davidson_GREEN_04_1-1.jpg",
+    "debutYear": 20008
     }
 ]
