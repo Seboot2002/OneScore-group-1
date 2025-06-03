@@ -3,11 +3,9 @@ import 'package:get/get.dart';
 import '../../components/TitleWidget.dart';
 import '../../components/BottomNavigationBar.dart';
 import '../../components/BackButtonWidget.dart';
+import '../../components/MusicItemsGrid.dart';
 import '../../controllers/bottom_navigation_controller.dart';
 import 'results_controller.dart';
-import '../../models/entities/album.dart';
-import '../../models/entities/artist.dart';
-import '../../models/entities/user.dart';
 
 class ResultsPage extends StatelessWidget {
   ResultsPage({super.key});
@@ -47,16 +45,12 @@ class ResultsPage extends StatelessWidget {
                           const BackButtonWidget(),
 
                           // Title
-                          const TitleWidget(text: "Resultados"),
-                          const SizedBox(height: 20),
+                          const TitleWidget(text: "Búsqueda"),
+                          const SizedBox(height: 40),
 
-                          // Search info
-                          _buildSearchInfo(ctrl),
-                          const SizedBox(height: 30),
-
-                          // Results
+                          // Results content
                           if (ctrl.hasResults) ...[
-                            _buildResultsList(ctrl),
+                            _buildResultsContent(ctrl, context),
                           ] else ...[
                             _buildNoResults(),
                           ],
@@ -74,254 +68,33 @@ class ResultsPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSearchInfo(ResultsController ctrl) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(Icons.search, color: Colors.grey.shade600, size: 20),
-              const SizedBox(width: 8),
-              Text(
-                'Búsqueda realizada',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.grey.shade700,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Tipo: ${ctrl.displaySearchType}',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Término: "${ctrl.searchQuery}"',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            'Resultados encontrados: ${ctrl.totalResults}',
-            style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildResultsList(ResultsController ctrl) {
+  Widget _buildResultsContent(ResultsController ctrl, BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Albums
-        if (ctrl.albumResults.isNotEmpty) ...[
-          _buildSectionTitle('Álbumes', ctrl.albumResults.length),
-          const SizedBox(height: 10),
-          ...ctrl.albumResults.map((album) => _buildAlbumItem(album)),
-          const SizedBox(height: 20),
-        ],
+        // Search info text
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+          child: RichText(
+            text: TextSpan(
+              style: const TextStyle(
+                fontSize: 16,
+                color: Colors.black87,
+                fontFamily: 'Roboto',
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
 
-        // Artists
-        if (ctrl.artistResults.isNotEmpty) ...[
-          _buildSectionTitle('Artistas', ctrl.artistResults.length),
-          const SizedBox(height: 10),
-          ...ctrl.artistResults.map((artist) => _buildArtistItem(artist)),
-          const SizedBox(height: 20),
-        ],
-
-        // Users
-        if (ctrl.userResults.isNotEmpty) ...[
-          _buildSectionTitle('Usuarios', ctrl.userResults.length),
-          const SizedBox(height: 10),
-          ...ctrl.userResults.map((user) => _buildUserItem(user)),
-        ],
+        // Music Items Grid Structure
+        MusicItemsGridStructure(
+          buttonsData: ctrl.buttonsData,
+          onButtonChanged: (updatedButtons) {
+            print("🔄 Botones actualizados: $updatedButtons");
+          },
+        ),
       ],
-    );
-  }
-
-  Widget _buildSectionTitle(String title, int count) {
-    return Text(
-      '$title ($count)',
-      style: const TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.black87,
-      ),
-    );
-  }
-
-  Widget _buildAlbumItem(Album album) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.blue.shade100,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.album, color: Colors.blue, size: 30),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  album.title,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Año: ${album.releaseYear}',
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildArtistItem(Artist artist) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.purple.shade100,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(Icons.person, color: Colors.purple, size: 30),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  artist.name,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  'Debut: ${artist.debutYear}',
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUserItem(User user) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade300, width: 1),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.shade200,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 60,
-            height: 60,
-            decoration: BoxDecoration(
-              color: Colors.green.shade100,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(
-              Icons.account_circle,
-              color: Colors.green,
-              size: 30,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${user.name} ${user.lastName}',
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  '@${user.nickname}',
-                  style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  user.mail,
-                  style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -329,7 +102,7 @@ class ResultsPage extends StatelessWidget {
     return Center(
       child: Column(
         children: [
-          const SizedBox(height: 40),
+          const SizedBox(height: 100),
           Icon(Icons.search_off, size: 80, color: Colors.grey.shade400),
           const SizedBox(height: 20),
           Text(
