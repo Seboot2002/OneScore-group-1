@@ -4,12 +4,14 @@ class EditableAvatarWidget extends StatelessWidget {
   final double size;
   final ImageProvider image;
   final VoidCallback onEdit;
+  final bool canEdit;
 
   const EditableAvatarWidget({
     super.key,
     required this.size,
     required this.image,
     required this.onEdit,
+    this.canEdit = true,
   });
 
   @override
@@ -29,7 +31,7 @@ class EditableAvatarWidget extends StatelessWidget {
         ),
 
         // Botón de edición en la esquina superior derecha
-        Positioned(
+        if ( canEdit ) Positioned(
           top: 0,
           right: 0,
           child: GestureDetector(
@@ -70,7 +72,9 @@ class EditableAvatarWidgetPreview extends StatelessWidget {
         image: const AssetImage('assets/imgs/mod1_01.jpg'),
         onEdit: () {
           print('Cambiar imagen');
-        })
+        },
+        canEdit: true,
+      )
     );
   }
 }
