@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:onescore/components/BottomNavigationBar.dart';
+import 'package:onescore/components/TitleWidget.dart';
 import '../../controllers/bottom_navigation_controller.dart';
 import '../../components/album_card.dart';
 import '../../components/BackButtonWidget.dart';
@@ -12,10 +13,14 @@ import '../../models/entities/album.dart';
 
 
 class AllAlbumsPage extends StatelessWidget {
-  AllAlbumsPage({Key? key}) : super(key: key);
+  final User user;
+  AllAlbumsPage({Key? key}) : 
+  user = Get.arguments as User,
+  super(key: key);
+  
 
   Future<Map<String, List<Album>>> loadAlbums(int currentUserId) async {
-    final albumsJson = await rootBundle.loadString('assets/jsons/albums.json');
+    final albumsJson = await rootBundle.loadString('assets/jsons/album.json');
     final albumUserJson = await rootBundle.loadString('assets/jsons/albumUser.json');
 
     final List<dynamic> albumsData = json.decode(albumsJson);
@@ -56,7 +61,6 @@ class AllAlbumsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) { 
-    final User user = Get.arguments as User;
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       navController.updateSelectedIndex(0); // 0 = home
@@ -95,7 +99,13 @@ class AllAlbumsPage extends StatelessWidget {
               },
             ];
 
-            return Column(
+            return SafeArea(
+              top: true,
+              bottom: true,
+              left: true,
+              right: true,
+              minimum: EdgeInsets.all(15),
+              child: Column(
               children: [
                 Align(
                   alignment: Alignment.topLeft,
@@ -106,15 +116,7 @@ class AllAlbumsPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 20),
-                const Text(
-                  'Albums',
-                  style: TextStyle(
-                    fontSize: 36,
-                    color: Color.fromRGBO(110, 110, 110, 1),
-                    fontWeight: FontWeight.w600,
-                    fontFamily: 'Roboto'
-                     ),
-                ),
+                const TitleWidget(text: 'Albums'),
                 const SizedBox(height: 20),
                 Container(
                   alignment: Alignment.center,
@@ -126,10 +128,12 @@ class AllAlbumsPage extends StatelessWidget {
                 ),
                 )
               ],
-            );
+            )
+          );
           },
         ),
       ),
     );
+            
   }
 }

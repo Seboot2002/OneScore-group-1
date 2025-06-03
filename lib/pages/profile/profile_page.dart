@@ -13,7 +13,7 @@ import '../../controllers/bottom_navigation_controller.dart';
 class ProfilePage extends StatelessWidget {
 
   ProfileController control = Get.put(ProfileController());
-  AuthController authControl = Get.put(AuthController());
+  AuthController authControl = Get.find<AuthController>();
 
   ProfilePage({super.key});
 
@@ -142,9 +142,13 @@ class ProfilePage extends StatelessWidget {
                         child: GestureDetector(
                           onTap: () {
                               if (selectedOption.value == 'Albums') {
-                                  Get.toNamed('/all_albums', arguments: user);
+                                  print('El user es:', );
+                                  print(authControl.user);
+                                  Get.offNamed('/all_albums', arguments: authControl.user);
                                 } else {
-                                  Get.toNamed('/all_artists', arguments: user);
+                                  print('El user es:', );
+                                  print(authControl.user);
+                                  Get.offNamed('/all_artists', arguments: authControl.user);
                                 }
                               },
                           child: Text(
