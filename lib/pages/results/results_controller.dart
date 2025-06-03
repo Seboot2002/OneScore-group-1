@@ -66,6 +66,7 @@ class ResultsController extends GetxController {
             name: album.title,
             image: album.coverUrl ?? '',
             rating: 0.0, // Como no tienes rating en el modelo, ponemos 0
+            albumId: album.albumId,
           ),
         )
         .toList();

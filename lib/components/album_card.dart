@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../pages/album_result/album_result_page.dart';
 
 class AlbumCard extends StatelessWidget {
   final String name;
   final String image;
   final double rating;
-  final VoidCallback? onTap; // <- nuevo
+  final int albumId; // <- nuevo parámetro necesario
+  final VoidCallback? onTap;
 
   const AlbumCard({
     super.key,
     required this.name,
     required this.image,
     required this.rating,
+    required this.albumId, // <- requerido
     this.onTap,
   });
 
   Widget _buildContext(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, // <- ejecuta navegación
+      onTap: () {
+        // Navegar a la página de detalles del álbum
+        Get.to(() => AlbumResultPage(), arguments: albumId);
+      },
       child: SizedBox(
         height: 200,
         width: 130,

@@ -11,6 +11,7 @@ import 'pages/log_in/log_in_page.dart';
 import 'pages/sign_up/sign_up_page.dart';
 import 'pages/home/home_page.dart';
 import 'pages/search_bar/search_bar_page.dart';
+import 'pages/album_result/album_result_page.dart';
 import 'package:onescore/controllers/bottom_navigation_controller.dart';
 
 void main() {
@@ -44,9 +45,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/searching', page: () => SearchBarPage()),
         GetPage(name: '/profile', page: () => ProfilePage()),
         GetPage(name: '/suggest', page: () => SuggestPage()),
-        GetPage(name: '/all_albums', page: ()=> AllAlbumsPage()),
+        GetPage(name: '/all_albums', page: () => AllAlbumsPage()),
         GetPage(name: '/all_artists', page: () => AllArtistsPage()),
-        GetPage(name:'/change_password', page: ()=>ChangePasswordPage())
+        GetPage(name: '/change_password', page: () => ChangePasswordPage()),
+        GetPage(name: '/album-result', page: () => AlbumResultPage()),
       ],
     );
   }

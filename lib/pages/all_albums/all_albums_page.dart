@@ -64,6 +64,7 @@ class AllAlbumsPage extends StatelessWidget {
           name: album.title,
           image: album.coverUrl,
           rating: 5.0, // Cambia según tu lógica de puntuación
+          albumId: album.albumId,
         ),
       );
     }).toList();
