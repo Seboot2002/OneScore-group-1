@@ -46,7 +46,9 @@ class ResultsPage extends StatelessWidget {
 
                           // Title
                           const TitleWidget(text: "Búsqueda"),
-                          const SizedBox(height: 40),
+
+                          // 60px spacing (approximately 7.5% of screen height for responsive design)
+                          SizedBox(height: screenHeight * 0.006),
 
                           // Results content
                           if (ctrl.hasResults) ...[
