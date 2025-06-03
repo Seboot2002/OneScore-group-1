@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 
 class StatisticsButtonWidget extends StatelessWidget {
@@ -5,6 +7,7 @@ class StatisticsButtonWidget extends StatelessWidget {
   final String numberLabel;
   final Color backgroundColor;
   final Color textColor;
+  final double screenWidthPorcent;
 
   const StatisticsButtonWidget({
     super.key,
@@ -12,6 +15,7 @@ class StatisticsButtonWidget extends StatelessWidget {
     required this.numberLabel,
     this.backgroundColor = const Color(0xFFE0E0E0),
     this.textColor = const Color(0xFF272727),
+    this.screenWidthPorcent = 0.22,
   });
 
   @override
@@ -27,7 +31,7 @@ class StatisticsButtonWidget extends StatelessWidget {
         const SizedBox(height: 5),
         Container(
           alignment: Alignment.center,
-          width: screenWidth * 0.22,
+          width: screenWidth * screenWidthPorcent,
           height: screenHeight * 0.055,
           decoration: BoxDecoration(
             color: backgroundColor,
