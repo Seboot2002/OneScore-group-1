@@ -13,7 +13,9 @@ class TrackListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final contentWidth = screenWidth * 0.75;
+    // Reducido el ancho según tu especificación (185.23px aproximadamente)
+    final contentWidth =
+        screenWidth * 0.65; // Aproximadamente 185px en pantallas comunes
 
     return Center(
       child: SizedBox(
@@ -69,7 +71,7 @@ class TrackListItemWidget extends StatelessWidget {
                     decoration: const InputDecoration(
                       counterText: '',
                       border: InputBorder.none,
-                      hintText: '0',
+                      hintText: '—',
                       hintStyle: TextStyle(color: Color(0xFFF1F1F1)),
                       isCollapsed: true,
                       contentPadding: EdgeInsets.zero,
