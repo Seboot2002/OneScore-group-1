@@ -88,8 +88,11 @@ class ResultsController extends GetxController {
 
     return artists
         .map(
-          (artist) =>
-              ArtistCard(name: artist.name, image: artist.pictureUrl ?? ''),
+          (artist) => ArtistCard(
+            name: artist.name,
+            image: artist.pictureUrl ?? '',
+            artistId: artist.artistId,
+          ),
         )
         .toList();
   }

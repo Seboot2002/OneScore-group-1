@@ -50,7 +50,11 @@ class AllArtistsPage extends StatelessWidget {
             arguments: artist.artistId,
           );
         },
-        child: (ArtistCard(name: artist.name, image: artist.pictureUrl)),
+        child: (ArtistCard(
+          name: artist.name,
+          image: artist.pictureUrl,
+          artistId: artist.artistId,
+        )),
       );
     }).toList();
   }

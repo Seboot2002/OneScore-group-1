@@ -74,8 +74,11 @@ class ProfileController extends GetxController {
       artists.value =
           artistData
               .map(
-                (artist) =>
-                    ArtistCard(name: artist['name'], image: artist['image']),
+                (artist) => ArtistCard(
+                  name: artist['name'],
+                  image: artist['image'],
+                  artistId: artist['artistId'],
+                ),
               )
               .toList();
     } catch (e) {
