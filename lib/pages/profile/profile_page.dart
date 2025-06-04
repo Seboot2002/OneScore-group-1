@@ -63,6 +63,7 @@ class ProfilePage extends StatelessWidget {
                       size: 190,
                       image: NetworkImage(user.photoUrl),
                       onEdit: () {
+                        // aquí hay poner el código para dirigir al cambio de contraseñas
                         print('Cambiar imagen');
                       },
                     ),
