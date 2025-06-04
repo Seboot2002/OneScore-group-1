@@ -1,328 +1,248 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:onescore/components/BackButtonWidget.dart';
+import 'package:onescore/components/MusicItemsGrid.dart';
+import 'package:onescore/components/StatisticsButton.dart';
+import 'package:onescore/components/TitleWidget.dart';
 import 'artist_result_controller.dart';
+import '../../components/BottomNavigationBar.dart';
 
 class ArtistResultPage extends StatelessWidget {
-  final ArtistResultController control = Get.put(ArtistResultController());
+  ArtistResultController control = Get.put(ArtistResultController());
 
   ArtistResultPage({super.key});
 
-  Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () => Get.back(),
-            child: Icon(Icons.arrow_back, color: Colors.black, size: 24),
-          ),
-          SizedBox(width: 16),
-          Text(
-            'Artista',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
+    final RxString selectedOption = 'Albums'.obs;
 
-  Widget _buildArtistInfo() {
-    return Obx(() {
-      if (control.artist.value == null) return SizedBox();
+    void onButtonChanged(List<Map<String, dynamic>> updatedButtons) {
+      final selected = updatedButtons.firstWhere((btn) => btn['value'] == true);
+      selectedOption.value = selected['label'];
+    }
 
-      final artist = control.artist.value!;
-      final genreName = control.genre.value?.name ?? 'Sin género';
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: null,
+      bottomNavigationBar: const CustomMenuBar(),
+      body: Obx(() {
+        if (control.isLoading.value) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
 
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            // Foto del artista
-            Container(
-              width: 150,
-              height: 150,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: Color.fromRGBO(110, 110, 110, 1),
-                  width: 4,
-                ),
-              ),
-              child: ClipOval(
-                child: Image.network(
-                  artist.pictureUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Icon(
-                        Icons.person,
-                        size: 80,
-                        color: Colors.grey[600],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-
-            SizedBox(height: 16),
-
-            // Nombre del artista
-            Text(
-              artist.name,
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            SizedBox(height: 8),
-
-            // Género
-            Text(
-              genreName,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey[600],
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-
-            SizedBox(height: 20),
-
-            // Estadísticas
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildStatItem('Albums', control.nAlbums.value.toString()),
-                _buildStatItem('Debut', artist.debutYear.toString()),
-                _buildStatItem('Canciones', control.nSongs.value.toString()),
-              ],
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget _buildStatItem(String label, String value) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Color.fromRGBO(110, 110, 110, 1),
-          ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAlbumsSection() {
-    return Obx(() {
-      if (control.albums.isEmpty) {
-        return Container(
-          padding: EdgeInsets.all(16),
-          child: Text(
-            'No hay albums disponibles',
-            style: TextStyle(fontSize: 16, color: Colors.grey[600]),
-            textAlign: TextAlign.center,
-          ),
-        );
-      }
-
-      return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Albums',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
-            ),
-            SizedBox(height: 16),
-            GridView.builder(
-              shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
-                childAspectRatio: 0.75,
-              ),
-              itemCount: control.albums.length,
-              itemBuilder: (context, index) {
-                final album = control.albums[index];
-                return _buildAlbumCard(album);
-              },
-            ),
-          ],
-        ),
-      );
-    });
-  }
-
-  Widget _buildAlbumCard(album) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            blurRadius: 8,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Portada del album
-          Expanded(
-            flex: 3,
-            child: Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-                child: Image.network(
-                  album.coverUrl,
-                  fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      color: Colors.grey[300],
-                      child: Icon(
-                        Icons.album,
-                        size: 40,
-                        color: Colors.grey[600],
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-          ),
-
-          // Información del album
-          Expanded(
-            flex: 1,
-            child: Padding(
-              padding: EdgeInsets.all(8),
+        if (control.artist.value == null) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: Center(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    album.title,
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 2),
-                  Text(
-                    album.releaseYear.toString(),
-                    style: TextStyle(fontSize: 12, color: Colors.grey[600]),
+                  Text('Artista no encontrado'),
+                  SizedBox(height: 20),
+                  ElevatedButton(
+                    onPressed: () => Get.back(),
+                    child: Text('Volver'),
                   ),
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          );
+        }
 
-  Widget _buildBody(BuildContext context) {
-    return Obx(() {
-      if (control.isLoading.value) {
-        return Center(
-          child: CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(
-              Color.fromRGBO(110, 110, 110, 1),
+        final artist = control.artist.value!;
+
+        return SingleChildScrollView(
+          child: Container(
+            padding: EdgeInsets.all(34),
+            color: Colors.white,
+            child: SafeArea(
+              child: Center(
+                child: Column(
+                  children: [
+                    const BackButtonWidget(),
+
+                    TitleWidget(text: "Artista"),
+
+                    SizedBox(height: 50),
+
+                    // Avatar del artista con 70% opacidad
+                    Container(
+                      width: 190,
+                      height: 190,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: Colors.grey.shade300,
+                          width: 2,
+                        ),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(11), // separación interna
+                        decoration: BoxDecoration(
+                          color: Color(0xFF6E6E6E), // color de fondo (corona)
+                          shape: BoxShape.circle,
+                        ),
+                        child: ClipOval(
+                          child: Opacity(
+                            opacity: 0.7, // 70% de opacidad
+                            child: Image.network(
+                              artist['pictureUrl'],
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  color: Colors.grey.shade200,
+                                  child: Icon(
+                                    Icons.person,
+                                    size: 100,
+                                    color: Colors.grey.shade400,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 16),
+
+                    // Nombre del artista - Roboto Medium 18px equivalente
+                    Text(
+                      artist['name'],
+                      style: TextStyle(
+                        color: Color(0xFF535353),
+                        fontSize:
+                            MediaQuery.of(context).size.width *
+                            0.045, // ~18px equivalente
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w500, // Medium
+                      ),
+                    ),
+
+                    SizedBox(height: 4),
+
+                    // Género - Roboto Extra Light 12px equivalente
+                    Text(
+                      artist['genre'],
+                      style: TextStyle(
+                        color: Color(0xFF524E4E),
+                        fontSize:
+                            MediaQuery.of(context).size.width *
+                            0.03, // ~12px equivalente
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w200, // Extra Light
+                      ),
+                    ),
+
+                    SizedBox(height: 25),
+
+                    // Estadísticas
+                    SizedBox(
+                      width: double.infinity,
+                      child: Wrap(
+                        spacing: MediaQuery.of(context).size.width * 0.08,
+                        runSpacing: 12,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          StatisticsButtonWidget(
+                            label: 'N° Albums',
+                            numberLabel: control.albumCount.toString(),
+                          ),
+                          StatisticsButtonWidget(
+                            label: 'Año fundación',
+                            numberLabel: control.foundationYear.value,
+                            backgroundColor: Color(0xFF6E6E6E),
+                            textColor: Colors.white,
+                          ),
+                          StatisticsButtonWidget(
+                            label: 'N° Canciones',
+                            numberLabel: control.songCount.toString(),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    SizedBox(height: 70),
+
+                    // Grid de álbumes
+                    MusicItemsGridStructure(
+                      buttonsData: [
+                        {
+                          'value': true,
+                          'label': 'Albums',
+                          'data': control.albums,
+                        },
+                      ],
+                      onButtonChanged: onButtonChanged,
+                    ),
+
+                    SizedBox(height: 20),
+
+                    // Botón Agregar/Eliminar Artista
+                    // Botón Agregar/Eliminar Artista
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: Obx(
+                        () => ElevatedButton(
+                          onPressed: () => control.toggleFollowArtist(),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                control.isUserFollowingArtist.value
+                                    ? Colors.transparent
+                                    : const Color(0xFFBF4141),
+                            elevation:
+                                control.isUserFollowingArtist.value ? 0 : 2,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 15,
+                              horizontal: 10,
+                            ),
+                            side:
+                                control.isUserFollowingArtist.value
+                                    ? const BorderSide(
+                                      color: Color(0xFF6E6E6E),
+                                      width: 1,
+                                    )
+                                    : BorderSide
+                                        .none, // Sin borde para "Agregar"
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          child: Text(
+                            control.isUserFollowingArtist.value
+                                ? 'Eliminar artista'
+                                : 'Agregar artista',
+                            style: TextStyle(
+                              color:
+                                  control.isUserFollowingArtist.value
+                                      ? const Color(0xFF6E6E6E)
+                                      : Colors.white,
+                              fontSize:
+                                  MediaQuery.of(context).size.width *
+                                  0.035, // ~14px
+                              fontFamily: 'Roboto',
+                              fontWeight:
+                                  control.isUserFollowingArtist.value
+                                      ? FontWeight
+                                          .w200 // Extra Light
+                                      : FontWeight.w500, // Medium
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 30),
+                  ],
+                ),
+              ),
             ),
           ),
         );
-      }
-
-      if (control.artist.value == null) {
-        return Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
-              SizedBox(height: 16),
-              Text(
-                'Artista no encontrado',
-                style: TextStyle(fontSize: 18, color: Colors.grey[600]),
-              ),
-              SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () => Get.back(),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromRGBO(110, 110, 110, 1),
-                ),
-                child: Text('Regresar', style: TextStyle(color: Colors.white)),
-              ),
-            ],
-          ),
-        );
-      }
-
-      return SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildHeader(),
-            SizedBox(height: 20),
-            _buildArtistInfo(),
-            SizedBox(height: 32),
-            _buildAlbumsSection(),
-            SizedBox(height: 20),
-          ],
-        ),
-      );
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: null,
-        backgroundColor: Colors.white,
-        body: SafeArea(child: _buildBody(context)),
-      ),
+      }),
     );
   }
 }
