@@ -73,7 +73,7 @@ class UserMusicDataService {
     return filteredArtists
         .map<Map<String, dynamic>>(
           (artist) => {
-            'artistId': artist['artistId'] ?? 0, // ← ESTO FALTABA!
+            'artistId': artist['artistId'] ?? 0,
             'name': artist['name'] ?? '',
             'image': artist['pictureUrl'] ?? '',
           },
@@ -117,5 +117,58 @@ class UserMusicDataService {
     print('🎯 Canciones filtradas para el usuario: $filteredSongs');
 
     return filteredSongs;
+  }
+
+  Future<List<Map<String, dynamic>>> getRecomendedAlbums() async {
+    final albumJson = await rootBundle.loadString('assets/jsons/album.json');
+    final userAlbumJson = await rootBundle.loadString(
+      'assets/jsons/albumUser.json',
+    );
+
+    final List<dynamic> allAlbums = json.decode(albumJson);
+
+    allAlbums.shuffle();
+
+    print('📦 Todos los albums: $allAlbums');
+
+    final List<Map<String, dynamic>> randomAlbums = allAlbums.take(2).map<Map<String, dynamic>>(
+          (album) => {
+        'albumId': album['albumId'] ?? 0,
+        'name': album['title'] ?? '',
+        'image': album['coverUrl'] ?? '',
+        'rating': album['rating'] ?? 0,
+      },
+    ).toList();
+
+    print("2 albumes aleatorios: $randomAlbums");
+
+    return randomAlbums;
+  }
+
+  Future<List<Map<String, dynamic>>> getRecomendedArtists() async {
+    final artistJson = await rootBundle.loadString('assets/jsons/artist.json');
+    final userArtistJson = await rootBundle.loadString(
+      'assets/jsons/artistUser.json',
+    );
+
+    final List<dynamic> allArtists = json.decode(artistJson);
+
+    allArtists.shuffle();
+
+    print('📦 Todos los artistas: $allArtists');
+
+    final List<Map<String, dynamic>> randomArtists = allArtists.take(1).map<
+        Map<String, dynamic>>(
+          (artist) =>
+      {
+        'artistId': artist['artistId'] ?? 0,
+        'name': artist['name'] ?? '',
+        'image': artist['pictureUrl'] ?? '',
+      },
+    ).toList();
+
+    print("1 artista aleatorios: $randomArtists");
+
+    return randomArtists;
   }
 }
