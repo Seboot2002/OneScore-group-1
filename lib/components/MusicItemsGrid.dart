@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class MusicItemsGrid extends StatefulWidget {
   final List<Widget> musicWidgets;
+  final bool isStatic;
 
-  const MusicItemsGrid({super.key, required this.musicWidgets});
+  const MusicItemsGrid({super.key,
+    required this.musicWidgets,
+    required this.isStatic
+  });
 
   @override
   State<MusicItemsGrid> createState() => _MusicItemsGridState();
@@ -27,7 +31,7 @@ class _MusicItemsGridState extends State<MusicItemsGrid> {
             ),
           ),
           child: GridView.builder(
-            physics: const AlwaysScrollableScrollPhysics(),
+            physics: widget.isStatic ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -106,11 +110,13 @@ class GridButtonWidget extends StatelessWidget {
 class MusicItemsGridStructure extends StatefulWidget {
   final List<Map<String, dynamic>> buttonsData;
   final Function(List<Map<String, dynamic>>) onButtonChanged;
+  final bool isStatic;
 
   const MusicItemsGridStructure({
     super.key,
     required this.buttonsData,
     required this.onButtonChanged,
+    this.isStatic = false,
   });
 
   @override
@@ -194,7 +200,10 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
               ),
             ),
           ),
-          MusicItemsGrid(musicWidgets: musicWidgets),
+          MusicItemsGrid(
+              musicWidgets: musicWidgets,
+              isStatic: widget.isStatic
+          ),
         ],
       ),
     );

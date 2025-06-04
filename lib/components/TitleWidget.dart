@@ -2,8 +2,12 @@ import 'package:flutter/material.dart';
 
 class TitleWidget extends StatelessWidget {
   final String text;
+  final double fontSize;
 
-  const TitleWidget({super.key, required this.text});
+  const TitleWidget({super.key,
+    required this.text,
+    this.fontSize = 36
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,7 @@ class TitleWidget extends StatelessWidget {
         text,
         style: TextStyle(
           color: Color(0xFF535353),
-          fontSize: 36,
+          fontSize: fontSize,
           fontWeight: FontWeight.w900,
         ),
       ),
