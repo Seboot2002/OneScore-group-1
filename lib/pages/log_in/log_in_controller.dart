@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart'; // Importa el AuthController
 import '../../models/entities/user.dart';
 import '../../services/user_service.dart';
-import '../../models/httpresponse/service_http_response.dart';
 
 class LogInController extends GetxController {
   final TextEditingController mailController = TextEditingController();

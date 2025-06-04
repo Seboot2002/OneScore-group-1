@@ -1,27 +1,22 @@
-enum RankState { pending, valued }
-
-class Albumuser {
+class AlbumUser {
   final int userId;
   final int albumId;
-  final DateTime rankDate;
-  final RankState rankState;
+  final String rankDate;
+  final String rankState;
 
-  Albumuser({
+  AlbumUser({
     required this.userId,
     required this.albumId,
     required this.rankDate,
     required this.rankState,
   });
 
-  factory Albumuser.fromJson(Map<String, dynamic> json) {
-    return Albumuser(
+  factory AlbumUser.fromJson(Map<String, dynamic> json) {
+    return AlbumUser(
       userId: json['userId'],
       albumId: json['albumId'],
-      rankDate: DateTime.parse(json['rankDate']),
-      rankState: RankState.values.firstWhere(
-        (e) => e.toString().split('.').last == json['rankState'],
-        orElse: () => RankState.pending,
-      ),
+      rankDate: json['rankDate'],
+      rankState: json['rankState'],
     );
   }
 
@@ -29,9 +24,15 @@ class Albumuser {
     return {
       'userId': userId,
       'albumId': albumId,
-      'rankDate': rankDate.toIso8601String(),
-      'rankState': rankState.toString().split('.').last,
+      'rankDate': rankDate,
+      'rankState': rankState,
     };
+  }
+
+  // Método para obtener el año de la fecha
+  int get listenYear {
+    DateTime date = DateTime.parse(rankDate);
+    return date.year;
   }
 
   @override

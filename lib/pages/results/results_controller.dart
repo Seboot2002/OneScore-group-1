@@ -66,6 +66,7 @@ class ResultsController extends GetxController {
             name: album.title,
             image: album.coverUrl ?? '',
             rating: 0.0, // Como no tienes rating en el modelo, ponemos 0
+            albumId: album.albumId,
           ),
         )
         .toList();
@@ -87,8 +88,11 @@ class ResultsController extends GetxController {
 
     return artists
         .map(
-          (artist) =>
-              ArtistCard(name: artist.name, image: artist.pictureUrl ?? ''),
+          (artist) => ArtistCard(
+            name: artist.name,
+            image: artist.pictureUrl ?? '',
+            artistId: artist.artistId,
+          ),
         )
         .toList();
   }
@@ -112,6 +116,7 @@ class ResultsController extends GetxController {
           (user) => UserCard(
             name: '${user.name} ${user.lastName}',
             image: user.photoUrl ?? '',
+            userId: user.userId,
           ),
         )
         .toList();

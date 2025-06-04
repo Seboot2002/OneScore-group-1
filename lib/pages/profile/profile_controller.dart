@@ -6,7 +6,6 @@ import 'package:onescore/controllers/auth_controller.dart';
 import 'package:onescore/services/userMusicData_service.dart';
 
 class ProfileController extends GetxController {
-
   var isLoading = false.obs;
   var userData = <String, dynamic>{}.obs;
 
@@ -36,7 +35,6 @@ class ProfileController extends GetxController {
     isLoading.value = true;
 
     try {
-
       final albumData = await _musicService.getAllAlbumsByUser(userId);
       final artistData = await _musicService.getAllArtistsByUser(userId);
       final songData = await _musicService.getAllSongsByUser(userId);
@@ -47,34 +45,42 @@ class ProfileController extends GetxController {
 
       Map<int, List<double>> albumScores = {};
 
-      albums.value = albumData.map((album) {
-        final albumId = album['albumId'] as int;
+      albums.value =
+          albumData.map((album) {
+            final albumId = album['albumId'] as int;
 
-        for (var song in songData) {
-          final score = (song['score'] ?? 0).toDouble();
+            for (var song in songData) {
+              final score = (song['score'] ?? 0).toDouble();
 
-          if (!albumScores.containsKey(albumId)) {
-            albumScores[albumId] = [];
-          }
-          albumScores[albumId]!.add(score);
-        }
-        final scores = albumScores[albumId] ?? [];
-        final avgScore = scores.isNotEmpty
-            ? scores.reduce((a, b) => a + b) / scores.length
-            : 0.0;
+              if (!albumScores.containsKey(albumId)) {
+                albumScores[albumId] = [];
+              }
+              albumScores[albumId]!.add(score);
+            }
+            final scores = albumScores[albumId] ?? [];
+            final avgScore =
+                scores.isNotEmpty
+                    ? scores.reduce((a, b) => a + b) / scores.length
+                    : 0.0;
 
-        return AlbumCard(
-          name: album['name'],
-          image: album['image'],
-          rating: avgScore,
-        );
-      }).toList();
+            return AlbumCard(
+              name: album['name'],
+              image: album['image'],
+              rating: avgScore,
+              albumId: album['albumId'],
+            );
+          }).toList();
 
-      artists.value = artistData.map((artist) => ArtistCard(
-        name: artist['name'],
-        image: artist['image'],
-      )).toList();
-
+      artists.value =
+          artistData
+              .map(
+                (artist) => ArtistCard(
+                  name: artist['name'],
+                  image: artist['image'],
+                  artistId: artist['artistId'],
+                ),
+              )
+              .toList();
     } catch (e) {
       print("Error durante la carga de datos: $e");
     } finally {

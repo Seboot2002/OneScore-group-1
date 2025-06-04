@@ -103,7 +103,6 @@ class UserService {
       return [];
     }
   }
-  
 
   Future<void> _saveLocalUsers(List<User> localUsers) async {
     try {
@@ -186,19 +185,22 @@ class UserService {
       );
     }
   }
+
   Future<ServiceHttpResponse> changePassword({
     required usuario,
     required String currentPassword,
     required String newPassword,
   }) async {
     try {
-      final user_nickname = usuario.nickName;
+      final userNickname = usuario.nickName;
       final localUsers = await _loadLocalUsers();
 
-      final userIndex = localUsers.indexWhere((u) =>
-          (u.mail.toLowerCase() == user_nickname.toLowerCase() ||
-          u.nickname.toLowerCase() == user_nickname.toLowerCase()) &&
-          u.password == currentPassword);
+      final userIndex = localUsers.indexWhere(
+        (u) =>
+            (u.mail.toLowerCase() == userNickname.toLowerCase() ||
+                u.nickname.toLowerCase() == userNickname.toLowerCase()) &&
+            u.password == currentPassword,
+      );
 
       if (userIndex == -1) {
         return ServiceHttpResponse(
@@ -208,13 +210,13 @@ class UserService {
       }
 
       final updatedUser = User(
-          userId: usuario.userId,
-          name: usuario.name,
-          lastName: usuario.lastName,
-          nickname: usuario.nickname,
-          mail: usuario.mail,
-          password: newPassword,
-          photoUrl: usuario.photoUrl,
+        userId: usuario.userId,
+        name: usuario.name,
+        lastName: usuario.lastName,
+        nickname: usuario.nickname,
+        mail: usuario.mail,
+        password: newPassword,
+        photoUrl: usuario.photoUrl,
       );
       localUsers[userIndex] = updatedUser;
       await _saveLocalUsers(localUsers);
@@ -230,7 +232,6 @@ class UserService {
       );
     }
   }
-
 
   Future<ServiceHttpResponse> logIn(String identifier, String password) async {
     try {
@@ -301,7 +302,6 @@ class UserService {
     }
   }
 
-
   Future<void> debugPrintUsers() async {
     final users = await _readUsers();
     print('=== ALL USERS DEBUG ===');
@@ -309,5 +309,26 @@ class UserService {
       print('User: ${user.toString()}');
     }
     print('=======================');
+  }
+
+  Future<User?> getUserById(int userId) async {
+    try {
+      final users = await _readUsers();
+
+      print('🔍 Buscando usuario con ID: $userId');
+      print('👥 Total usuarios disponibles: ${users.length}');
+
+      // Buscar el usuario específico por ID
+      final matchedUser = users.firstWhere(
+        (user) => user.userId == userId,
+        orElse: () => throw StateError('Usuario no encontrado'),
+      );
+
+      print('✅ Usuario encontrado: ${matchedUser.nickname}');
+      return matchedUser;
+    } catch (e) {
+      print('❌ Error al buscar usuario con ID $userId: $e');
+      return null;
+    }
   }
 }

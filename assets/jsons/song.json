@@ -252,5 +252,83 @@
         "title": "Paladin Strait",
         "nTrack": 13,
         "albumId": 4
+    },
+    {
+        "songId": 43,
+        "title": "Shots",
+        "nTrack": 1,
+        "albumId": 5
+    },
+    {
+        "songId": 44,
+        "title": "Gold",
+        "nTrack": 2,
+        "albumId": 5
+    },
+    {
+        "songId": 45,
+        "title": "Smoke and Mirrors",
+        "nTrack": 3,
+        "albumId": 5
+    },
+    {
+        "songId": 46,
+        "title": "I'm So Sorry",
+        "nTrack": 4,
+        "albumId": 5
+    },
+    {
+        "songId": 47,
+        "title": "I Bet My Life",
+        "nTrack": 5,
+        "albumId": 5
+    },
+    {
+        "songId": 48,
+        "title": "Polaroid",
+        "nTrack": 6,
+        "albumId": 5
+    },
+    {
+        "songId": 49,
+        "title": "Friction",
+        "nTrack": 7,
+        "albumId": 5
+    },
+    {
+        "songId": 50,
+        "title": "It Comes Back to You",
+        "nTrack": 8,
+        "albumId": 5
+    },
+    {
+        "songId": 51,
+        "title": "Dream",
+        "nTrack": 9,
+        "albumId": 5
+    },
+    {
+        "songId": 52,
+        "title": "Trouble",
+        "nTrack": 10,
+        "albumId": 5
+    },
+    {
+        "songId": 53,
+        "title": "Summer",
+        "nTrack": 11,
+        "albumId": 5
+    },
+    {
+        "songId": 54,
+        "title": "Hopeless Opus",
+        "nTrack": 12,
+        "albumId": 5
+    },
+    {
+        "songId": 55,
+        "title": "The Fall",
+        "nTrack": 13,
+        "albumId": 5
     }
 ]
