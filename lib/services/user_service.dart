@@ -331,4 +331,110 @@ class UserService {
       return null;
     }
   }
+
+  // Add this method to your existing UserService class
+  Future<ServiceHttpResponse> updateUser(
+    User updatedUser,
+    User originalUser,
+  ) async {
+    try {
+      // Create a detailed log of changes
+      List<String> changes = [];
+      if (updatedUser.name != originalUser.name) {
+        changes.add('nombre de "${originalUser.name}" a "${updatedUser.name}"');
+      }
+      if (updatedUser.lastName != originalUser.lastName) {
+        changes.add(
+          'apellido de "${originalUser.lastName}" a "${updatedUser.lastName}"',
+        );
+      }
+      if (updatedUser.mail != originalUser.mail) {
+        changes.add('correo de "${originalUser.mail}" a "${updatedUser.mail}"');
+      }
+
+      // Print detailed console log
+      if (changes.isNotEmpty) {
+        print('========== ACTUALIZACIÓN DE PERFIL ==========');
+        print(
+          'El usuario "${updatedUser.name}" con ID "${updatedUser.userId}" cambió los siguientes campos:',
+        );
+        for (String change in changes) {
+          print('- $change');
+        }
+        print('============================================');
+      } else {
+        print(
+          'El usuario "${updatedUser.name}" con ID "${updatedUser.userId}" no realizó cambios',
+        );
+      }
+
+      print('🔍 Buscando usuario con ID: ${updatedUser.userId}');
+
+      // Load all users (both initial and local)
+      final initialUsers = await _loadInitialUsers();
+      final localUsers = await _loadLocalUsers();
+
+      print('📁 Usuarios iniciales (assets): ${initialUsers.length}');
+      print('📁 Usuarios locales (archivo): ${localUsers.length}');
+
+      // Check if user exists in initial users (from assets)
+      bool userExistsInAssets = initialUsers.any(
+        (user) => user.userId.toString() == updatedUser.userId.toString(),
+      );
+
+      if (userExistsInAssets) {
+        print('✅ Usuario encontrado en assets - moviendo a archivo local');
+
+        // Remove user from local users if exists (to avoid duplicates)
+        localUsers.removeWhere(
+          (user) => user.userId.toString() == updatedUser.userId.toString(),
+        );
+
+        // Add updated user to local users
+        localUsers.add(updatedUser);
+
+        // Save to local file
+        await _saveLocalUsers(localUsers);
+
+        return ServiceHttpResponse(
+          status: 200,
+          body: 'Usuario actualizado correctamente (movido de assets a local)',
+        );
+      }
+
+      // Check if user exists in local users
+      int userIndex = localUsers.indexWhere(
+        (user) => user.userId.toString() == updatedUser.userId.toString(),
+      );
+
+      if (userIndex != -1) {
+        print('✅ Usuario encontrado en archivo local en posición $userIndex');
+
+        // Update the user in local users
+        localUsers[userIndex] = updatedUser;
+
+        // Save to local file
+        await _saveLocalUsers(localUsers);
+
+        return ServiceHttpResponse(
+          status: 200,
+          body: 'Usuario actualizado correctamente',
+        );
+      }
+
+      // User not found in either source
+      print('❌ Usuario con ID ${updatedUser.userId} no encontrado');
+
+      return ServiceHttpResponse(
+        status: 404,
+        body: 'Usuario no encontrado. ID buscado: ${updatedUser.userId}',
+      );
+    } catch (e) {
+      print('Error updating user: $e');
+      return ServiceHttpResponse(
+        status: 500,
+        body: 'Error interno del servidor: $e',
+      );
+    }
+  }
 }

@@ -34,6 +34,28 @@ class AuthController extends GetxController {
     print('Usuario cerró sesión'); // Debug
   }
 
+  // Method to update user with email (for profile editing)
+  void updateUserProfileWithEmail({
+    String? name,
+    String? lastName,
+    String? nickname,
+    String? email,
+    String? photoUrl,
+  }) {
+    if (_currentUser != null) {
+      _currentUser = User(
+        userId: _currentUser!.userId,
+        name: name ?? _currentUser!.name,
+        lastName: lastName ?? _currentUser!.lastName,
+        nickname: nickname ?? _currentUser!.nickname,
+        mail: email ?? _currentUser!.mail, // Now email can be updated
+        password: _currentUser!.password,
+        photoUrl: photoUrl ?? _currentUser!.photoUrl,
+      );
+      update();
+    }
+  }
+
   // Actualiza datos específicos (útil para editar perfil)
   void updateUserProfile({
     String? name,
