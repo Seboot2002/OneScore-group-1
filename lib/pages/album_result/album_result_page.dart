@@ -68,40 +68,6 @@ class AlbumResultPage extends StatelessWidget {
 
                       const SizedBox(height: 20),
 
-                      // Nombre del artista
-                      Obx(
-                        () => Center(
-                          child: Text(
-                            control.artistName.value,
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.045,
-                              fontWeight: FontWeight.w500,
-                              color: const Color(0xFF535353),
-                              fontFamily: 'Roboto',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 8),
-
-                      // Género
-                      Obx(
-                        () => Center(
-                          child: Text(
-                            control.genreName.value,
-                            style: TextStyle(
-                              fontSize: screenWidth * 0.03,
-                              fontWeight: FontWeight.w300,
-                              color: const Color(0xFF524E4E),
-                              fontFamily: 'Roboto',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-
                       const SizedBox(height: 30),
 
                       // Stats usando StatisticsButtonWidget
