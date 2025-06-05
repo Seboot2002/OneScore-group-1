@@ -20,7 +20,6 @@ class _SuggestPageState extends State<SuggestPage> {
   SuggestController control = Get.put(SuggestController());
   AuthController authControl = Get.find<AuthController>();
 
-  // Variables que mantienen el estado
   late RxString selectedOption;
   late RxList<Widget> albums;
   late RxList<dynamic> artists;
@@ -28,7 +27,6 @@ class _SuggestPageState extends State<SuggestPage> {
   @override
   void initState() {
     super.initState();
-    // Asegurar que el navbar muestre 'suggest' como seleccionado
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       navController.updateSelectedIndex(3); // 3 = suggest
@@ -64,82 +62,85 @@ class _SuggestPageState extends State<SuggestPage> {
       bottomNavigationBar: const CustomMenuBar(),
       body: Obx(() {
         if (control.isLoading.value) {
-          return Scaffold(
+          return const Scaffold(
             backgroundColor: Colors.white,
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        return SingleChildScrollView(
-          child: Container(
-            padding: EdgeInsets.all(34),
-            color: Colors.white,
-            child: SafeArea(
-              child: Center(
-                child: Column(
-                  children: [
-                    const BackButtonWidget(),
+        return ScrollConfiguration(
+          behavior: const ScrollBehavior().copyWith(overscroll: false),
+          child: SingleChildScrollView(
+            physics: const ClampingScrollPhysics(),
+            child: Container(
+              padding: const EdgeInsets.all(34),
+              color: Colors.white,
+              child: SafeArea(
+                child: Center(
+                  child: Column(
+                    children: [
+                      const BackButtonWidget(),
 
-                    TitleWidget(
-                      text: "Recomendaciones",
-                      fontSize: 30,
-                    ),
+                      const TitleWidget(text: "Recomendaciones", fontSize: 30),
 
-                    SizedBox(height: 60),
+                      const SizedBox(height: 60),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 28.0
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                        child: Text(
+                          'Hola, @${user.nickname}. Analizando tu biblioteca musical '
+                          'y últimas valoraciones realizadas. Te recomendamos.',
+                          style: const TextStyle(
+                            color: Color(0xFF535353),
+                            fontSize: 13,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                      child: Text(
-                        'Hola, @${user.nickname}. Analizando tu biblioteca musical '
-                            'y últimas valoraciones realizadas. Te recomendamos.' ?? '',
+
+                      const SizedBox(height: 30),
+
+                      const Text(
+                        '¡2 albums y 1 artista!',
                         style: TextStyle(
                           color: Color(0xFF535353),
                           fontSize: 13,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.w400,
+                          decoration: TextDecoration.underline,
                         ),
-                        textAlign: TextAlign.center,
                       ),
-                    ),
 
-                    SizedBox(height: 30),
+                      const SizedBox(height: 60),
 
-                    Text(
-                      '¡2 albums y 1 artista!' ?? '',
-                      style: TextStyle(
-                        color: Color(0xFF535353),
-                        fontSize: 13,
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w400,
-                        decoration: TextDecoration.underline,
+                      MusicItemsGridStructure(
+                        buttonsData: [
+                          {'value': true, 'label': 'Albums', 'data': albums},
+                          {
+                            'value': false,
+                            'label': 'Artistas',
+                            'data': artists,
+                          },
+                        ],
+                        onButtonChanged: onButtonChanged,
+                        isStatic: true,
                       ),
-                    ),
 
-                    SizedBox(height: 60),
+                      const SizedBox(height: 60),
 
-                    MusicItemsGridStructure(
-                      buttonsData: [
-                        {'value': true, 'label': 'Albums', 'data': albums},
-                        {'value': false, 'label': 'Artistas', 'data': artists},
-                      ],
-                      onButtonChanged: onButtonChanged,
-                      isStatic: true,
-                    ),
+                      ButtonWidget(
+                        text: 'Vuele a recordarme',
+                        onPressed: onButtonRecomend,
+                        backgroundColor: Colors.white,
+                        textColor: Colors.black,
+                        hasBorder: true,
+                      ),
 
-                    SizedBox(height: 60),
-
-                    ButtonWidget(
-                      text: 'Vuele a recordarme',
-                      onPressed: onButtonRecomend,
-                      backgroundColor: Colors.white,
-                      textColor: Colors.black,
-                      hasBorder: true,
-                    ),
-
-                    SizedBox(height: 40),
-                  ],
+                      const SizedBox(height: 40),
+                    ],
+                  ),
                 ),
               ),
             ),

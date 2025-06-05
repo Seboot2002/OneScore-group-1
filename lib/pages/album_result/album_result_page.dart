@@ -21,12 +21,7 @@ class AlbumResultPage extends StatelessWidget {
     // Asegurar que el navbar se actualice correctamente al entrar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
-      // Si necesitas establecer un índice específico para esta página, hazlo aquí
-      // Por ejemplo, si esta página corresponde al índice 2 (perfil):
-      // if (navController.selectedIndex != 2) {
-      //   navController.selectedIndex = 2;
-      //   navController.update();
-      // }
+      // Establecer el índice si aplica
     });
 
     return Scaffold(
@@ -49,163 +44,159 @@ class AlbumResultPage extends StatelessWidget {
                 margin: EdgeInsets.only(top: screenHeight * 0.05),
                 width: screenWidth * 0.9,
                 height: screenHeight * 0.90,
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Usar el componente BackButtonWidget
-                      const BackButtonWidget(),
+                child: ScrollConfiguration(
+                  behavior: const ScrollBehavior().copyWith(overscroll: false),
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const BackButtonWidget(),
 
-                      // Usar el componente TitleWidget
-                      TitleWidget(text: album.title),
-                      const SizedBox(height: 40),
-                      // Imagen del álbum
-                      Center(
-                        child: CoverAlbumWidget(
-                          image: NetworkImage(album.coverUrl),
-                        ),
-                      ),
+                        TitleWidget(text: album.title),
+                        const SizedBox(height: 40),
 
-                      const SizedBox(height: 20),
-
-                      const SizedBox(height: 30),
-
-                      // Stats usando StatisticsButtonWidget
-                      SizedBox(
-                        width: double.infinity,
-                        child: Wrap(
-                          spacing: MediaQuery.of(context).size.width * 0.08,
-                          runSpacing: 12,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            StatisticsButtonWidget(
-                              label: 'Año (Salida)',
-                              numberLabel: album.releaseYear.toString(),
-                            ),
-                            StatisticsButtonWidget(
-                              label: 'Rating',
-                              numberLabel:
-                                  control.isUserFollowingAlbum.value
-                                      ? control.albumRating.value.toString()
-                                      : '—',
-                              backgroundColor: const Color(0xFF6E6E6E),
-                              textColor: Colors.white,
-                            ),
-                            StatisticsButtonWidget(
-                              label: 'Año (Escucha)',
-                              numberLabel:
-                                  control.listenYear.value > 0
-                                      ? control.listenYear.value.toString()
-                                      : '—',
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 40),
-
-                      // Tracklist
-                      Center(
-                        child: Text(
-                          'Tracklist',
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.045,
-                            fontWeight: FontWeight.w600,
-                            color: const Color(0xFF535353),
-                            fontFamily: 'Roboto',
+                        Center(
+                          child: CoverAlbumWidget(
+                            image: NetworkImage(album.coverUrl),
                           ),
                         ),
-                      ),
 
-                      const SizedBox(height: 16),
+                        const SizedBox(height: 20),
+                        const SizedBox(height: 30),
 
-                      // Lista de canciones
-                      Obx(() {
-                        if (control.songs.isEmpty) {
-                          return const Text(
-                            'No se encontraron canciones para este álbum.',
+                        SizedBox(
+                          width: double.infinity,
+                          child: Wrap(
+                            spacing: MediaQuery.of(context).size.width * 0.08,
+                            runSpacing: 12,
+                            alignment: WrapAlignment.center,
+                            children: [
+                              StatisticsButtonWidget(
+                                label: 'Año (Salida)',
+                                numberLabel: album.releaseYear.toString(),
+                              ),
+                              StatisticsButtonWidget(
+                                label: 'Rating',
+                                numberLabel:
+                                    control.isUserFollowingAlbum.value
+                                        ? control.albumRating.value.toString()
+                                        : '—',
+                                backgroundColor: const Color(0xFF6E6E6E),
+                                textColor: Colors.white,
+                              ),
+                              StatisticsButtonWidget(
+                                label: 'Año (Escucha)',
+                                numberLabel:
+                                    control.listenYear.value > 0
+                                        ? control.listenYear.value.toString()
+                                        : '—',
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        const SizedBox(height: 40),
+
+                        Center(
+                          child: Text(
+                            'Tracklist',
                             style: TextStyle(
-                              color: Colors.grey,
-                              fontStyle: FontStyle.italic,
-                            ),
-                          );
-                        }
-
-                        return ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: control.songs.length,
-                          separatorBuilder:
-                              (context, index) => const SizedBox(height: 8),
-                          itemBuilder: (context, index) {
-                            final song = control.songs[index];
-                            return TrackListItemWidget(
-                              trackName: song.title,
-                              ratingController: TextEditingController(),
-                            );
-                          },
-                        );
-                      }),
-
-                      const SizedBox(height: 30),
-
-                      // Botón Agregar/Guardar Album
-                      Obx(
-                        () => Center(
-                          child: SizedBox(
-                            width: screenWidth * 0.5,
-                            height: 45,
-                            child: ElevatedButton(
-                              onPressed: control.toggleFollowAlbum,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFFD32F2F),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                elevation: 0,
-                              ),
-                              child: Text(
-                                control.isUserFollowingAlbum.value
-                                    ? 'Guardar album'
-                                    : 'Agregar album',
-                                style: TextStyle(
-                                  fontSize: screenWidth * 0.04,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white,
-                                  fontFamily: 'Roboto',
-                                ),
-                              ),
+                              fontSize: screenWidth * 0.045,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF535353),
+                              fontFamily: 'Roboto',
                             ),
                           ),
                         ),
-                      ),
 
-                      // Texto "eliminar album" si el usuario ya sigue el álbum
-                      Obx(() {
-                        if (control.isUserFollowingAlbum.value) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: Center(
-                              child: GestureDetector(
-                                onTap: control.removeAlbum,
+                        const SizedBox(height: 16),
+
+                        Obx(() {
+                          if (control.songs.isEmpty) {
+                            return const Text(
+                              'No se encontraron canciones para este álbum.',
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            );
+                          }
+
+                          return ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: control.songs.length,
+                            separatorBuilder:
+                                (context, index) => const SizedBox(height: 8),
+                            itemBuilder: (context, index) {
+                              final song = control.songs[index];
+                              return TrackListItemWidget(
+                                trackName: song.title,
+                                ratingController: TextEditingController(),
+                              );
+                            },
+                          );
+                        }),
+
+                        const SizedBox(height: 30),
+
+                        Obx(
+                          () => Center(
+                            child: SizedBox(
+                              width: screenWidth * 0.5,
+                              height: 45,
+                              child: ElevatedButton(
+                                onPressed: control.toggleFollowAlbum,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color(0xFFD32F2F),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  elevation: 0,
+                                ),
                                 child: Text(
-                                  'eliminar album',
+                                  control.isUserFollowingAlbum.value
+                                      ? 'Guardar album'
+                                      : 'Agregar album',
                                   style: TextStyle(
-                                    fontSize: screenWidth * 0.035,
-                                    fontWeight: FontWeight.w300,
-                                    color: const Color(0xFF6E6E6E),
+                                    fontSize: screenWidth * 0.04,
+                                    fontWeight: FontWeight.w600,
+                                    color: Colors.white,
                                     fontFamily: 'Roboto',
                                   ),
                                 ),
                               ),
                             ),
-                          );
-                        }
-                        return const SizedBox();
-                      }),
+                          ),
+                        ),
 
-                      const SizedBox(height: 30),
-                    ],
+                        Obx(() {
+                          if (control.isUserFollowingAlbum.value) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 12),
+                              child: Center(
+                                child: GestureDetector(
+                                  onTap: control.removeAlbum,
+                                  child: Text(
+                                    'eliminar album',
+                                    style: TextStyle(
+                                      fontSize: screenWidth * 0.035,
+                                      fontWeight: FontWeight.w300,
+                                      color: const Color(0xFF6E6E6E),
+                                      fontFamily: 'Roboto',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          }
+                          return const SizedBox();
+                        }),
+
+                        const SizedBox(height: 30),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -213,7 +204,6 @@ class AlbumResultPage extends StatelessWidget {
           }),
         ),
       ),
-      // Usar el componente CustomMenuBar en lugar del navbar personalizado
       bottomNavigationBar: const CustomMenuBar(),
     );
   }
