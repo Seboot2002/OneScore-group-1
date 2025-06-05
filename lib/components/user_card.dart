@@ -88,7 +88,10 @@ class UserCard extends StatelessWidget {
                           color: Color.fromRGBO(110, 110, 110, 1),
                         ),
                       ),
-                      child: ClipOval(child: Image.network(image)),
+                      child: Opacity(
+                        opacity: 0.7,
+                        child: ClipOval(child: Image.network(image)),
+                      ),
                     ),
                   ),
                 ),

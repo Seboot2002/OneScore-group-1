@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:onescore/components/album_card.dart';
 import 'package:onescore/controllers/auth_controller.dart';
 import 'package:onescore/services/userMusicData_service.dart';
-import '../../models/entities/artist.dart';
 
 class ArtistResultController extends GetxController {
   var isLoading = false.obs;

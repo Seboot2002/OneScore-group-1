@@ -37,28 +37,33 @@ class ResultsPage extends StatelessWidget {
               height: screenHeight * 0.90,
               child: GetBuilder<ResultsController>(
                 builder:
-                    (ctrl) => SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          // Back button
-                          const BackButtonWidget(),
+                    (ctrl) => ScrollConfiguration(
+                      behavior: const ScrollBehavior().copyWith(
+                        overscroll: false,
+                      ),
+                      child: SingleChildScrollView(
+                        physics: const ClampingScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // Back button
+                            const BackButtonWidget(),
 
-                          // Title
-                          const TitleWidget(text: "Búsqueda"),
+                            // Title
+                            const TitleWidget(text: "Búsqueda"),
 
-                          // 60px spacing (approximately 7.5% of screen height for responsive design)
-                          SizedBox(height: screenHeight * 0.006),
+                            // Espaciado
+                            SizedBox(height: screenHeight * 0.006),
 
-                          // Results content
-                          if (ctrl.hasResults) ...[
-                            _buildResultsContent(ctrl, context),
-                          ] else ...[
-                            _buildNoResults(),
+                            // Contenido según resultados
+                            if (ctrl.hasResults)
+                              _buildResultsContent(ctrl, context)
+                            else
+                              _buildNoResults(),
+
+                            const SizedBox(height: 30),
                           ],
-
-                          const SizedBox(height: 30),
-                        ],
+                        ),
                       ),
                     ),
               ),
@@ -74,22 +79,23 @@ class ResultsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Search info text
+        // Texto informativo de búsqueda (puedes completarlo si deseas)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: RichText(
-            text: TextSpan(
-              style: const TextStyle(
+            text: const TextSpan(
+              style: TextStyle(
                 fontSize: 16,
                 color: Colors.black87,
                 fontFamily: 'Roboto',
               ),
+              text: '', // Puedes añadir texto dinámico si deseas aquí
             ),
           ),
         ),
         const SizedBox(height: 20),
 
-        // Music Items Grid Structure
+        // Cuadrícula de resultados
         MusicItemsGridStructure(
           buttonsData: ctrl.buttonsData,
           onButtonChanged: (updatedButtons) {

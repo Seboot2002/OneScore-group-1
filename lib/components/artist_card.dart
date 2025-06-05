@@ -13,10 +13,10 @@ class ArtistCard extends StatelessWidget {
     required this.image,
   });
 
-  Widget _buildContext(BuildContext context) {
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navegar a la página de resultados del artista pasando el ID
         Get.toNamed('/artist-result', arguments: {'artistId': artistId});
       },
       child: SizedBox(
@@ -30,22 +30,24 @@ class ArtistCard extends StatelessWidget {
                 width: 42,
                 height: 42,
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(110, 110, 110, 1),
+                  color: const Color.fromRGBO(110, 110, 110, 1),
                   shape: BoxShape.circle,
                   border: Border.all(
-                    color: Color.fromRGBO(110, 110, 110, 1),
+                    color: const Color.fromRGBO(110, 110, 110, 1),
                     width: 8,
                   ),
                 ),
                 child: Image.asset('assets/imgs/icon_artist_micro_search.png'),
               ),
             ),
+
+            // Fondo superior
             Positioned(
               top: 65,
               child: Container(
-                width: (130),
+                width: 130,
                 height: 57,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color.fromRGBO(210, 210, 210, 1),
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(10),
@@ -54,6 +56,8 @@ class ArtistCard extends StatelessWidget {
                 ),
               ),
             ),
+
+            // Imagen del artista con opacidad
             Positioned(
               top: 15,
               child: SizedBox(
@@ -65,25 +69,34 @@ class ArtistCard extends StatelessWidget {
                     width: 97,
                     height: 97,
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(110, 110, 110, 1),
+                      color: const Color.fromRGBO(110, 110, 110, 1),
                       shape: BoxShape.circle,
                       border: Border.all(
-                        color: Color.fromRGBO(110, 110, 110, 1),
+                        color: const Color.fromRGBO(110, 110, 110, 1),
                         width: 10,
                       ),
                     ),
-                    child: ClipOval(child: Image.network(image)),
+                    child: ClipOval(
+                      child: Opacity(
+                        opacity: 0.7,
+                        child:
+                            image.startsWith('http')
+                                ? Image.network(image, fit: BoxFit.cover)
+                                : Image.asset(image, fit: BoxFit.cover),
+                      ),
+                    ),
                   ),
                 ),
               ),
             ),
 
+            // Nombre del artista
             Positioned(
-              top: (65 + 57),
+              top: 122,
               child: Container(
-                width: (130),
+                width: 130,
                 height: 46,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: Color.fromRGBO(110, 110, 110, 1),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10),
@@ -94,40 +107,19 @@ class ArtistCard extends StatelessWidget {
                   alignment: Alignment.center,
                   child: Text(
                     name,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'Roboto',
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                       fontSize: 12,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                 ),
               ),
             ),
           ],
         ),
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildContext(context);
-  }
-}
-
-// Esto se usa solo para testear la visualización
-class ArtistCardPreview extends StatelessWidget {
-  const ArtistCardPreview({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
-      child: ArtistCard(
-        artistId: 1,
-        name: "Michael",
-        image: "assets/imgs/mod1_01.jpg",
       ),
     );
   }
