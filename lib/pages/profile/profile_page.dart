@@ -46,6 +46,7 @@ class ProfilePage extends StatelessWidget {
         }
 
         return SingleChildScrollView(
+          physics: ClampingScrollPhysics(), // Remove bounce effect
           child: Container(
             padding: EdgeInsets.all(34),
             color: Colors.white,

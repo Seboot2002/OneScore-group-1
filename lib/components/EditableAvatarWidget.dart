@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EditableAvatarWidget extends StatelessWidget {
   final double size;
@@ -46,7 +47,10 @@ class EditableAvatarWidget extends StatelessWidget {
             top: 0,
             right: 0,
             child: GestureDetector(
-              onTap: onEdit,
+              onTap: () {
+                Get.toNamed('/edit-profile');
+                onEdit(); // Mantiene el callback si también lo necesitas
+              },
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
