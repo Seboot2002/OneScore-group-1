@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:onescore/components/BackButtonWidget.dart';
-import 'package:onescore/components/EditableAvatarWidget.dart';
 import 'package:onescore/components/MusicItemsGrid.dart';
 import 'package:onescore/components/StatisticsButton.dart';
 import 'package:onescore/components/TitleWidget.dart';

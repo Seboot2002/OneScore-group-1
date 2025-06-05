@@ -13,7 +13,7 @@ import 'package:get/get.dart';
 
 class AllArtistsPage extends StatelessWidget {
   final User user;
-  AllArtistsPage({Key? key}) : user = Get.arguments as User, super(key: key);
+  AllArtistsPage({super.key}) : user = Get.arguments as User;
 
   Future<Map<String, List<Artist>>> loadArtists(int currentUserId) async {
     final artistsJson = await rootBundle.loadString('assets/jsons/artist.json');
