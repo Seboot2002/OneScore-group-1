@@ -5,6 +5,7 @@ import '../../models/entities/album.dart';
 import '../../models/entities/song.dart';
 import '../../models/entities/albumUser.dart';
 import '../../controllers/auth_controller.dart';
+import '../../controllers/bottom_navigation_controller.dart';
 
 class AlbumResultController extends GetxController {
   var isLoading = true.obs;
@@ -22,6 +23,14 @@ class AlbumResultController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+
+    // Asegurar que el BottomNavigationController esté disponible
+    try {
+      Get.find<BottomNavigationController>();
+    } catch (e) {
+      Get.put(BottomNavigationController());
+    }
+
     loadAlbumData();
   }
 

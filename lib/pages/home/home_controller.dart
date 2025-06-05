@@ -24,7 +24,7 @@ class HomeController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    authControl = Get.put(AuthController());
+    authControl = Get.find<AuthController>(); // Use Get.find instead of Get.put
     userId = authControl.user!.userId;
 
     getUserMusicData();

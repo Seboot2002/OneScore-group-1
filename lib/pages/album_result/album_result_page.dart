@@ -3,6 +3,10 @@ import 'package:get/get.dart';
 import '../../components/CoverAlbumWidget.dart';
 import '../../components/TrackListItemWidget.dart';
 import '../../components/StatisticsButton.dart';
+import '../../components/BottomNavigationBar.dart';
+import '../../components/BackButtonWidget.dart';
+import '../../components/TitleWidget.dart';
+import '../../controllers/bottom_navigation_controller.dart';
 import 'album_result_controller.dart';
 
 class AlbumResultPage extends StatelessWidget {
@@ -11,60 +15,50 @@ class AlbumResultPage extends StatelessWidget {
   AlbumResultPage({super.key});
 
   Widget _buildBody(BuildContext context) {
+    final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
+    // Asegurar que el navbar se actualice correctamente al entrar
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final navController = Get.find<BottomNavigationController>();
+      // Si necesitas establecer un índice específico para esta página, hazlo aquí
+      // Por ejemplo, si esta página corresponde al índice 2 (perfil):
+      // if (navController.selectedIndex != 2) {
+      //   navController.selectedIndex = 2;
+      //   navController.update();
+      // }
+    });
+
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Obx(() {
-          if (control.isLoading.value) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      resizeToAvoidBottomInset: false,
+      body: Container(
+        color: Colors.white,
+        child: SafeArea(
+          child: Obx(() {
+            if (control.isLoading.value) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-          final album = control.album.value;
-          if (album == null) {
-            return const Center(child: Text('Álbum no encontrado'));
-          }
+            final album = control.album.value;
+            if (album == null) {
+              return const Center(child: Text('Álbum no encontrado'));
+            }
 
-          return Column(
-            children: [
-              // Header con back button y título
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 8,
-                ),
-                child: Row(
-                  children: [
-                    IconButton(
-                      onPressed: () => Get.back(),
-                      icon: const Icon(Icons.arrow_back),
-                    ),
-                    Expanded(
-                      child: Text(
-                        album.title,
-                        style: TextStyle(
-                          fontSize: screenWidth * 0.055,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF535353),
-                          fontFamily: 'Roboto',
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                    const SizedBox(width: 40), // Para centrar el título
-                  ],
-                ),
-              ),
-
-              // Contenido scrolleable
-              Expanded(
+            return Center(
+              child: Container(
+                margin: EdgeInsets.only(top: screenHeight * 0.05),
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.90,
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 20),
+                      // Usar el componente BackButtonWidget
+                      const BackButtonWidget(),
 
+                      // Usar el componente TitleWidget
+                      TitleWidget(text: album.title),
+                      const SizedBox(height: 40),
                       // Imagen del álbum
                       Center(
                         child: CoverAlbumWidget(
@@ -76,15 +70,17 @@ class AlbumResultPage extends StatelessWidget {
 
                       // Nombre del artista
                       Obx(
-                        () => Text(
-                          control.artistName.value,
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.045,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xFF535353),
-                            fontFamily: 'Roboto',
+                        () => Center(
+                          child: Text(
+                            control.artistName.value,
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.045,
+                              fontWeight: FontWeight.w500,
+                              color: const Color(0xFF535353),
+                              fontFamily: 'Roboto',
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
 
@@ -92,15 +88,17 @@ class AlbumResultPage extends StatelessWidget {
 
                       // Género
                       Obx(
-                        () => Text(
-                          control.genreName.value,
-                          style: TextStyle(
-                            fontSize: screenWidth * 0.03,
-                            fontWeight: FontWeight.w300,
-                            color: const Color(0xFF524E4E),
-                            fontFamily: 'Roboto',
+                        () => Center(
+                          child: Text(
+                            control.genreName.value,
+                            style: TextStyle(
+                              fontSize: screenWidth * 0.03,
+                              fontWeight: FontWeight.w300,
+                              color: const Color(0xFF524E4E),
+                              fontFamily: 'Roboto',
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
 
@@ -187,27 +185,29 @@ class AlbumResultPage extends StatelessWidget {
 
                       // Botón Agregar/Guardar Album
                       Obx(
-                        () => SizedBox(
-                          width: screenWidth * 0.5,
-                          height: 45,
-                          child: ElevatedButton(
-                            onPressed: control.toggleFollowAlbum,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color(0xFFD32F2F),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                        () => Center(
+                          child: SizedBox(
+                            width: screenWidth * 0.5,
+                            height: 45,
+                            child: ElevatedButton(
+                              onPressed: control.toggleFollowAlbum,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFFD32F2F),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 0,
                               ),
-                              elevation: 0,
-                            ),
-                            child: Text(
-                              control.isUserFollowingAlbum.value
-                                  ? 'Guardar album'
-                                  : 'Agregar album',
-                              style: TextStyle(
-                                fontSize: screenWidth * 0.04,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.white,
-                                fontFamily: 'Roboto',
+                              child: Text(
+                                control.isUserFollowingAlbum.value
+                                    ? 'Guardar album'
+                                    : 'Agregar album',
+                                style: TextStyle(
+                                  fontSize: screenWidth * 0.04,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.white,
+                                  fontFamily: 'Roboto',
+                                ),
                               ),
                             ),
                           ),
@@ -219,15 +219,17 @@ class AlbumResultPage extends StatelessWidget {
                         if (control.isUserFollowingAlbum.value) {
                           return Padding(
                             padding: const EdgeInsets.only(top: 12),
-                            child: GestureDetector(
-                              onTap: control.removeAlbum,
-                              child: Text(
-                                'eliminar album',
-                                style: TextStyle(
-                                  fontSize: screenWidth * 0.035,
-                                  fontWeight: FontWeight.w300,
-                                  color: const Color(0xFF6E6E6E),
-                                  fontFamily: 'Roboto',
+                            child: Center(
+                              child: GestureDetector(
+                                onTap: control.removeAlbum,
+                                child: Text(
+                                  'eliminar album',
+                                  style: TextStyle(
+                                    fontSize: screenWidth * 0.035,
+                                    fontWeight: FontWeight.w300,
+                                    color: const Color(0xFF6E6E6E),
+                                    fontFamily: 'Roboto',
+                                  ),
                                 ),
                               ),
                             ),
@@ -241,71 +243,12 @@ class AlbumResultPage extends StatelessWidget {
                   ),
                 ),
               ),
-
-              // Bottom Navigation Bar
-              Container(
-                height: 70,
-                decoration: const BoxDecoration(
-                  color: Color(0xFF6E6E6E),
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20),
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.home,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.search,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.white,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        color: Color(0xFF6E6E6E),
-                        size: 28,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.favorite,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.library_music,
-                        color: Colors.white,
-                        size: 28,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          );
-        }),
+            );
+          }),
+        ),
       ),
+      // Usar el componente CustomMenuBar en lugar del navbar personalizado
+      bottomNavigationBar: const CustomMenuBar(),
     );
   }
 
