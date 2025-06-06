@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
+import 'package:onescore/models/entities/album.dart';
 
 class UserMusicDataService {
   Future<List<Map<String, dynamic>>> getAllAlbumsByUser(int userId) async {
@@ -131,14 +132,18 @@ class UserMusicDataService {
 
     print('📦 Todos los albums: $allAlbums');
 
-    final List<Map<String, dynamic>> randomAlbums = allAlbums.take(2).map<Map<String, dynamic>>(
-          (album) => {
-        'albumId': album['albumId'] ?? 0,
-        'name': album['title'] ?? '',
-        'image': album['coverUrl'] ?? '',
-        'rating': album['rating'] ?? 0,
-      },
-    ).toList();
+    final List<Map<String, dynamic>> randomAlbums =
+        allAlbums
+            .take(2)
+            .map<Map<String, dynamic>>(
+              (album) => {
+                'albumId': album['albumId'] ?? 0,
+                'name': album['title'] ?? '',
+                'image': album['coverUrl'] ?? '',
+                'rating': album['rating'] ?? 0,
+              },
+            )
+            .toList();
 
     print("2 albumes aleatorios: $randomAlbums");
 
@@ -157,18 +162,72 @@ class UserMusicDataService {
 
     print('📦 Todos los artistas: $allArtists');
 
-    final List<Map<String, dynamic>> randomArtists = allArtists.take(1).map<
-        Map<String, dynamic>>(
-          (artist) =>
-      {
-        'artistId': artist['artistId'] ?? 0,
-        'name': artist['name'] ?? '',
-        'image': artist['pictureUrl'] ?? '',
-      },
-    ).toList();
+    final List<Map<String, dynamic>> randomArtists =
+        allArtists
+            .take(1)
+            .map<Map<String, dynamic>>(
+              (artist) => {
+                'artistId': artist['artistId'] ?? 0,
+                'name': artist['name'] ?? '',
+                'image': artist['pictureUrl'] ?? '',
+              },
+            )
+            .toList();
 
     print("1 artista aleatorios: $randomArtists");
 
     return randomArtists;
+  }
+
+  // Agrega este método a tu UserMusicDataService existente
+
+  Future<Map<String, List<Album>>> getUserAlbumsByState(int userId) async {
+    final albumsJson = await rootBundle.loadString('assets/jsons/album.json');
+    final albumUserJson = await rootBundle.loadString(
+      'assets/jsons/albumUser.json',
+    );
+
+    final List<dynamic> albumsData = json.decode(albumsJson);
+    final List<dynamic> albumUserData = json.decode(albumUserJson);
+
+    // Convertir todos los albums a objetos Album
+    final allAlbums = albumsData.map((e) => Album.fromJson(e)).toList();
+
+    // Obtener las relaciones del usuario actual
+    final userAlbumRelations =
+        albumUserData
+            .where((relation) => relation['userId'] == userId)
+            .toList();
+
+    print('🔗 Relaciones del usuario $userId: $userAlbumRelations');
+
+    // Separar por estado
+    final valuedAlbumIds =
+        userAlbumRelations
+            .where((relation) => relation['rankState'] == 'valued')
+            .map<int>((relation) => relation['albumId'])
+            .toSet();
+
+    final pendingAlbumIds =
+        userAlbumRelations
+            .where((relation) => relation['rankState'] == 'pending')
+            .map<int>((relation) => relation['albumId'])
+            .toSet();
+
+    // Filtrar albums por estado
+    final valuedAlbums =
+        allAlbums
+            .where((album) => valuedAlbumIds.contains(album.albumId))
+            .toList();
+
+    final pendingAlbums =
+        allAlbums
+            .where((album) => pendingAlbumIds.contains(album.albumId))
+            .toList();
+
+    print('🎯 Albums valorados: ${valuedAlbums.length}');
+    print('⏳ Albums pendientes: ${pendingAlbums.length}');
+
+    return {'valued': valuedAlbums, 'pending': pendingAlbums};
   }
 }
