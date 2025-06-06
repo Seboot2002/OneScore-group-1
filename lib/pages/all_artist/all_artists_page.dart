@@ -1,106 +1,49 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:onescore/components/TitleWidget.dart';
-import '../../components/artist_card.dart';
 import 'package:onescore/components/BottomNavigationBar.dart';
 import '../../controllers/bottom_navigation_controller.dart';
+import '../../components/artist_card.dart';
 import '../../components/BackButtonWidget.dart';
 import '../../components/MusicItemsGrid.dart';
 import '../../models/entities/user.dart';
 import '../../models/entities/artist.dart';
-import 'package:get/get.dart';
+import 'all_artists_controller.dart';
 
 class AllArtistsPage extends StatelessWidget {
   final User user;
   AllArtistsPage({super.key}) : user = Get.arguments as User;
 
-  Future<Map<String, List<Artist>>> loadArtists(int currentUserId) async {
-    final artistsJson = await rootBundle.loadString('assets/jsons/artist.json');
-    final artistUserJson = await rootBundle.loadString(
-      'assets/jsons/artistUser.json',
-    );
-
-    final List<dynamic> artistsData = json.decode(artistsJson);
-    final List<dynamic> artistUserData = json.decode(artistUserJson);
-
-    final allArtists = artistsData.map((e) => Artist.fromJson(e)).toList();
-
-    final favoriteArtistIds =
-        artistUserData
-            .where((e) => e['userId'] == currentUserId)
-            .map<int>((e) => e['artistId'])
-            .toSet();
-
-    final favoriteArtists =
-        allArtists
-            .where((artist) => favoriteArtistIds.contains(artist.artistId))
-            .toList();
-
-    return {'allArtists': allArtists, 'favoriteArtists': favoriteArtists};
-  }
-
-  List<Widget> buildArtistCards(List<Artist> artists, BuildContext context) {
-    return artists.map((artist) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/artistResult',
-            arguments: artist.artistId,
-          );
-        },
-        child: (ArtistCard(
-          name: artist.name,
-          image: artist.pictureUrl,
-          artistId: artist.artistId,
-        )),
-      );
-    }).toList();
-  }
-
   @override
   Widget build(BuildContext context) {
-    print("Se recibe el user");
-    print(user);
+    // Inicializar el controlador
+    final AllArtistsController controller = Get.put(AllArtistsController());
+
+    // Cargar artistas del usuario
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       navController.updateSelectedIndex(0); // 0 = home
+      controller.loadUserArtists(user.userId);
     });
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: null,
       bottomNavigationBar: const CustomMenuBar(),
       body: SafeArea(
-        child: FutureBuilder<Map<String, List<Artist>>>(
-          future: loadArtists(user.userId),
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return const Center(child: CircularProgressIndicator());
-            }
+        child: Obx(() {
+          if (controller.isLoading.value) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            final allArtists = snapshot.data!['allArtists']!;
-            final favoriteArtists = snapshot.data!['favoriteArtists']!;
-
-            final buttonsData = [
-              {
-                'label': 'Todos',
-                'value': true,
-                'data': buildArtistCards(allArtists, context),
-              },
-              {
-                'label': 'Favoritos',
-                'value': false,
-                'data': buildArtistCards(favoriteArtists, context),
-              },
-            ];
-
+          // Verificar si el usuario tiene artistas
+          if (controller.allArtists.isEmpty) {
             return SafeArea(
               top: true,
               bottom: true,
               left: true,
               right: true,
-              minimum: EdgeInsets.all(15),
+              minimum: const EdgeInsets.all(15),
               child: Column(
                 children: [
                   Align(
@@ -113,22 +56,107 @@ class AllArtistsPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 20),
                   const Center(child: TitleWidget(text: 'Artistas')),
-                  const SizedBox(height: 20),
-                  Container(
-                    alignment: Alignment.center,
-                    child: MusicItemsGridStructure(
-                      buttonsData: buttonsData,
-                      onButtonChanged: (newButtonsData) {
-                        // Aquí va la lógica opcional si deseas reaccionar al cambio
-                      },
+                  const SizedBox(height: 40),
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'No tienes artistas en tu biblioteca',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
                     ),
                   ),
                 ],
               ),
             );
-          },
-        ),
+          }
+
+          // Configurar los datos de los botones
+          final buttonsData = [
+            {
+              'label': 'Todos',
+              'value': true,
+              'data': _buildArtistCards(controller.allArtists, context),
+            },
+            {
+              'label': 'Escuchados',
+              'value': false,
+              'data': _buildArtistCards(controller.listenedArtists, context),
+            },
+            {
+              'label': 'Por valorar',
+              'value': false,
+              'data': _buildArtistCards(controller.pendingArtists, context),
+            },
+          ];
+
+          return SafeArea(
+            top: true,
+            bottom: true,
+            left: true,
+            right: true,
+            minimum: const EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: BackButtonWidget(
+                    onPressed: () => Navigator.pop(context),
+                    width: 25,
+                    height: 25,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                const Center(child: TitleWidget(text: 'Artistas')),
+                const SizedBox(height: 20),
+                Expanded(
+                  child: Container(
+                    alignment: Alignment.center,
+                    child: MusicItemsGridStructure(
+                      buttonsData: buttonsData,
+                      onButtonChanged: (newButtonsData) {
+                        // Lógica si se desea reaccionar al cambio
+                      },
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
       ),
     );
+  }
+
+  List<Widget> _buildArtistCards(List<Artist> artists, BuildContext context) {
+    if (artists.isEmpty) {
+      return [
+        const Center(
+          child: Padding(
+            padding: EdgeInsets.all(20.0),
+            child: Text(
+              'No hay artistas en esta categoría',
+              style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+          ),
+        ),
+      ];
+    }
+
+    return artists.map((artist) {
+      return GestureDetector(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            '/artistResult',
+            arguments: artist.artistId,
+          );
+        },
+        child: ArtistCard(
+          name: artist.name,
+          image: artist.pictureUrl,
+          artistId: artist.artistId,
+        ),
+      );
+    }).toList();
   }
 }

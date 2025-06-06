@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:onescore/models/entities/album.dart';
+import 'package:onescore/models/entities/artist.dart';
 
 class UserMusicDataService {
   Future<List<Map<String, dynamic>>> getAllAlbumsByUser(int userId) async {
@@ -229,5 +230,100 @@ class UserMusicDataService {
     print('⏳ Albums pendientes: ${pendingAlbums.length}');
 
     return {'valued': valuedAlbums, 'pending': pendingAlbums};
+  }
+
+  // Agrega este método a tu UserMusicDataService existente
+
+  Future<Map<String, List<Artist>>> getUserArtistsByState(int userId) async {
+    final artistsJson = await rootBundle.loadString('assets/jsons/artist.json');
+    final artistUserJson = await rootBundle.loadString(
+      'assets/jsons/artistUser.json',
+    );
+    final albumsJson = await rootBundle.loadString('assets/jsons/album.json');
+    final albumUserJson = await rootBundle.loadString(
+      'assets/jsons/albumUser.json',
+    );
+
+    final List<dynamic> artistsData = json.decode(artistsJson);
+    final List<dynamic> artistUserData = json.decode(artistUserJson);
+    final List<dynamic> albumsData = json.decode(albumsJson);
+    final List<dynamic> albumUserData = json.decode(albumUserJson);
+
+    // Convertir todos los artistas a objetos Artist
+    final allArtists = artistsData.map((e) => Artist.fromJson(e)).toList();
+
+    // Obtener los artistas que tiene el usuario
+    final userArtistIds =
+        artistUserData
+            .where((relation) => relation['userId'] == userId)
+            .map<int>((relation) => relation['artistId'])
+            .toSet();
+
+    print('🎨 ArtistIds del usuario $userId: $userArtistIds');
+
+    // Obtener los artistas del usuario
+    final userArtists =
+        allArtists
+            .where((artist) => userArtistIds.contains(artist.artistId))
+            .toList();
+
+    // Listas para categorizar artistas
+    List<Artist> listenedArtists = [];
+    List<Artist> pendingArtists = [];
+
+    // Para cada artista del usuario, analizar sus albums
+    for (Artist artist in userArtists) {
+      // Obtener todos los albums de este artista
+      final artistAlbumIds =
+          albumsData
+              .where((album) => album['artistId'] == artist.artistId)
+              .map<int>((album) => album['albumId'])
+              .toSet();
+
+      print('🎵 Albums del artista ${artist.name}: $artistAlbumIds');
+
+      // Obtener los albums de este artista que tiene el usuario
+      final userArtistAlbums =
+          albumUserData
+              .where(
+                (relation) =>
+                    relation['userId'] == userId &&
+                    artistAlbumIds.contains(relation['albumId']),
+              )
+              .toList();
+
+      print(
+        '📚 Albums del artista ${artist.name} que tiene el usuario: $userArtistAlbums',
+      );
+
+      if (userArtistAlbums.isEmpty) {
+        // Si no tiene ningún album del artista, va a pendientes
+        pendingArtists.add(artist);
+        continue;
+      }
+
+      // Verificar el estado de todos los albums del usuario para este artista
+      bool allValued = userArtistAlbums.every(
+        (relation) => relation['rankState'] == 'valued',
+      );
+      bool hasPending = userArtistAlbums.any(
+        (relation) => relation['rankState'] == 'pending',
+      );
+
+      if (allValued && !hasPending) {
+        // Todos los albums están valorados
+        listenedArtists.add(artist);
+        print('✅ Artista ${artist.name} completamente escuchado');
+      } else {
+        // Al menos un album está pendiente
+        pendingArtists.add(artist);
+        print('⏳ Artista ${artist.name} tiene albums pendientes');
+      }
+    }
+
+    print('🎯 Artistas escuchados: ${listenedArtists.length}');
+    print('⏳ Artistas pendientes: ${pendingArtists.length}');
+
+    return {'listened': listenedArtists, 'pending': pendingArtists};
   }
 }
