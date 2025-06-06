@@ -42,6 +42,8 @@ class _SuggestPageState extends State<SuggestPage> {
   @override
   Widget build(BuildContext context) {
     final user = authControl.user!;
+    final screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
 
     void onButtonChanged(List<Map<String, dynamic>> updatedButtons) {
       final selected = updatedButtons.firstWhere((btn) => btn['value'] == true);
@@ -68,48 +70,54 @@ class _SuggestPageState extends State<SuggestPage> {
           );
         }
 
-        return ScrollConfiguration(
-          behavior: const ScrollBehavior().copyWith(overscroll: false),
-          child: SingleChildScrollView(
-            physics: const ClampingScrollPhysics(),
-            child: Container(
-              padding: const EdgeInsets.all(34),
-              color: Colors.white,
-              child: SafeArea(
-                child: Center(
+        return Container(
+          color: Colors.white,
+          child: SafeArea(
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.only(top: screenHeight * 0.05),
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.90,
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const BackButtonWidget(),
 
-                      const TitleWidget(text: "Recomendaciones", fontSize: 30),
+                      const TitleWidget(text: "Recomendaciones"),
 
                       const SizedBox(height: 60),
 
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28.0),
-                        child: Text(
-                          'Hola, @${user.nickname}. Analizando tu biblioteca musical '
-                          'y últimas valoraciones realizadas. Te recomendamos.',
-                          style: const TextStyle(
-                            color: Color(0xFF535353),
-                            fontSize: 13,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w400,
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 28.0),
+                          child: Text(
+                            'Hola, @${user.nickname}. Analizando tu biblioteca musical '
+                            'y últimas valoraciones realizadas. Te recomendamos.',
+                            style: const TextStyle(
+                              color: Color(0xFF535353),
+                              fontSize: 13,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w400,
+                            ),
+                            textAlign: TextAlign.center,
                           ),
-                          textAlign: TextAlign.center,
                         ),
                       ),
 
                       const SizedBox(height: 30),
 
-                      const Text(
-                        '¡2 albums y 1 artista!',
-                        style: TextStyle(
-                          color: Color(0xFF535353),
-                          fontSize: 13,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w400,
-                          decoration: TextDecoration.underline,
+                      const Center(
+                        child: Text(
+                          '¡2 albums y 1 artista!',
+                          style: TextStyle(
+                            color: Color(0xFF535353),
+                            fontSize: 13,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w400,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
 
@@ -130,12 +138,14 @@ class _SuggestPageState extends State<SuggestPage> {
 
                       const SizedBox(height: 60),
 
-                      ButtonWidget(
-                        text: 'Vuele a recordarme',
-                        onPressed: onButtonRecomend,
-                        backgroundColor: Colors.white,
-                        textColor: Colors.black,
-                        hasBorder: true,
+                      Center(
+                        child: ButtonWidget(
+                          text: 'Vuele a recordarme',
+                          onPressed: onButtonRecomend,
+                          backgroundColor: Colors.white,
+                          textColor: Colors.black,
+                          hasBorder: true,
+                        ),
                       ),
 
                       const SizedBox(height: 40),

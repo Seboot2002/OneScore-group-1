@@ -6,6 +6,7 @@ import '../../components/StatisticsButton.dart';
 import '../../components/BottomNavigationBar.dart';
 import '../../components/BackButtonWidget.dart';
 import '../../components/TitleWidget.dart';
+import '../../components/ButtonWidget.dart'; // <-- Asegúrate de importar tu botón personalizado
 import '../../controllers/bottom_navigation_controller.dart';
 import 'album_result_controller.dart';
 
@@ -18,7 +19,6 @@ class AlbumResultPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Asegurar que el navbar se actualice correctamente al entrar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       // Establecer el índice si aplica
@@ -53,7 +53,8 @@ class AlbumResultPage extends StatelessWidget {
                       children: [
                         const BackButtonWidget(),
 
-                        TitleWidget(text: album.title),
+                        Center(child: TitleWidget(text: album.title)),
+
                         const SizedBox(height: 40),
 
                         Center(
@@ -123,17 +124,18 @@ class AlbumResultPage extends StatelessWidget {
                             );
                           }
 
-                          return ListView.separated(
+                          return ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemCount: control.songs.length,
-                            separatorBuilder:
-                                (context, index) => const SizedBox(height: 8),
                             itemBuilder: (context, index) {
                               final song = control.songs[index];
-                              return TrackListItemWidget(
-                                trackName: song.title,
-                                ratingController: TextEditingController(),
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 15.0),
+                                child: TrackListItemWidget(
+                                  trackName: song.title,
+                                  ratingController: TextEditingController(),
+                                ),
                               );
                             },
                           );
@@ -143,30 +145,12 @@ class AlbumResultPage extends StatelessWidget {
 
                         Obx(
                           () => Center(
-                            child: SizedBox(
-                              width: screenWidth * 0.5,
-                              height: 45,
-                              child: ElevatedButton(
-                                onPressed: control.toggleFollowAlbum,
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFFD32F2F),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  elevation: 0,
-                                ),
-                                child: Text(
+                            child: ButtonWidget(
+                              text:
                                   control.isUserFollowingAlbum.value
-                                      ? 'Guardar album'
-                                      : 'Agregar album',
-                                  style: TextStyle(
-                                    fontSize: screenWidth * 0.04,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                    fontFamily: 'Roboto',
-                                  ),
-                                ),
-                              ),
+                                      ? 'Guardar álbum'
+                                      : 'Agregar álbum',
+                              onPressed: control.toggleFollowAlbum,
                             ),
                           ),
                         ),
@@ -179,7 +163,7 @@ class AlbumResultPage extends StatelessWidget {
                                 child: GestureDetector(
                                   onTap: control.removeAlbum,
                                   child: Text(
-                                    'eliminar album',
+                                    'eliminar álbum',
                                     style: TextStyle(
                                       fontSize: screenWidth * 0.035,
                                       fontWeight: FontWeight.w300,

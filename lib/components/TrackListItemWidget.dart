@@ -13,19 +13,18 @@ class TrackListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    // Reducido el ancho según tu especificación (185.23px aproximadamente)
     final contentWidth =
         screenWidth * 0.65; // Aproximadamente 185px en pantallas comunes
 
     return Center(
       child: SizedBox(
         width: contentWidth,
-        height: 36,
+        height: 40, // Aumentado desde 36 a 44
         child: Row(
           children: [
             Expanded(
               child: Container(
-                height: 36,
+                height: 44, // Aumentado
                 padding: const EdgeInsets.symmetric(horizontal: 12),
                 decoration: const BoxDecoration(
                   color: Color(0xFFE9E9E9),
@@ -48,7 +47,7 @@ class TrackListItemWidget extends StatelessWidget {
             ),
             SizedBox(
               width: 69,
-              height: 36,
+              height: 44, // Aumentado
               child: Container(
                 decoration: const BoxDecoration(
                   color: Color(0xFF6E6E6E),

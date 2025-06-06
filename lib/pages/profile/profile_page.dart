@@ -46,130 +46,133 @@ class ProfilePage extends StatelessWidget {
           );
         }
 
-        return NotificationListener<OverscrollIndicatorNotification>(
-          onNotification: (notification) {
-            notification.disallowIndicator(); // Elimina efectos de over-scroll
-            return true;
-          },
-          child: SingleChildScrollView(
-            physics:
-                const ClampingScrollPhysics(), // Sin rebote iOS, comportamiento Android
-            child: Container(
-              padding: const EdgeInsets.all(34),
-              color: Colors.white,
-              child: SafeArea(
-                child: Center(
-                  child: Column(
-                    children: [
-                      const BackButtonWidget(),
+        final screenHeight = MediaQuery.of(context).size.height;
+        final screenWidth = MediaQuery.of(context).size.width;
 
-                      const TitleWidget(text: "Perfil"),
+        return Container(
+          color: Colors.white,
+          child: SafeArea(
+            child: Center(
+              child: Container(
+                margin: EdgeInsets.only(top: screenHeight * 0.05),
+                width: screenWidth * 0.9,
+                height: screenHeight * 0.90,
+                child: ScrollConfiguration(
+                  behavior: ScrollConfiguration.of(
+                    context,
+                  ).copyWith(overscroll: false),
+                  child: SingleChildScrollView(
+                    physics: const ClampingScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const BackButtonWidget(),
 
-                      const SizedBox(height: 50),
+                        const TitleWidget(text: "Perfil"),
+                        const SizedBox(height: 50),
 
-                      EditableAvatarWidget(
-                        size: 190,
-                        image: NetworkImage(user.photoUrl),
-                        onEdit: () {
-                          print('Cambiar imagen');
-                        },
-                      ),
+                        Center(
+                          child: Column(
+                            children: [
+                              EditableAvatarWidget(
+                                size: 190,
+                                image: NetworkImage(user.photoUrl),
+                                onEdit: () {
+                                  print('Cambiar imagen');
+                                },
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                '@${user.nickname}',
+                                style: const TextStyle(
+                                  color: Color(0xFF535353),
+                                  fontSize: 18,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              Text(
+                                '${user.name} ${user.lastName}',
+                                style: const TextStyle(fontFamily: 'Roboto'),
+                              ),
+                              const SizedBox(height: 25),
+                              Wrap(
+                                spacing: screenWidth * 0.08,
+                                runSpacing: 12,
+                                alignment: WrapAlignment.center,
+                                children: [
+                                  StatisticsButtonWidget(
+                                    label: 'N° Artistas',
+                                    numberLabel: control.artistCount.toString(),
+                                  ),
+                                  StatisticsButtonWidget(
+                                    label: 'N° Albums',
+                                    numberLabel: control.albumCount.toString(),
+                                    backgroundColor: const Color(0xFF6E6E6E),
+                                    textColor: Colors.white,
+                                  ),
+                                  StatisticsButtonWidget(
+                                    label: 'N° Canciones',
+                                    numberLabel: control.songCount.toString(),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 70),
+                              MusicItemsGridStructure(
+                                buttonsData: [
+                                  {
+                                    'value': true,
+                                    'label': 'Albums',
+                                    'data': control.albums,
+                                  },
+                                  {
+                                    'value': false,
+                                    'label': 'Artistas',
+                                    'data': control.artists,
+                                  },
+                                ],
+                                onButtonChanged: onButtonChanged,
+                                isStatic: true,
+                              ),
+                              const SizedBox(height: 2),
+                              Container(
+                                padding: const EdgeInsets.only(
+                                  top: 25,
+                                  bottom: 50,
+                                  left: 50,
+                                  right: 25,
+                                ),
+                                alignment: Alignment.centerRight,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    final target =
+                                        selectedOption.value == 'Albums'
+                                            ? '/all_albums'
+                                            : '/all_artists';
 
-                      const SizedBox(height: 16),
+                                    print('El user es:');
+                                    print(authControl.user);
 
-                      Text(
-                        '@${user.nickname}',
-                        style: const TextStyle(
-                          color: Color(0xFF535353),
-                          fontSize: 18,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        '${user.name} ${user.lastName}',
-                        style: const TextStyle(fontFamily: 'Roboto'),
-                      ),
-
-                      const SizedBox(height: 25),
-
-                      SizedBox(
-                        width: double.infinity,
-                        child: Wrap(
-                          spacing: MediaQuery.of(context).size.width * 0.08,
-                          runSpacing: 12,
-                          alignment: WrapAlignment.center,
-                          children: [
-                            StatisticsButtonWidget(
-                              label: 'N° Artistas',
-                              numberLabel: control.artistCount.toString(),
-                            ),
-                            StatisticsButtonWidget(
-                              label: 'N° Albums',
-                              numberLabel: control.albumCount.toString(),
-                              backgroundColor: const Color(0xFF6E6E6E),
-                              textColor: Colors.white,
-                            ),
-                            StatisticsButtonWidget(
-                              label: 'N° Canciones',
-                              numberLabel: control.songCount.toString(),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: 70),
-
-                      MusicItemsGridStructure(
-                        buttonsData: [
-                          {
-                            'value': true,
-                            'label': 'Albums',
-                            'data': control.albums,
-                          },
-                          {
-                            'value': false,
-                            'label': 'Artistas',
-                            'data': control.artists,
-                          },
-                        ],
-                        onButtonChanged: onButtonChanged,
-                        isStatic: true,
-                      ),
-
-                      const SizedBox(height: 2),
-
-                      Container(
-                        padding: const EdgeInsets.only(
-                          top: 25,
-                          bottom: 50,
-                          left: 50,
-                          right: 25,
-                        ),
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                          onTap: () {
-                            final target =
-                                selectedOption.value == 'Albums'
-                                    ? '/all_albums'
-                                    : '/all_artists';
-
-                            print('El user es:');
-                            print(authControl.user);
-
-                            Get.offNamed(target, arguments: authControl.user);
-                          },
-                          child: const Text(
-                            'Ver todos',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Color(0xFF6E6E6E),
-                              decoration: TextDecoration.underline,
-                            ),
+                                    Get.offNamed(
+                                      target,
+                                      arguments: authControl.user,
+                                    );
+                                  },
+                                  child: const Text(
+                                    'Ver todos',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Color(0xFF6E6E6E),
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
