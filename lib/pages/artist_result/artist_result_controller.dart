@@ -22,7 +22,6 @@ class ArtistResultController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Obtener el artistId de los argumentos
     artistId = (Get.arguments as Map<String, dynamic>)['artistId'];
     print('ArtistResultController inicializado con artistId: $artistId');
     getArtistData();
@@ -39,7 +38,6 @@ class ArtistResultController extends GetxController {
     isLoading.value = true;
 
     try {
-      // Cargar todos los datos necesarios
       final artistJson = await rootBundle.loadString(
         'assets/jsons/artist.json',
       );
@@ -47,7 +45,6 @@ class ArtistResultController extends GetxController {
       final List<dynamic> allArtists = json.decode(artistJson);
       final List<dynamic> allGenres = json.decode(genreJson);
 
-      // Buscar artista por ID
       final artistData = allArtists.firstWhere(
         (artist) => artist['artistId'] == artistId,
         orElse: () => null,
@@ -63,7 +60,6 @@ class ArtistResultController extends GetxController {
         return;
       }
 
-      // Buscar género del artista a partir del genreId
       final genreId = artistData['genreId'];
       final genreData = allGenres.firstWhere(
         (genre) => genre['genreId'] == genreId,
@@ -87,10 +83,8 @@ class ArtistResultController extends GetxController {
       print("- Género: $genreName");
       print("- Año de fundación: $debutYear");
 
-      // Verificar si el usuario sigue al artista
       await checkIfUserFollowsArtist();
 
-      // Obtener datos musicales del artista
       await getArtistMusicData();
     } catch (e) {
       print("Error al obtener datos del artista: $e");
@@ -115,7 +109,6 @@ class ArtistResultController extends GetxController {
       final currentUserId = _authController.userId;
       if (currentUserId == null) return;
 
-      // Verificar si existe una relación entre el usuario actual y este artista
       final relation = artistUserRelations.firstWhere(
         (relation) =>
             relation['userId'] == currentUserId &&
@@ -136,19 +129,16 @@ class ArtistResultController extends GetxController {
     print("Iniciando carga de datos musicales para artista ID: $artistId");
 
     try {
-      // Obtener álbumes del artista
       final albumJson = await rootBundle.loadString('assets/jsons/album.json');
       final songJson = await rootBundle.loadString('assets/jsons/song.json');
 
       final List<dynamic> allAlbums = json.decode(albumJson);
       final List<dynamic> allSongs = json.decode(songJson);
 
-      // Filtrar álbumes por artista
       final artistAlbums =
           allAlbums.where((album) => album['artistId'] == artistId).toList();
       albumCount.value = artistAlbums.length;
 
-      // Contar canciones del artista
       final artistSongs =
           allSongs
               .where(
@@ -159,17 +149,14 @@ class ArtistResultController extends GetxController {
               .toList();
       songCount.value = artistSongs.length;
 
-      // Crear widgets de álbumes
       albums.value =
           artistAlbums.map((album) {
-            // Calcular rating promedio de las canciones del álbum
             final albumSongs =
                 allSongs
                     .where((song) => song['albumId'] == album['albumId'])
                     .toList();
             double avgRating = 0.0;
             if (albumSongs.isNotEmpty) {
-              // Por ahora usamos un rating base, podrías implementar lógica más compleja
               avgRating = (album['rating'] ?? 0).toDouble();
             }
 
@@ -202,13 +189,10 @@ class ArtistResultController extends GetxController {
 
     if (isUserFollowingArtist.value) {
       print("Usuario con ID $currentUserId eliminó al artista $artistName");
-      // Aquí implementarías la lógica para eliminar la relación
     } else {
       print("Usuario con ID $currentUserId agregó al artista $artistName");
-      // Aquí implementarías la lógica para agregar la relación
     }
 
-    // Toggle del estado (en una implementación real, esto se haría después de la operación exitosa)
     isUserFollowingArtist.value = !isUserFollowingArtist.value;
   }
 

@@ -51,7 +51,6 @@ class User {
     };
   }
 
-  // Constructor para crear un usuario vacío (para validaciones)
   User.empty()
     : userId = 0,
       name = '',

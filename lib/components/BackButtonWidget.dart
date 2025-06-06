@@ -7,7 +7,7 @@ class BackButtonWidget extends StatelessWidget {
   final double? width;
   final double? height;
   final EdgeInsetsGeometry? margin;
-  final VoidCallback? onPressed; // Callback opcional para lógica adicional
+  final VoidCallback? onPressed;
 
   const BackButtonWidget({
     super.key,
@@ -24,7 +24,6 @@ class BackButtonWidget extends StatelessWidget {
       alignment: Alignment.centerLeft,
       child: GestureDetector(
         onTap: () {
-          // Ejecutar callback personalizado si existe
           if (onPressed != null) {
             onPressed!();
           }
@@ -32,22 +31,18 @@ class BackButtonWidget extends StatelessWidget {
           try {
             final navController = Get.find<BottomNavigationController>();
 
-            // Obtener la ruta anterior de la pila de navegación
             if (Get.routing.previous.isNotEmpty) {
               String previousRoute = Get.routing.previous;
               int targetIndex = navController.routes.indexOf(previousRoute);
 
-              // Si la ruta anterior está en el navbar, actualizar ANTES de retroceder
               if (targetIndex != -1) {
                 navController.selectedIndex = targetIndex;
                 navController.update();
               }
             }
 
-            // Ahora retroceder
             Get.back();
           } catch (e) {
-            // Si hay error, solo retroceder normalmente
             print("⚠️ Error en BackButtonWidget: $e");
             Get.back();
           }

@@ -144,7 +144,6 @@ class AllArtistsPage extends StatelessWidget {
   }
 }
 
-// Comportamiento de scroll sin rebote ni efecto glow
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(

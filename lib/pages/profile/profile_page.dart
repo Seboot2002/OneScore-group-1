@@ -18,10 +18,9 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Asegurar que el navbar muestre profile como seleccionado
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
-      navController.updateSelectedIndex(2); // 2 = profile
+      navController.updateSelectedIndex(2);
     });
 
     Future.microtask(() => control.getUserMusicData());

@@ -70,17 +70,12 @@ class ArtistResultPage extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        // BackButtonWidget igual que en SearchBarPage
                         const BackButtonWidget(),
 
-                        // Eliminar SizedBox entre BackButton y título para que estén pegados
-                        // Luego colocar título
                         const TitleWidget(text: "Artista"),
 
-                        // Espacio igual al SearchBarPage (40)
                         const SizedBox(height: 40),
 
-                        // 🎤 Imagen del artista
                         Center(
                           child: Container(
                             width: 190,
@@ -153,7 +148,6 @@ class ArtistResultPage extends StatelessWidget {
 
                         const SizedBox(height: 25),
 
-                        // Estadísticas
                         SizedBox(
                           width: double.infinity,
                           child: Wrap(
@@ -181,7 +175,6 @@ class ArtistResultPage extends StatelessWidget {
 
                         const SizedBox(height: 70),
 
-                        // Selector de categorías
                         MusicItemsGridStructure(
                           buttonsData: [
                             {
@@ -195,7 +188,6 @@ class ArtistResultPage extends StatelessWidget {
 
                         const SizedBox(height: 20),
 
-                        // Botón seguir/eliminar artista
                         Center(
                           child: Obx(
                             () => ElevatedButton(

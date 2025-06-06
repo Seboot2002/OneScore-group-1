@@ -4,9 +4,10 @@ class MusicItemsGrid extends StatefulWidget {
   final List<Widget> musicWidgets;
   final bool isStatic;
 
-  const MusicItemsGrid({super.key,
+  const MusicItemsGrid({
+    super.key,
     required this.musicWidgets,
-    required this.isStatic
+    required this.isStatic,
   });
 
   @override
@@ -31,7 +32,10 @@ class _MusicItemsGridState extends State<MusicItemsGrid> {
             ),
           ),
           child: GridView.builder(
-            physics: widget.isStatic ? NeverScrollableScrollPhysics() : AlwaysScrollableScrollPhysics(),
+            physics:
+                widget.isStatic
+                    ? NeverScrollableScrollPhysics()
+                    : AlwaysScrollableScrollPhysics(),
             shrinkWrap: true,
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
@@ -177,7 +181,6 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
       height: 400,
       child: Column(
         children: [
-          // Contenedor con scroll horizontal para los botones
           SizedBox(
             width: double.infinity,
             height: screenHeight * 0.055,
@@ -187,9 +190,7 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  // Espaciado inicial para mantener alineación a la izquierda
                   SizedBox(width: 0),
-                  // Botones con espaciado entre ellos
                   ...buttons.map(
                     (button) => Padding(
                       padding: const EdgeInsets.only(right: 15),
@@ -200,10 +201,7 @@ class _MusicItemsGridStructureState extends State<MusicItemsGridStructure> {
               ),
             ),
           ),
-          MusicItemsGrid(
-              musicWidgets: musicWidgets,
-              isStatic: widget.isStatic
-          ),
+          MusicItemsGrid(musicWidgets: musicWidgets, isStatic: widget.isStatic),
         ],
       ),
     );

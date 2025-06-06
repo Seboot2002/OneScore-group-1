@@ -7,11 +7,9 @@ class CustomMenuBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Obtener el controlador (debe existir globalmente)
     final BottomNavigationController controller =
         Get.find<BottomNavigationController>();
 
-    // Si no debe mostrarse el navbar, retornar un SizedBox vacío
     if (!controller.shouldShowNavBar()) {
       return const SizedBox.shrink();
     }
@@ -52,14 +50,11 @@ class CustomMenuBar extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              // Círculo animado detrás del ícono seleccionado
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeInOut,
-                left:
-                    (width / 5) * ctrl.selectedIndex +
-                    (width / 5 - 50) / 2, // centrar círculo de 50px
-                top: 15, // margen superior
+                left: (width / 5) * ctrl.selectedIndex + (width / 5 - 50) / 2,
+                top: 15,
                 child: Container(
                   width: 50,
                   height: 50,

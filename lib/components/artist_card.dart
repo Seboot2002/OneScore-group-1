@@ -41,7 +41,6 @@ class ArtistCard extends StatelessWidget {
               ),
             ),
 
-            // Fondo superior
             Positioned(
               top: 65,
               child: Container(
@@ -57,7 +56,6 @@ class ArtistCard extends StatelessWidget {
               ),
             ),
 
-            // Imagen del artista con opacidad
             Positioned(
               top: 15,
               child: SizedBox(
@@ -90,7 +88,6 @@ class ArtistCard extends StatelessWidget {
               ),
             ),
 
-            // Nombre del artista
             Positioned(
               top: 122,
               child: Container(

@@ -32,7 +32,6 @@ class LogInPage extends StatelessWidget {
                     const TitleWidget(text: "OneScore"),
                     const SizedBox(height: 30),
 
-                    // Logo
                     SizedBox(
                       width: screenWidth * 0.35,
                       height: screenWidth * 0.35,
@@ -43,7 +42,6 @@ class LogInPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 40),
 
-                    // Usuario
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -58,7 +56,6 @@ class LogInPage extends StatelessWidget {
 
                     const SizedBox(height: 15),
 
-                    // Contraseña
                     Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 40,
@@ -74,7 +71,6 @@ class LogInPage extends StatelessWidget {
 
                     const SizedBox(height: 40),
 
-                    // Botón de inicio de sesión
                     ButtonWidget(
                       text: 'Iniciar sesión',
                       onPressed: control.logIn,
@@ -82,7 +78,6 @@ class LogInPage extends StatelessWidget {
 
                     const SizedBox(height: 30),
 
-                    // Texto de registro
                     TextButton(
                       onPressed: () {
                         Navigator.pushNamed(context, '/sign-up');

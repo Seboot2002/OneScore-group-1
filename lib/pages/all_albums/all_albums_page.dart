@@ -91,9 +91,7 @@ class AllAlbumsPage extends StatelessWidget {
                       const SizedBox(height: 40),
                       MusicItemsGridStructure(
                         buttonsData: buttonsData,
-                        onButtonChanged: (newButtonsData) {
-                          // No acción requerida aquí por ahora
-                        },
+                        onButtonChanged: (newButtonsData) {},
                       ),
                       const SizedBox(height: 30),
                     ],
@@ -142,7 +140,6 @@ class AllAlbumsPage extends StatelessWidget {
   }
 }
 
-// Comportamiento de scroll personalizado sin rebote ni efecto glow
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(

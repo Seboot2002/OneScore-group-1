@@ -65,7 +65,6 @@ class SearchBarController extends GetxController {
 
       print("📦 Resultados encontrados: ${resultados.length}");
 
-      // Navegar a la página de resultados pasando los datos
       Get.toNamed(
         '/results',
         arguments: {

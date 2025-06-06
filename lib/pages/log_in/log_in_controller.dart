@@ -48,7 +48,6 @@ class LogInController extends GetxController {
       if (response.status == 200 && response.body is User) {
         final user = response.body as User;
 
-        // Guarda el usuario en el AuthController global
         AuthController.to.login(user);
 
         Get.snackbar(
@@ -61,7 +60,7 @@ class LogInController extends GetxController {
         mailController.clear();
         passwordController.clear();
 
-        Get.offNamed('/home'); // Ya no necesitas pasar arguments
+        Get.offNamed('/home');
       } else {
         Get.snackbar(
           'Error',

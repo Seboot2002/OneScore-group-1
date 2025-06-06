@@ -156,7 +156,6 @@ class _SuggestPageState extends State<SuggestPage> {
   }
 }
 
-// Clase scroll sin efecto rebote ni glow
 class NoGlowScrollBehavior extends ScrollBehavior {
   @override
   Widget buildViewportChrome(

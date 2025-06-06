@@ -18,7 +18,6 @@ import 'pages/edit_profile/edit_profile_page.dart';
 import 'package:onescore/controllers/bottom_navigation_controller.dart';
 
 void main() {
-  // Inicializar el controlador del navbar globalmente
   Get.put(BottomNavigationController());
 
   runApp(MyApp());
@@ -37,7 +36,6 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       initialRoute: '/log-in',
       initialBinding: BindingsBuilder(() {
-        // Inicializa controladores globales
         Get.put(AuthController());
       }),
       getPages: [

@@ -17,7 +17,6 @@ class SearchBarPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Asegurar que el navbar se actualice correctamente al entrar
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       if (navController.selectedIndex != 1) {
@@ -40,7 +39,6 @@ class SearchBarPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Usar el componente BackButtonWidget
                     const BackButtonWidget(),
 
                     const TitleWidget(text: "Búsqueda"),
