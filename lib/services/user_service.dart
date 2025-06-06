@@ -192,7 +192,7 @@ class UserService {
     required String newPassword,
   }) async {
     try {
-      final userNickname = usuario.nickName;
+      final userNickname = usuario.nickname;
       final localUsers = await _loadLocalUsers();
 
       final userIndex = localUsers.indexWhere(

@@ -15,38 +15,30 @@ class EditProfilePage extends StatelessWidget {
   final AuthController authControl = Get.find<AuthController>();
 
   Widget _buildProfilePicture() {
-    // Avatar del usuario con opacidad
     return Container(
       width: 190,
       height: 190,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        border: Border.all(color: Colors.grey.shade300, width: 2),
+        border: Border.all(color: Colors.grey.shade700, width: 10),
       ),
-      child: Container(
-        padding: const EdgeInsets.all(11),
-        decoration: BoxDecoration(
-          color: Color(0xFF6E6E6E),
-          shape: BoxShape.circle,
-        ),
-        child: ClipOval(
-          child: Opacity(
-            opacity: 0.7,
-            child: Image.network(
-              authControl.user?.photoUrl ??
-                  'https://www.shutterstock.com/image-vector/sakura-cherry-tree-blossom-enso-600nw-2442234723.jpg',
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  color: Colors.grey.shade200,
-                  child: Icon(
-                    Icons.person,
-                    size: 100,
-                    color: Colors.grey.shade400,
-                  ),
-                );
-              },
-            ),
+      child: ClipOval(
+        child: Opacity(
+          opacity: 0.7, // 70% opacidad
+          child: Image.network(
+            authControl.user?.photoUrl ??
+                'https://www.shutterstock.com/image-vector/sakura-cherry-tree-blossom-enso-600nw-2442234723.jpg',
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: Colors.grey.shade200,
+                child: Icon(
+                  Icons.person,
+                  size: 100,
+                  color: Colors.grey.shade400,
+                ),
+              );
+            },
           ),
         ),
       ),
@@ -69,102 +61,97 @@ class EditProfilePage extends StatelessWidget {
               ),
               width: MediaQuery.of(context).size.width * 0.9,
               height: MediaQuery.of(context).size.height * 0.90,
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Back Button
-                    const BackButtonWidget(),
+              child: NotificationListener<OverscrollIndicatorNotification>(
+                onNotification: (notification) {
+                  notification
+                      .disallowIndicator(); // Elimina efectos de over-scroll
+                  return true;
+                },
+                child: SingleChildScrollView(
+                  physics: const ClampingScrollPhysics(), // Sin rebote
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const BackButtonWidget(),
+                      const TitleWidget(text: "Edición"),
+                      const SizedBox(height: 40),
 
-                    // Title
-                    const TitleWidget(text: "Edición"),
+                      Center(child: _buildProfilePicture()),
+                      const SizedBox(height: 40),
 
-                    const SizedBox(height: 40),
-
-                    // Profile Picture - centered
-                    Center(child: _buildProfilePicture()),
-
-                    const SizedBox(height: 40),
-
-                    // Form Fields
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 8,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 8,
+                        ),
+                        child: FieldTextWidget(
+                          label: 'Nombre',
+                          hintText: 'Escriba aquí',
+                          controller: control.nameController,
+                        ),
                       ),
-                      child: FieldTextWidget(
-                        label: 'Nombre',
-                        hintText: 'Escriba aquí',
-                        controller: control.nameController,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 8,
+                        ),
+                        child: FieldTextWidget(
+                          label: 'Apellido',
+                          hintText: 'Escriba aquí',
+                          controller: control.lastNameController,
+                        ),
                       ),
-                    ),
-
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 8,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 40,
+                          vertical: 8,
+                        ),
+                        child: FieldTextWidget(
+                          label: 'Correo',
+                          hintText: 'ejemplo@correo.com',
+                          controller: control.emailController,
+                          keyboardType: TextInputType.emailAddress,
+                        ),
                       ),
-                      child: FieldTextWidget(
-                        label: 'Apellido',
-                        hintText: 'Escriba aquí',
-                        controller: control.lastNameController,
+                      const SizedBox(height: 30),
+
+                      Center(
+                        child: Obx(
+                          () =>
+                              control.isLoading.value
+                                  ? const CircularProgressIndicator()
+                                  : ButtonWidget(
+                                    text: 'Guardar cambios',
+                                    onPressed: control.updateProfile,
+                                  ),
+                        ),
                       ),
-                    ),
+                      const SizedBox(height: 20),
 
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 40,
-                        vertical: 8,
-                      ),
-                      child: FieldTextWidget(
-                        label: 'Correo',
-                        hintText: 'ejemplo@correo.com',
-                        controller: control.emailController,
-                        keyboardType: TextInputType.emailAddress,
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
-
-                    // Save Button - centered
-                    Center(
-                      child: Obx(
-                        () =>
-                            control.isLoading.value
-                                ? const CircularProgressIndicator()
-                                : ButtonWidget(
-                                  text: 'Guardar cambios',
-                                  onPressed: control.updateProfile,
-                                ),
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-
-                    // Change Password Link - centered
-                    Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          Get.offNamed(
-                            '/change-password',
-                            arguments: authControl.user,
-                          );
-                        },
-                        child: const Text(
-                          'Cambiar contraseña',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Color(0xFF535353),
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w200,
-                            decoration: TextDecoration.underline,
+                      Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.offNamed(
+                              '/change-password',
+                              arguments: authControl.user,
+                            );
+                          },
+                          child: const Text(
+                            'Cambiar contraseña',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Color(0xFF535353),
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w200,
+                              decoration: TextDecoration.underline,
+                            ),
                           ),
                         ),
                       ),
-                    ),
 
-                    const SizedBox(height: 30),
-                  ],
+                      const SizedBox(height: 30),
+                    ],
+                  ),
                 ),
               ),
             ),
