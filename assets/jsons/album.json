@@ -38,5 +38,53 @@
         "genreId": 5,
         "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/c1/16/59/c116596f-f3fd-3499-6cc2-bcb5b4931e6e/14UMGIM61459.rgb.jpg/600x600bf-60.jpg",
         "artistId": 5
+    },
+    {
+        "albumId": 6,
+        "title": "Scaled and Icy",
+        "releaseYear": 2021,
+        "genreId": 1,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/24/f2/15/24f215e3-52cc-078b-d799-d58d606feddd/075679786210.jpg/600x600bf-60.jpg",
+        "artistId": 4
+    },
+    {
+        "albumId": 7,
+        "title": "Trench",
+        "releaseYear": 2018,
+        "genreId": 2,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/a3/c0/2b/a3c02b76-baa1-e575-dcba-247509200424/075679864789.jpg/600x600bf-60.jpg",
+        "artistId": 4
+    },
+    {
+        "albumId": 8,
+        "title": "Blurryface",
+        "releaseYear": 2015,
+        "genreId": 5,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/8e/e2/89/8ee28904-0821-610d-5011-a61845f62756/075679926951.jpg/600x600bf-60.jpg",
+        "artistId": 4
+    },
+    {
+        "albumId": 9,
+        "title": "Vessel",
+        "releaseYear": 2013,
+        "genreId": 5,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/73/a7/23/73a7230c-19df-02a4-ff4e-53944024f63d/075679957924.jpg/600x600bf-60.jpg",
+        "artistId": 4
+    },
+    {
+        "albumId": 10,
+        "title": "Twenty One Pilots",
+        "releaseYear": 2009,
+        "genreId": 5,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/ca/7a/d0/ca7ad083-e97a-de0c-a8f2-5e144662dc87/884501253109_cover.jpg/486x486bb.png",
+        "artistId": 4
+    },
+    {
+        "albumId": 11,
+        "title": "Images and Words",
+        "releaseYear": 1992,
+        "genreId": 5,
+        "coverUrl": "https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/62/02/e1/6202e1a9-e297-848e-c3c2-e4571fc8d2e0/mzi.opgeoigt.jpg/1200x1200bb.jpg",
+        "artistId": 6
     }
 ]

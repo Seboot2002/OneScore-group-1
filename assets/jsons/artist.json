@@ -24,7 +24,7 @@
     "artistId": 4,
     "name": "Twenty one Pilots",
     "genreId": 5,
-    "pictureUrl": "https://untoldency.de/wp-content/uploads/2024/03/top-overcompensate.jpg",
+    "pictureUrl": "https://akamai.sscdn.co/uploadfile/letras/fotos/5/7/3/5/5735ee859fa91274b1ea2ab0e4a40f06.jpg",
     "debutYear": 2009
     },
     {
@@ -33,5 +33,12 @@
     "genreId": 2,
     "pictureUrl": "https://www.coca-cola.com/content/dam/onexp/global/central/offerings/coke-studio/artists/2_Imagine_Dragons_by_Eric_Ray_Davidson_GREEN_04_1-1.jpg",
     "debutYear": 2008
+    },
+    {
+    "artistId": 6,
+    "name": "Dream Theater",
+    "genreId": 3,
+    "pictureUrl": "https://cdn-images.dzcdn.net/images/artist/2224b2118fd879e7c18fe3c3eab882bf/1900x1900-000000-80-0-0.jpg",
+    "debutYear": 1985
     }
 ]
