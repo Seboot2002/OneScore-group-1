@@ -29,7 +29,6 @@ class AlbumUser {
     };
   }
 
-  // Método para obtener el año de la fecha
   int get listenYear {
     DateTime date = DateTime.parse(rankDate);
     return date.year;

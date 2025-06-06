@@ -18,7 +18,6 @@ class ButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
 
@@ -31,13 +30,13 @@ class ButtonWidget extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
           side:
-            hasBorder
-              ? BorderSide(color: Colors.grey.shade700, width: 1)
-              : BorderSide.none,
+              hasBorder
+                  ? BorderSide(color: Colors.grey.shade700, width: 1)
+                  : BorderSide.none,
         ),
         padding: EdgeInsets.symmetric(
           vertical: 15,
-          horizontal: screenWidth * 0.08
+          horizontal: screenWidth * 0.08,
         ),
       ),
       child: Text(
@@ -52,7 +51,6 @@ class ButtonWidget extends StatelessWidget {
   }
 }
 
-// Esto se usa solo para testear la visualización
 class ButtonWidgetPreview extends StatelessWidget {
   const ButtonWidgetPreview({super.key});
 
@@ -70,7 +68,6 @@ class ButtonWidgetPreview extends StatelessWidget {
   }
 }
 
-// Esto se usa solo para testear la visualización
 class ButtonWidgetPreview2 extends StatelessWidget {
   const ButtonWidgetPreview2({super.key});
 

@@ -43,9 +43,8 @@ class SignUpController extends GetxController {
 
     isLoading.value = true;
 
-    // Crear usuario temporal (el userId se generará automáticamente en el servicio)
     User newUser = User(
-      userId: 0, // Se generará automáticamente
+      userId: 0,
       name: name,
       lastName: lastname,
       nickname: nickname,
@@ -67,10 +66,8 @@ class SignUpController extends GetxController {
         colorText: Colors.white,
       );
 
-      // Limpiar campos
       _clearFields();
 
-      // Navegar al login
       Get.offNamed('/log-in');
     } else {
       Get.snackbar(

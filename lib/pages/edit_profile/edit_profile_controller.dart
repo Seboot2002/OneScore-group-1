@@ -33,7 +33,6 @@ class EditProfileController extends GetxController {
     final lastName = lastNameController.text.trim();
     final email = emailController.text.trim();
 
-    // Check if at least one field has content
     if (name.isEmpty && lastName.isEmpty && email.isEmpty) {
       Get.snackbar(
         'Error',
@@ -44,7 +43,6 @@ class EditProfileController extends GetxController {
       return;
     }
 
-    // Validate email format only if email is provided
     if (email.isNotEmpty && !GetUtils.isEmail(email)) {
       Get.snackbar(
         'Error',
@@ -57,7 +55,6 @@ class EditProfileController extends GetxController {
 
     isLoading.value = true;
 
-    // Create updated user object using current values or keeping original ones
     User updatedUser = User(
       userId: _authController.user!.userId,
       name: name.isNotEmpty ? name : _authController.user!.name,
@@ -83,7 +80,6 @@ class EditProfileController extends GetxController {
         email: email.isNotEmpty ? email : _authController.user!.mail,
       );
 
-      // Return true to indicate success
       Get.back(result: true);
 
       Future.delayed(const Duration(milliseconds: 100), () {

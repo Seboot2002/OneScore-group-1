@@ -6,7 +6,7 @@ class AlbumCard extends StatelessWidget {
   final String name;
   final String image;
   final double rating;
-  final int albumId; // <- nuevo parámetro necesario
+  final int albumId;
   final VoidCallback? onTap;
 
   const AlbumCard({
@@ -14,14 +14,13 @@ class AlbumCard extends StatelessWidget {
     required this.name,
     required this.image,
     required this.rating,
-    required this.albumId, // <- requerido
+    required this.albumId,
     this.onTap,
   });
 
   Widget _buildContext(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Navegar a la página de detalles del álbum
         Get.to(() => AlbumResultPage(), arguments: albumId);
       },
       child: SizedBox(

@@ -63,7 +63,6 @@ class UserResultPage extends StatelessWidget {
               child: Container(
                 margin: EdgeInsets.only(top: screenHeight * 0.05),
                 width: screenWidth * 0.9,
-                // Usamos height adaptativo al contenido
                 child: ScrollConfiguration(
                   behavior: ScrollConfiguration.of(
                     context,

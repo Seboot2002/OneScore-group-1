@@ -23,7 +23,6 @@ class UserResultController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // Obtener el userId de los argumentos
     userId = Get.arguments as int;
     print('UserResultController inicializado con userId: $userId');
     getUserData();
@@ -34,7 +33,6 @@ class UserResultController extends GetxController {
     isLoading.value = true;
 
     try {
-      // Obtener usuario real usando tu servicio
       final userData = await _userService.getUserById(userId);
 
       if (userData == null) {
@@ -50,7 +48,6 @@ class UserResultController extends GetxController {
       user.value = userData;
       print("✅ Usuario cargado: ${userData.nickname}");
 
-      // Una vez que tengas los datos del usuario, obtén sus datos musicales
       await getUserMusicData();
     } catch (e) {
       print("Error al obtener datos del usuario: $e");
@@ -122,7 +119,6 @@ class UserResultController extends GetxController {
       print("- Canciones: ${songCount.value}");
     } catch (e) {
       print("Error durante la carga de datos musicales: $e");
-      // Opcional: mostrar un snackbar de error
       Get.snackbar(
         'Error',
         'No se pudieron cargar los datos musicales del usuario',

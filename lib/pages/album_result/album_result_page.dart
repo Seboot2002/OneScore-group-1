@@ -6,7 +6,7 @@ import '../../components/StatisticsButton.dart';
 import '../../components/BottomNavigationBar.dart';
 import '../../components/BackButtonWidget.dart';
 import '../../components/TitleWidget.dart';
-import '../../components/ButtonWidget.dart'; // <-- Asegúrate de importar tu botón personalizado
+import '../../components/ButtonWidget.dart';
 import '../../controllers/bottom_navigation_controller.dart';
 import 'album_result_controller.dart';
 
@@ -21,7 +21,6 @@ class AlbumResultPage extends StatelessWidget {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
-      // Establecer el índice si aplica
     });
 
     return Scaffold(

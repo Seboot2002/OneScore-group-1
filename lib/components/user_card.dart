@@ -17,10 +17,8 @@ class UserCard extends StatelessWidget {
   Widget _buildContext(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Debug para ver si el tap funciona
         print('UserCard tapped! UserId: $userId, Name: $name');
 
-        // Navegamos usando rutas nombradas
         try {
           print('Intentando navegar a /user-result con userId: $userId');
           Get.toNamed('/user-result', arguments: userId);
@@ -33,7 +31,6 @@ class UserCard extends StatelessWidget {
         }
       },
       child: Container(
-        // Agregamos un contenedor con color transparente para mejorar el área de tap
         color: Colors.transparent,
         child: SizedBox(
           height: 174,
@@ -136,7 +133,6 @@ class UserCard extends StatelessWidget {
   }
 }
 
-// Esto se usa solo para testear la visualización
 class UserCardPreview extends StatelessWidget {
   const UserCardPreview({super.key});
 

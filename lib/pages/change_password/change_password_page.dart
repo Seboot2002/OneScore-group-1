@@ -34,7 +34,6 @@ class ChangePasswordPage extends StatelessWidget {
                   physics: const ClampingScrollPhysics(),
                   child: Column(
                     children: [
-                      // Back button alineado a la izquierda
                       Align(
                         alignment: Alignment.centerLeft,
                         child: GestureDetector(
@@ -73,7 +72,7 @@ class ChangePasswordPage extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 30), // Espaciado entre campos
+                      const SizedBox(height: 30),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: FieldTextWidget(
@@ -84,7 +83,7 @@ class ChangePasswordPage extends StatelessWidget {
                         ),
                       ),
 
-                      const SizedBox(height: 30), // Espaciado entre campos
+                      const SizedBox(height: 30),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 40),
                         child: FieldTextWidget(

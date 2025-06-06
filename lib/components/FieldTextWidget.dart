@@ -41,7 +41,10 @@ class FieldTextWidget extends StatelessWidget {
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: Color(0xFF6E6E6E), width: 2.5),
+              borderSide: const BorderSide(
+                color: Color(0xFF6E6E6E),
+                width: 2.5,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
@@ -58,7 +61,6 @@ class FieldTextWidget extends StatelessWidget {
   }
 }
 
-// Esto se usa solo para testear la visualización
 class FieldTextWidgetPreview extends StatelessWidget {
   const FieldTextWidgetPreview({super.key});
 

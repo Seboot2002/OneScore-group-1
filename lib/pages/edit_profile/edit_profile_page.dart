@@ -24,7 +24,7 @@ class EditProfilePage extends StatelessWidget {
       ),
       child: ClipOval(
         child: Opacity(
-          opacity: 0.7, // 70% opacidad
+          opacity: 0.7,
           child: Image.network(
             authControl.user?.photoUrl ??
                 'https://www.shutterstock.com/image-vector/sakura-cherry-tree-blossom-enso-600nw-2442234723.jpg',
@@ -63,12 +63,11 @@ class EditProfilePage extends StatelessWidget {
               height: MediaQuery.of(context).size.height * 0.90,
               child: NotificationListener<OverscrollIndicatorNotification>(
                 onNotification: (notification) {
-                  notification
-                      .disallowIndicator(); // Elimina efectos de over-scroll
+                  notification.disallowIndicator();
                   return true;
                 },
                 child: SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(), // Sin rebote
+                  physics: const ClampingScrollPhysics(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

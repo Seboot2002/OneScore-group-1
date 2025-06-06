@@ -2,15 +2,12 @@ import 'package:get/get.dart';
 import '../models/entities/user.dart';
 
 class AuthController extends GetxController {
-  // Instancia singleton (acceso global)
   static AuthController get to => Get.find();
 
   User? _currentUser;
 
-  // Getter para acceder a TODOS los atributos del usuario
   User? get user => _currentUser;
 
-  // Getters individuales (opcionales, pero útiles para acceso rápido)
   int? get userId => _currentUser?.userId;
   String? get name => _currentUser?.name;
   String? get lastName => _currentUser?.lastName;
@@ -20,21 +17,18 @@ class AuthController extends GetxController {
 
   bool get isLoggedIn => _currentUser != null;
 
-  // Login: Guarda el usuario completo
   void login(User user) {
     _currentUser = user;
-    update(); // Notifica a los listeners
-    print('Usuario logeado: ${user.toString()}'); // Debug
+    update();
+    print('Usuario logeado: ${user.toString()}');
   }
 
-  // Logout: Limpia todos los datos
   void logout() {
     _currentUser = null;
     update();
-    print('Usuario cerró sesión'); // Debug
+    print('Usuario cerró sesión');
   }
 
-  // Method to update user with email (for profile editing)
   void updateUserProfileWithEmail({
     String? name,
     String? lastName,
@@ -48,7 +42,7 @@ class AuthController extends GetxController {
         name: name ?? _currentUser!.name,
         lastName: lastName ?? _currentUser!.lastName,
         nickname: nickname ?? _currentUser!.nickname,
-        mail: email ?? _currentUser!.mail, // Now email can be updated
+        mail: email ?? _currentUser!.mail,
         password: _currentUser!.password,
         photoUrl: photoUrl ?? _currentUser!.photoUrl,
       );
@@ -56,7 +50,6 @@ class AuthController extends GetxController {
     }
   }
 
-  // Actualiza datos específicos (útil para editar perfil)
   void updateUserProfile({
     String? name,
     String? lastName,
@@ -69,8 +62,8 @@ class AuthController extends GetxController {
         name: name ?? _currentUser!.name,
         lastName: lastName ?? _currentUser!.lastName,
         nickname: nickname ?? _currentUser!.nickname,
-        mail: _currentUser!.mail, // Email no se cambia
-        password: _currentUser!.password, // Password se cambia con otro método
+        mail: _currentUser!.mail,
+        password: _currentUser!.password,
         photoUrl: photoUrl ?? _currentUser!.photoUrl,
       );
       update();

@@ -20,7 +20,6 @@ class EditableAvatarWidget extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Imagen circular con borde y opacidad
         Container(
           width: size,
           height: size,
@@ -30,7 +29,7 @@ class EditableAvatarWidget extends StatelessWidget {
           ),
           child: ClipOval(
             child: Opacity(
-              opacity: 0.7, // 70% de opacidad
+              opacity: 0.7,
               child: Image(
                 image: image,
                 fit: BoxFit.cover,
@@ -41,7 +40,6 @@ class EditableAvatarWidget extends StatelessWidget {
           ),
         ),
 
-        // Botón de edición
         if (canEdit)
           Positioned(
             top: 0,
@@ -49,7 +47,7 @@ class EditableAvatarWidget extends StatelessWidget {
             child: GestureDetector(
               onTap: () {
                 Get.toNamed('/edit-profile');
-                onEdit(); // Mantiene el callback si también lo necesitas
+                onEdit();
               },
               child: Container(
                 padding: const EdgeInsets.all(8),

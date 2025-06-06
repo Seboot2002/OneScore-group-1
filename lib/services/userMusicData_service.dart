@@ -71,7 +71,6 @@ class UserMusicDataService {
 
     print('🎯 Artistas filtrados para el usuario: $filteredArtists');
 
-    // ✅ AQUÍ ESTÁ EL FIX: Agregué el artistId que faltaba
     return filteredArtists
         .map<Map<String, dynamic>>(
           (artist) => {
@@ -180,8 +179,6 @@ class UserMusicDataService {
     return randomArtists;
   }
 
-  // Agrega este método a tu UserMusicDataService existente
-
   Future<Map<String, List<Album>>> getUserAlbumsByState(int userId) async {
     final albumsJson = await rootBundle.loadString('assets/jsons/album.json');
     final albumUserJson = await rootBundle.loadString(
@@ -191,10 +188,8 @@ class UserMusicDataService {
     final List<dynamic> albumsData = json.decode(albumsJson);
     final List<dynamic> albumUserData = json.decode(albumUserJson);
 
-    // Convertir todos los albums a objetos Album
     final allAlbums = albumsData.map((e) => Album.fromJson(e)).toList();
 
-    // Obtener las relaciones del usuario actual
     final userAlbumRelations =
         albumUserData
             .where((relation) => relation['userId'] == userId)
@@ -202,7 +197,6 @@ class UserMusicDataService {
 
     print('🔗 Relaciones del usuario $userId: $userAlbumRelations');
 
-    // Separar por estado
     final valuedAlbumIds =
         userAlbumRelations
             .where((relation) => relation['rankState'] == 'valued')
@@ -215,7 +209,6 @@ class UserMusicDataService {
             .map<int>((relation) => relation['albumId'])
             .toSet();
 
-    // Filtrar albums por estado
     final valuedAlbums =
         allAlbums
             .where((album) => valuedAlbumIds.contains(album.albumId))
@@ -232,8 +225,6 @@ class UserMusicDataService {
     return {'valued': valuedAlbums, 'pending': pendingAlbums};
   }
 
-  // Agrega este método a tu UserMusicDataService existente
-
   Future<Map<String, List<Artist>>> getUserArtistsByState(int userId) async {
     final artistsJson = await rootBundle.loadString('assets/jsons/artist.json');
     final artistUserJson = await rootBundle.loadString(
@@ -249,10 +240,8 @@ class UserMusicDataService {
     final List<dynamic> albumsData = json.decode(albumsJson);
     final List<dynamic> albumUserData = json.decode(albumUserJson);
 
-    // Convertir todos los artistas a objetos Artist
     final allArtists = artistsData.map((e) => Artist.fromJson(e)).toList();
 
-    // Obtener los artistas que tiene el usuario
     final userArtistIds =
         artistUserData
             .where((relation) => relation['userId'] == userId)
@@ -261,19 +250,15 @@ class UserMusicDataService {
 
     print('🎨 ArtistIds del usuario $userId: $userArtistIds');
 
-    // Obtener los artistas del usuario
     final userArtists =
         allArtists
             .where((artist) => userArtistIds.contains(artist.artistId))
             .toList();
 
-    // Listas para categorizar artistas
     List<Artist> listenedArtists = [];
     List<Artist> pendingArtists = [];
 
-    // Para cada artista del usuario, analizar sus albums
     for (Artist artist in userArtists) {
-      // Obtener todos los albums de este artista
       final artistAlbumIds =
           albumsData
               .where((album) => album['artistId'] == artist.artistId)
@@ -282,7 +267,6 @@ class UserMusicDataService {
 
       print('🎵 Albums del artista ${artist.name}: $artistAlbumIds');
 
-      // Obtener los albums de este artista que tiene el usuario
       final userArtistAlbums =
           albumUserData
               .where(
@@ -297,12 +281,10 @@ class UserMusicDataService {
       );
 
       if (userArtistAlbums.isEmpty) {
-        // Si no tiene ningún album del artista, va a pendientes
         pendingArtists.add(artist);
         continue;
       }
 
-      // Verificar el estado de todos los albums del usuario para este artista
       bool allValued = userArtistAlbums.every(
         (relation) => relation['rankState'] == 'valued',
       );
@@ -311,11 +293,9 @@ class UserMusicDataService {
       );
 
       if (allValued && !hasPending) {
-        // Todos los albums están valorados
         listenedArtists.add(artist);
         print('✅ Artista ${artist.name} completamente escuchado');
       } else {
-        // Al menos un album está pendiente
         pendingArtists.add(artist);
         print('⏳ Artista ${artist.name} tiene albums pendientes');
       }

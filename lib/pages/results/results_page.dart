@@ -16,7 +16,6 @@ class ResultsPage extends StatelessWidget {
     final screenHeight = MediaQuery.of(context).size.height;
     final screenWidth = MediaQuery.of(context).size.width;
 
-    // Asegurar que el navbar se mantenga en la posición correcta
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final navController = Get.find<BottomNavigationController>();
       if (navController.selectedIndex != 1) {
@@ -46,16 +45,12 @@ class ResultsPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // Back button
                             const BackButtonWidget(),
 
-                            // Title
                             const TitleWidget(text: "Búsqueda"),
 
-                            // Espaciado
                             SizedBox(height: screenHeight * 0.006),
 
-                            // Contenido según resultados
                             if (ctrl.hasResults)
                               _buildResultsContent(ctrl, context)
                             else
@@ -79,7 +74,6 @@ class ResultsPage extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        // Texto informativo de búsqueda (puedes completarlo si deseas)
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: RichText(
@@ -89,13 +83,12 @@ class ResultsPage extends StatelessWidget {
                 color: Colors.black87,
                 fontFamily: 'Roboto',
               ),
-              text: '', // Puedes añadir texto dinámico si deseas aquí
+              text: '',
             ),
           ),
         ),
         const SizedBox(height: 20),
 
-        // Cuadrícula de resultados
         MusicItemsGridStructure(
           buttonsData: ctrl.buttonsData,
           onButtonChanged: (updatedButtons) {

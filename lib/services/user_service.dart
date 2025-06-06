@@ -75,10 +75,8 @@ class UserService {
     try {
       final initialUsers = await _loadInitialUsers();
 
-      // Cargar usuarios del archivo local (registrados por la app)
       final localUsers = await _loadLocalUsers();
 
-      // Combinar ambas listas, evitando duplicados por userId
       final Map<int, User> allUsersMap = {};
 
       for (var user in initialUsers) {
@@ -119,7 +117,6 @@ class UserService {
   int _generateNewUserId(List<User> allUsers) {
     if (allUsers.isEmpty) return 1;
     try {
-      // Encontrar el userId más alto y sumar 1
       final maxId = allUsers
           .map((u) => u.userId)
           .reduce((a, b) => a > b ? a : b);
@@ -237,7 +234,6 @@ class UserService {
     try {
       final users = await _readUsers();
 
-      // Debug - Mostrar todos los usuarios disponibles
       print('=== LOGIN DEBUG ===');
       print('Total users loaded: ${users.length}');
       print('Looking for identifier: "$identifier" with password: "$password"');
@@ -249,7 +245,6 @@ class UserService {
       }
       print('==================');
 
-      // Buscar usuario que coincida
       User? matchedUser;
       for (var user in users) {
         final emailMatch = user.mail.toLowerCase() == identifier.toLowerCase();
@@ -318,7 +313,6 @@ class UserService {
       print('🔍 Buscando usuario con ID: $userId');
       print('👥 Total usuarios disponibles: ${users.length}');
 
-      // Buscar el usuario específico por ID
       final matchedUser = users.firstWhere(
         (user) => user.userId == userId,
         orElse: () => throw StateError('Usuario no encontrado'),
@@ -332,13 +326,11 @@ class UserService {
     }
   }
 
-  // Add this method to your existing UserService class
   Future<ServiceHttpResponse> updateUser(
     User updatedUser,
     User originalUser,
   ) async {
     try {
-      // Create a detailed log of changes
       List<String> changes = [];
       if (updatedUser.name != originalUser.name) {
         changes.add('nombre de "${originalUser.name}" a "${updatedUser.name}"');
@@ -352,7 +344,6 @@ class UserService {
         changes.add('correo de "${originalUser.mail}" a "${updatedUser.mail}"');
       }
 
-      // Print detailed console log
       if (changes.isNotEmpty) {
         print('========== ACTUALIZACIÓN DE PERFIL ==========');
         print(
@@ -370,14 +361,12 @@ class UserService {
 
       print('🔍 Buscando usuario con ID: ${updatedUser.userId}');
 
-      // Load all users (both initial and local)
       final initialUsers = await _loadInitialUsers();
       final localUsers = await _loadLocalUsers();
 
       print('📁 Usuarios iniciales (assets): ${initialUsers.length}');
       print('📁 Usuarios locales (archivo): ${localUsers.length}');
 
-      // Check if user exists in initial users (from assets)
       bool userExistsInAssets = initialUsers.any(
         (user) => user.userId.toString() == updatedUser.userId.toString(),
       );
@@ -385,15 +374,12 @@ class UserService {
       if (userExistsInAssets) {
         print('✅ Usuario encontrado en assets - moviendo a archivo local');
 
-        // Remove user from local users if exists (to avoid duplicates)
         localUsers.removeWhere(
           (user) => user.userId.toString() == updatedUser.userId.toString(),
         );
 
-        // Add updated user to local users
         localUsers.add(updatedUser);
 
-        // Save to local file
         await _saveLocalUsers(localUsers);
 
         return ServiceHttpResponse(
@@ -402,7 +388,6 @@ class UserService {
         );
       }
 
-      // Check if user exists in local users
       int userIndex = localUsers.indexWhere(
         (user) => user.userId.toString() == updatedUser.userId.toString(),
       );
@@ -410,10 +395,8 @@ class UserService {
       if (userIndex != -1) {
         print('✅ Usuario encontrado en archivo local en posición $userIndex');
 
-        // Update the user in local users
         localUsers[userIndex] = updatedUser;
 
-        // Save to local file
         await _saveLocalUsers(localUsers);
 
         return ServiceHttpResponse(
@@ -422,7 +405,6 @@ class UserService {
         );
       }
 
-      // User not found in either source
       print('❌ Usuario con ID ${updatedUser.userId} no encontrado');
 
       return ServiceHttpResponse(

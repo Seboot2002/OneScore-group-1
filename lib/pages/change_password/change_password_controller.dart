@@ -20,9 +20,7 @@ class ChangePasswordController extends GetxController {
   }
 
   void goBack(BuildContext context) {
-    Get.offNamed(
-      '/profile',
-    ); // No necesitas pasar el usuario si ya está en AuthController
+    Get.offNamed('/profile');
   }
 
   Future<void> changePassword() async {
