@@ -1,36 +1,34 @@
 const app = require('./app');
-const database = require('./config/database');
+const db = require('./config/database');
 
 const PORT = process.env.PORT || 3000;
 
-// Start server
-async function startServer() {
-    try {
-        // Connect to database
-        await database.connect();
-        
-        // Start listening
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`);
-            console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
-        });
-    } catch (error) {
-        console.error('Failed to start server:', error);
+// Test database connection
+db.get("SELECT 1", (err) => {
+    if (err) {
+        console.error('Database connection failed:', err.message);
         process.exit(1);
+    } else {
+        console.log('Connected to SQLite database');
     }
-}
+});
+
+// Start server
+const server = app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
 
 // Graceful shutdown
-process.on('SIGINT', async () => {
-    console.log('\n🛑 Shutting down server...');
-    await database.close();
-    process.exit(0);
+process.on('SIGINT', () => {
+    console.log('\nShutting down server...');
+    server.close(() => {
+        db.close((err) => {
+            if (err) {
+                console.error(err.message);
+            } else {
+                console.log('Database connection closed');
+            }
+            process.exit(0);
+        });
+    });
 });
-
-process.on('SIGTERM', async () => {
-    console.log('\n🛑 Shutting down server...');
-    await database.close();
-    process.exit(0);
-});
-
-startServer();

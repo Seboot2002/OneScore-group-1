@@ -1,10 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 require('dotenv').config();
 
 // Import routes
-const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const artistRoutes = require('./routes/artistRoutes');
 const albumRoutes = require('./routes/albumRoutes');
@@ -18,21 +16,31 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Static files
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
-
 // Routes
-app.use('/api/auth', authRoutes);
+app.get('/', (req, res) => {
+    res.json({ 
+        message: 'Music Backend API is running!', 
+        version: '1.0.0',
+        endpoints: {
+            users: '/api/users',
+            artists: '/api/artists', 
+            albums: '/api/albums',
+            songs: '/api/songs',
+            genres: '/api/genres'
+        }
+    });
+});
+
+app.get('/health', (req, res) => {
+    res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
+
+// API Routes
 app.use('/api/users', userRoutes);
 app.use('/api/artists', artistRoutes);
 app.use('/api/albums', albumRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/genres', genreRoutes);
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'OK', message: 'Music API is running' });
-});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
@@ -41,8 +49,8 @@ app.use((err, req, res, next) => {
 });
 
 // 404 handler
-app.use('*', (req, res) => {
-    res.status(404).json({ error: 'Route not found' });
+app.use((req, res) => {
+    res.status(404).json({ error: 'Endpoint not found' });
 });
 
 module.exports = app;

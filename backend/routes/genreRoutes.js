@@ -2,30 +2,30 @@ const express = require('express');
 const db = require('../config/database');
 const router = express.Router();
 
-// GET all users
+// GET all genres
 router.get('/', (req, res) => {
-    db.all('SELECT user_id, name, last_name, nickname, mail FROM User', (err, rows) => {
+    db.all('SELECT * FROM Genre', (err, rows) => {
         if (err) {
             res.status(500).json({ error: err.message });
             return;
         }
-        res.json({ users: rows });
+        res.json({ genres: rows });
     });
 });
 
-// GET user by ID
+// GET genre by ID
 router.get('/:id', (req, res) => {
     const { id } = req.params;
-    db.get('SELECT user_id, name, last_name, nickname, mail FROM User WHERE user_id = ?', [id], (err, row) => {
+    db.get('SELECT * FROM Genre WHERE id = ?', [id], (err, row) => {
         if (err) {
             res.status(500).json({ error: err.message });
             return;
         }
         if (!row) {
-            res.status(404).json({ error: 'User not found' });
+            res.status(404).json({ error: 'Genre not found' });
             return;
         }
-        res.json({ user: row });
+        res.json({ genre: row });
     });
 });
 
