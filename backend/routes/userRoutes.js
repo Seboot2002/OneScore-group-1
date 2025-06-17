@@ -1,32 +1,17 @@
 const express = require('express');
-const db = require('../config/database');
+const userController = require('../app/controllers/userController');
 const router = express.Router();
 
-// GET all users
-router.get('/', (req, res) => {
-    db.all('SELECT user_id, name, last_name, nickname, mail FROM User', (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.json({ users: rows });
-    });
-});
+// Rutas básicas CRUD
+router.get('/', userController.getAllUsers);
+router.get('/:id', userController.getUserById);
+router.post('/', userController.createUser);
+router.put('/:id', userController.updateUser);
+router.delete('/:id', userController.deleteUser);
 
-// GET user by ID
-router.get('/:id', (req, res) => {
-    const { id } = req.params;
-    db.get('SELECT user_id, name, last_name, nickname, mail FROM User WHERE user_id = ?', [id], (err, row) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        if (!row) {
-            res.status(404).json({ error: 'User not found' });
-            return;
-        }
-        res.json({ user: row });
-    });
-});
+// Rutas específicas
+router.get('/email/:email', userController.getUserByEmail);
+router.get('/nickname/:nickname', userController.getUserByNickname);
+router.put('/:id/password', userController.updatePassword);
 
 module.exports = router;
