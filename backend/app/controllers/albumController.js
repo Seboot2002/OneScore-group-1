@@ -1,43 +1,95 @@
-const db = require('../../config/database');
+const Album = require('../models/albumModel');
 
 const albumController = {
     getAllAlbums: (req, res) => {
-        const query = `
-            SELECT alb.*, a.name as artist_name, g.name as genre_name
-            FROM Album alb
-            LEFT JOIN Artist a ON alb.artist_id = a.id
-            LEFT JOIN Genre g ON alb.genre_id = g.id
-        `;
-        
-        db.all(query, (err, rows) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        res.json({ albums: rows });
+        Album.getAll((err, rows) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json({ albums: rows });
         });
     },
 
     getAlbumById: (req, res) => {
         const { id } = req.params;
-        const query = `
-            SELECT alb.*, a.name as artist_name, g.name as genre_name
-            FROM Album alb
-            LEFT JOIN Artist a ON alb.artist_id = a.id
-            LEFT JOIN Genre g ON alb.genre_id = g.id
-            WHERE alb.id = ?
-        `;
-        
-        db.get(query, [id], (err, row) => {
-        if (err) {
-            res.status(500).json({ error: err.message });
-            return;
-        }
-        if (!row) {
-            res.status(404).json({ error: 'Album not found' });
-            return;
-        }
-        res.json({ album: row });
+        Album.getById(id, (err, row) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            if (!row) {
+                res.status(404).json({ error: 'Album not found' });
+                return;
+            }
+            res.json({ album: row });
+        });
+    },
+
+    createAlbum: (req, res) => {
+        const albumData = req.body;
+        Album.create(albumData, function(err) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.status(201).json({ 
+                message: 'Album created successfully',
+                albumId: this.lastID 
+            });
+        });
+    },
+
+    updateAlbum: (req, res) => {
+        const { id } = req.params;
+        const albumData = req.body;
+        Album.update(id, albumData, function(err) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Album not found' });
+                return;
+            }
+            res.json({ message: 'Album updated successfully' });
+        });
+    },
+
+    deleteAlbum: (req, res) => {
+        const { id } = req.params;
+        Album.delete(id, function(err) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            if (this.changes === 0) {
+                res.status(404).json({ error: 'Album not found' });
+                return;
+            }
+            res.json({ message: 'Album deleted successfully' });
+        });
+    },
+
+    getAlbumsByArtist: (req, res) => {
+        const { artistId } = req.params;
+        Album.getByArtistId(artistId, (err, rows) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json({ albums: rows });
+        });
+    },
+
+    getAlbumsByGenre: (req, res) => {
+        const { genreId } = req.params;
+        Album.getByGenreId(genreId, (err, rows) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json({ albums: rows });
         });
     }
 };
