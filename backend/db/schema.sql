@@ -5,13 +5,14 @@ CREATE TABLE User (
     last_name TEXT NOT NULL,
     nickname TEXT UNIQUE NOT NULL,
     mail TEXT UNIQUE NOT NULL,
-    password TEXT NOT NULL
+    password TEXT NOT NULL,
+    photo_url TEXT
 );
 
 -- Create Genre table
 CREATE TABLE Genre (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL UNIQUE
+    name TEXT UNIQUE NOT NULL
 );
 
 -- Create Artist table
