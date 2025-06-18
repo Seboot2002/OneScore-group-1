@@ -30,7 +30,7 @@ const User = {
         db.run(query, [name, last_name, nickname, mail, password, photo_url], callback);
     },
 
-    // Actualizar un usuario existente (puedes incluir photo_url si lo deseas)
+    // Actualizar un usuario existente
     update: (id, userData, callback) => {
         const query = `
         UPDATE User 
