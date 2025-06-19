@@ -333,51 +333,86 @@ INSERT INTO Song (title, n_track, album_id) VALUES
 
 -- 6. Insertando relacion Album_User
 DELETE FROM Album_User;
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 1, '15-05-2023', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 2, '20-06-2023', 'Por valorar');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 3, '10-07-2023', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 4, '24-05-2025', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 5, '24-06-2025', 'Por valorar');
+-- Usuario 1: Sebastián
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 1, '01-01-2023', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 2, '10-02-2023', 'Por valorar');
+
+-- Usuario 2: Rodrigo
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 3, '15-03-2023', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 4, '20-04-2023', 'Por valorar');
+
+-- Usuario 3: Carlos
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 5, '05-05-2024', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 6, '12-06-2024', 'Por valorar');
+
+-- Usuario 4: Tyler
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 7, '22-07-2024', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 8, '30-08-2024', 'Por valorar');
+
+-- Usuario 5: Sofía
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 9, '03-09-2025', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 10, '10-10-2025', 'Por valorar');
+
 
 
 --7. Insertando relacion Artist_User
 DELETE FROM Artist_User ;
+-- Usuario 1: Sebastián
+INSERT INTO Artist_User (user_id, artist_id) VALUES (1, 1);
+INSERT INTO Artist_User (user_id, artist_id) VALUES (1, 2);
+
+-- Usuario 2: Rodrigo
+INSERT INTO Artist_User (user_id, artist_id) VALUES (2, 2);
+INSERT INTO Artist_User (user_id, artist_id) VALUES (2, 3);
+
+-- Usuario 3: Carlos
+INSERT INTO Artist_User (user_id, artist_id) VALUES (3, 3);
+INSERT INTO Artist_User (user_id, artist_id) VALUES (3, 4);
+
+-- Usuario 4: Tyler
 INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 4);
 INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 5);
 
+-- Usuario 5: Sofía
+INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 6);
+INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 7);
+
+
+
 --8. Insertando relacion Song_User
 DELETE FROM Song_User ;
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 1, 6);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 2, 1);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 3, 3);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 4, 9);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 5, 7);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 6, 10);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 7, 5);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 8, 4);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 9, 2);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 10, 1);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 11, 7);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 12, 2);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 13, 7);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 14, 6);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 15, 10);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 16, 8);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 17, 3);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 18, 5);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 19, 7);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 20, 8);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 21, 6);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 22, 4);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 23, 5);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 24, 3);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 25, 9);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 26, 10);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 27, 5);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 28, 3);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 29, 6);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 26, 10);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 27, 5);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 28, 3);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 29, 6);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 1, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 2, 70);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 3, 75);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 4, 95);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 5, 90);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 6, 100);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 7, 80);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 8, 78);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 9, 72);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 10, 65);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 11, 88);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 12, 70);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 13, 90);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 14, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 15, 100);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 16, 92);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 17, 75);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 18, 83);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 19, 88);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 20, 92);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 21, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 22, 78);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 23, 80);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 24, 75);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 25, 98);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 26, 100);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 27, 82);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 28, 77);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 29, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 26, 100);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 27, 82);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 28, 77);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 29, 85);
+
 
