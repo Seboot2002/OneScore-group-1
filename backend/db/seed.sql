@@ -332,17 +332,21 @@ INSERT INTO Song (title, n_track, album_id) VALUES
 ('Perfect Sense', 10, 18);
 
 -- 6. Insertando relacion Album_User
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 1, '15-05-2023', 'valued');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 2, '20-06-2023', 'pending');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 3, '10-07-2023', 'valued');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 4, '24-05-2025', 'valued');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 5, '24-06-2025', 'pending');
+DELETE FROM Album_User;
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 1, '15-05-2023', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 2, '20-06-2023', 'Por valorar');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 3, '10-07-2023', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 4, '24-05-2025', 'Valorado');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 5, '24-06-2025', 'Por valorar');
+
 
 --7. Insertando relacion Artist_User
+DELETE FROM Artist_User ;
 INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 4);
 INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 5);
 
 --8. Insertando relacion Song_User
+DELETE FROM Song_User ;
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 1, 6);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 2, 1);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 3, 3);
@@ -376,3 +380,4 @@ INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 26, 10);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 27, 5);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 28, 3);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 29, 6);
+
