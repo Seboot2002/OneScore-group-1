@@ -68,3 +68,6 @@ Thumbs.db
 # Temporary files
 tmp/
 temp/
+
+db/app.db-journal
+db/app.sqbpro

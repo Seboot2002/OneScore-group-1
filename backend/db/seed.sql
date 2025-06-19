@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="app.db" readonly="0" foreign_keys="0" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="0"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="1517"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><table title="Song" custom_title="0" dock_id="1" table="4,4:mainSong"/><dock_state state="000000ff00000000fd000000010000000200000401000001b9fc0100000001fb000000160064006f0063006b00420072006f00770073006500310100000000000004010000012c00ffffff000002940000000000000004000000040000000800000008fc00000000"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="Album" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="84"/><column index="2" value="251"/><column index="3" value="92"/><column index="4" value="67"/><column index="5" value="185"/><column index="6" value="65"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Artist" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="21"/><column index="2" value="97"/><column index="3" value="67"/><column index="4" value="300"/><column index="5" value="83"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Genre" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="107"/><column index="2" value="62"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="Song" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="31"/><column index="2" value="300"/><column index="3" value="58"/><column index="4" value="70"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="User" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_" freeze_columns="0"><sort/><column_widths><column index="1" value="57"/><column index="2" value="58"/><column index="3" value="76"/><column index="4" value="71"/><column index="5" value="138"/><column index="6" value="97"/><column index="7" value="300"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="SQL 1*">-- 1. Insertando Usuarios
+-- 1. Insertando Usuarios
 DELETE FROM User;
 DELETE FROM sqlite_sequence WHERE name='User';
 INSERT INTO User (name, last_name, nickname, mail, password, photo_url) VALUES
@@ -52,7 +52,7 @@ INSERT INTO Album (title, release_year, genre_id, cover_url, artist_id) VALUES
 ('Vessel', 2013, 4, 'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/73/a7/23/73a7230c-19df-02a4-ff4e-53944024f63d/075679957924.jpg/600x600bf-60.jpg', 4),
 ('Twenty One Pilots', 2009, 2, 'https://is1-ssl.mzstatic.com/image/thumb/Music221/v4/ca/7a/d0/ca7ad083-e97a-de0c-a8f2-5e144662dc87/884501253109_cover.jpg/486x486bb.png', 4),
 -- Imagine Dragons
-('Smoke &amp; Mirrors', 2014, 2, 'https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/c1/16/59/c116596f-f3fd-3499-6cc2-bcb5b4931e6e/14UMGIM61459.rgb.jpg/600x600bf-60.jpg', 5),
+('Smoke & Mirrors', 2014, 2, 'https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/c1/16/59/c116596f-f3fd-3499-6cc2-bcb5b4931e6e/14UMGIM61459.rgb.jpg/600x600bf-60.jpg', 5),
 -- Dream Theater
 ('Images and Words', 1992, 3, 'https://is1-ssl.mzstatic.com/image/thumb/Music125/v4/62/02/e1/6202e1a9-e297-848e-c3c2-e4571fc8d2e0/mzi.opgeoigt.jpg/1200x1200bb.jpg', 6),
 -- Arctic Monkeys
@@ -61,7 +61,7 @@ INSERT INTO Album (title, release_year, genre_id, cover_url, artist_id) VALUES
 ('Humbug', 2009, 2, 'https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/4a/07/92/4a0792a5-03c9-10d8-a60c-94fa8bb6508a/mzi.nlrajrgr.jpg/1200x630bb.jpg', 7),
 ('Suck It and See', 2011, 4, 'https://is1-ssl.mzstatic.com/image/thumb/Features/62/5b/66/dj.wlpuxxqn.jpg/600x600bf-60.jpg', 7),
 ('AM', 2013, 2, 'https://is1-ssl.mzstatic.com/image/thumb/Music113/v4/cc/0f/2d/cc0f2d02-5ff1-10e7-eea2-76863a55dbad/887828031795.png/600x600bf-60.jpg', 7),
-('Tranquility Base Hotel &amp; Casino', 2018, 5, 'https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/f3/ac/06/f3ac06b3-9217-adc8-cc33-8e930293e495/887835044184.png/600x600bf-60.jpg', 7),
+('Tranquility Base Hotel & Casino', 2018, 5, 'https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/f3/ac/06/f3ac06b3-9217-adc8-cc33-8e930293e495/887835044184.png/600x600bf-60.jpg', 7),
 ('The Car', 2022, 5, 'https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/0f/03/0f/0f030fb9-a529-dba5-4e9d-4fbf2ed25037/887828045563.png/1200x1200bf-60.jpg', 7);
 
 -- 5. Insertando canciones
@@ -203,7 +203,7 @@ INSERT INTO Song (title, n_track, album_id) VALUES
 ('Before You Start Your Day', 13, 9),
 ('Isle of Flightless Birds', 14, 9);
 
--- Album 10: Imagine Dragons - Smoke &amp; Mirrors (2014)
+-- Album 10: Imagine Dragons - Smoke & Mirrors (2014)
 INSERT INTO Song (title, n_track, album_id) VALUES
 ('Shots', 1, 10),
 ('Gold', 2, 10),
@@ -304,12 +304,12 @@ INSERT INTO Song (title, n_track, album_id) VALUES
 ('Knee Socks', 11, 16),
 ('I Wanna Be Yours', 12, 16);
 
--- Album 17: Arctic Monkeys - Tranquility Base Hotel &amp; Casino (2018)
+-- Album 17: Arctic Monkeys - Tranquility Base Hotel & Casino (2018)
 INSERT INTO Song (title, n_track, album_id) VALUES
 ('Star Treatment', 1, 17),
 ('One Point Perspective', 2, 17),
 ('American Sports', 3, 17),
-('Tranquility Base Hotel &amp; Casino', 4, 17),
+('Tranquility Base Hotel & Casino', 4, 17),
 ('Golden Trunks', 5, 17),
 ('Four Out of Five', 6, 17),
 ('The World''s First Ever Monster Truck Front Flip', 7, 17),
@@ -329,4 +329,4 @@ INSERT INTO Song (title, n_track, album_id) VALUES
 ('Big Ideas (Don''t Get Any)', 7, 18),
 ('Hello You', 8, 18),
 ('Mr Schwartz', 9, 18),
-('Perfect Sense', 10, 18);</sql><current_tab id="0"/></tab_sql></sqlb_project>
+('Perfect Sense', 10, 18);
