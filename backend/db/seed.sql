@@ -357,30 +357,33 @@ INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 10,
 
 --7. Insertando relacion Artist_User
 DELETE FROM Artist_User ;
--- Usuario 1: Sebastián
+DELETE FROM Artist_User;
+
+-- Usuario 1: Sebastián (álbumes de Michael Jackson y Pink Floyd)
 INSERT INTO Artist_User (user_id, artist_id) VALUES (1, 1);
 INSERT INTO Artist_User (user_id, artist_id) VALUES (1, 2);
 
--- Usuario 2: Rodrigo
-INSERT INTO Artist_User (user_id, artist_id) VALUES (2, 2);
+-- Usuario 2: Rodrigo (álbumes de AC/DC y Twenty One Pilots)
 INSERT INTO Artist_User (user_id, artist_id) VALUES (2, 3);
+INSERT INTO Artist_User (user_id, artist_id) VALUES (2, 4);
 
--- Usuario 3: Carlos
-INSERT INTO Artist_User (user_id, artist_id) VALUES (3, 3);
+-- Usuario 3: Carlos (álbumes de Twenty One Pilots)
 INSERT INTO Artist_User (user_id, artist_id) VALUES (3, 4);
 
--- Usuario 4: Tyler
+-- Usuario 4: Tyler (álbumes de Twenty One Pilots e Imagine Dragons)
 INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 4);
 INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 5);
 
--- Usuario 5: Sofía
-INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 6);
-INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 7);
+-- Usuario 5: Sofía (álbumes de Twenty One Pilots e Imagine Dragons)
+INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 4);
+INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 5);
 
 
 
 --8. Insertando relacion Song_User
-DELETE FROM Song_User ;
+DELETE FROM Song_User;
+
+-- Usuario 1: Sebastián – Álbum 1 (Thriller) → Canciones 1–9
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 1, 85);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 2, 70);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 3, 75);
@@ -390,29 +393,63 @@ INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 6, 100);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 7, 80);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 8, 78);
 INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 9, 72);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 10, 65);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 11, 88);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 12, 70);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 13, 90);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 14, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 15, 100);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 16, 92);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 17, 75);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 18, 83);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 19, 88);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 20, 92);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 21, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 22, 78);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 23, 80);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 24, 75);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 25, 98);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 26, 100);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 27, 82);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 28, 77);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 29, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 26, 100);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 27, 82);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 28, 77);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 29, 85);
+
+-- Usuario 2: Rodrigo – Álbum 3 (Back in Black) → Canciones 20–29
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 20, 92);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 21, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 22, 78);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 23, 80);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 24, 75);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 25, 98);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 26, 100);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 27, 82);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 28, 77);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 29, 85);
+
+-- Usuario 3: Carlos – Álbum 5 (Scaled and Icy) → Canciones 30–40
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 30, 90);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 31, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 32, 75);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 33, 80);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 34, 70);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 35, 100);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 36, 95);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 37, 88);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 38, 78);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 39, 72);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 40, 82);
+
+-- Usuario 4: Tyler – Álbum 7 (Blurryface) → Canciones 55–68
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 55, 100);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 56, 95);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 57, 92);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 58, 88);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 59, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 60, 90);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 61, 87);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 62, 80);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 63, 77);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 64, 75);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 65, 70);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 66, 74);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 67, 73);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 68, 69);
+
+-- Usuario 5: Sofía – Álbum 9 (Twenty One Pilots - self-titled) → Canciones 78–91
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 78, 92);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 79, 90);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 80, 88);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 81, 85);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 82, 80);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 83, 83);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 84, 78);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 85, 75);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 86, 70);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 87, 82);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 88, 79);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 89, 90);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 90, 88);
+INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 91, 84);
+
 
 
