@@ -335,23 +335,23 @@ INSERT INTO Song (title, n_track, album_id) VALUES
 DELETE FROM Album_User;
 -- Usuario 1: Sebastián
 INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 1, '01-01-2023', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 2, '10-02-2023', 'Por valorar');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 2, NULL, 'Por valorar');
 
 -- Usuario 2: Rodrigo
 INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 3, '15-03-2023', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 4, '20-04-2023', 'Por valorar');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 4, NULL, 'Por valorar');
 
 -- Usuario 3: Carlos
 INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 5, '05-05-2024', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 6, '12-06-2024', 'Por valorar');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 6, NULL, 'Por valorar');
 
 -- Usuario 4: Tyler
 INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 7, '22-07-2024', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 8, '30-08-2024', 'Por valorar');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 8, NULL, 'Por valorar');
 
 -- Usuario 5: Sofía
 INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 9, '03-09-2025', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 10, '10-10-2025', 'Por valorar');
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 10, NULL, 'Por valorar');
 
 
 
