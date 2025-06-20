@@ -3,14 +3,12 @@ const songController = require('../app/controllers/songController');
 const router = express.Router();
 
 // Rutas básicas CRUD
-router.get('/', songController.getAllSongs);
-router.get('/:id', songController.getSongById);
-router.post('/', songController.createSong);
-router.put('/:id', songController.updateSong);
-router.delete('/:id', songController.deleteSong);
+router.get('/', songController.getAllSongs);           // GET /songs
+router.get('/:id', songController.getSongById);       // GET /songs/:id
+router.post('/', songController.createSong);          // POST /songs
+router.put('/:id', songController.updateSong);        // PUT /songs/:id
+router.delete('/:id', songController.deleteSong);     // DELETE /songs/:id
 
-// Rutas específicas
-router.get('/album/:albumId', songController.getSongsByAlbum);
-router.get('/search', songController.searchSongs); // /songs/search?q=title
+// Rutas específicas (puedes agregar más rutas específicas aquí)
 
 module.exports = router;
