@@ -1,6 +1,29 @@
--- 1. Insertando Usuarios
+-- ============================================
+-- SCRIPT DE INSERCIÓN DE DATOS - ORDENADO POR DEPENDENCIAS
+-- ============================================
+
+-- 1. PRIMERO: Eliminar datos de tablas dependientes (en orden inverso de dependencias)
+DELETE FROM Song_User;
+DELETE FROM Artist_User;
+DELETE FROM Album_User;
+DELETE FROM Song;
+DELETE FROM Album;
+DELETE FROM Artist;
+DELETE FROM Genre;
 DELETE FROM User;
+
+-- 2. Resetear secuencias de autoincrement
 DELETE FROM sqlite_sequence WHERE name='User';
+DELETE FROM sqlite_sequence WHERE name='Genre';
+DELETE FROM sqlite_sequence WHERE name='Artist';
+DELETE FROM sqlite_sequence WHERE name='Album';
+DELETE FROM sqlite_sequence WHERE name='Song';
+
+-- ============================================
+-- 3. INSERTAR DATOS BASE (sin dependencias)
+-- ============================================
+
+-- 3.1 Insertando Usuarios
 INSERT INTO User (name, last_name, nickname, mail, password, photo_url) VALUES
 ('Sebastian', 'Camayo', 'sebas', 'sebas@email.com', 'pass123', 'https://www.siliconera.com/wp-content/uploads/2023/07/screen-shot-2023-07-02-at-101027-am.png'),
 ('Rodrigo', 'de los Rios', 'rodrigo', 'rodrigo@email.com', 'pass123', 'https://i.pinimg.com/736x/8e/37/74/8e377443a55964052d087e2bc0acab01.jpg'),
@@ -8,9 +31,7 @@ INSERT INTO User (name, last_name, nickname, mail, password, photo_url) VALUES
 ('Tyler', 'Joseph', 'clancy', 'clancy@email.com', 'bandito', 'https://www.shutterstock.com/image-vector/annunciation-blessed-virgin-mary-conception-260nw-2566163865.jpg'),
 ('Sofía', 'Ramírez', 'sofy', 'sofia@email.com', 'abc123', 'https://randomuser.me/api/portraits/women/65.jpg');
 
--- 2. Insertando géneros musicales
-DELETE FROM Genre;
-DELETE FROM sqlite_sequence WHERE name='Genre';
+-- 3.2 Insertando géneros musicales
 INSERT INTO Genre (name) VALUES
 ('Pop'),
 ('Rock'),
@@ -22,9 +43,11 @@ INSERT INTO Genre (name) VALUES
 ('Classic'),
 ('Rap');
 
--- 3. Insertando Artistas
-DELETE FROM Artist;
-DELETE FROM sqlite_sequence WHERE name='Artist';
+-- ============================================
+-- 4. INSERTAR DATOS CON DEPENDENCIA DE GÉNERO
+-- ============================================
+
+-- 4.1 Insertando Artistas (dependen de Genre)
 INSERT INTO Artist (name, genre_id, picture_url, debut_year) VALUES
 ('Michael Jackson', 1, 'https://dovemibutto.wordpress.com/wp-content/uploads/2013/06/bad-michael-jacksons-short-films-11016298-1124-1054.jpg', 1964),
 ('Pink Floyd', 2, 'https://upload.wikimedia.org/wikipedia/en/d/d6/Pink_Floyd_-_all_members.jpg', 1965),
@@ -34,9 +57,10 @@ INSERT INTO Artist (name, genre_id, picture_url, debut_year) VALUES
 ('Dream Theater', 3, 'https://cdn-images.dzcdn.net/images/artist/2224b2118fd879e7c18fe3c3eab882bf/1900x1900-000000-80-0-0.jpg', 1985),
 ('Arctic Monkeys', 4, 'https://rocknvivo.com/wp-content/uploads/2012/02/arctic-monkeys.jpg', 2002);
 
--- 4. Insertando Albums
-DELETE FROM Album;
-DELETE FROM sqlite_sequence WHERE name='Album';
+-- ============================================
+-- 5. INSERTAR ALBUMS (dependen de Genre y Artist)
+-- ============================================
+
 INSERT INTO Album (title, release_year, genre_id, cover_url, artist_id) VALUES
 -- Michael Jackson
 ('Thriller', 1982, 1, 'https://is1-ssl.mzstatic.com/image/thumb/Music115/v4/32/4f/fd/324ffda2-9e51-8f6a-0c2d-c6fd2b41ac55/074643811224.jpg/600x600bf-60.jpg', 1),
@@ -64,10 +88,9 @@ INSERT INTO Album (title, release_year, genre_id, cover_url, artist_id) VALUES
 ('Tranquility Base Hotel & Casino', 2018, 5, 'https://is1-ssl.mzstatic.com/image/thumb/Music114/v4/f3/ac/06/f3ac06b3-9217-adc8-cc33-8e930293e495/887835044184.png/600x600bf-60.jpg', 7),
 ('The Car', 2022, 5, 'https://is1-ssl.mzstatic.com/image/thumb/Music122/v4/0f/03/0f/0f030fb9-a529-dba5-4e9d-4fbf2ed25037/887828045563.png/1200x1200bf-60.jpg', 7);
 
--- 5. Insertando canciones
--- 5. Insertando canciones completas para todos los álbumes
-DELETE FROM Song;
-DELETE FROM sqlite_sequence WHERE name='Song';
+-- ============================================
+-- 6. INSERTAR CANCIONES (dependen de Album)
+-- ============================================
 
 -- Album 1: Michael Jackson - Thriller (1982)
 INSERT INTO Song (title, n_track, album_id) VALUES
@@ -331,125 +354,65 @@ INSERT INTO Song (title, n_track, album_id) VALUES
 ('Mr Schwartz', 9, 18),
 ('Perfect Sense', 10, 18);
 
--- 6. Insertando relacion Album_User
-DELETE FROM Album_User;
+-- ============================================
+-- 7. INSERTAR RELACIONES (dependen de User, Album, Artist, Song)
+-- ============================================
+
+-- 7.1 Album_User (relación Usuario-Álbum)
+INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES 
+-- Usuario 1: Sebastián (Thriller - The Dark Side of the Moon )
+(1, 1, '01-01-2023', 'Valorado'),
+(1, 2, NULL, 'Por valorar'),
+-- Usuario 2: Rodrigo (Back in Black - Clancy)
+(2, 3, '15-03-2023', 'Valorado'),
+(2, 4, NULL, 'Por valorar'),
+-- Usuario 3: Carlos (Scaled and Icy - Trench)
+(3, 5, '05-05-2024', 'Valorado'),
+(3, 6, NULL, 'Por valorar'),
+-- Usuario 4: Tyler (Blurryface - Vessel)
+(4, 7, '22-07-2024', 'Valorado'),
+(4, 8, NULL, 'Por valorar'),
+-- Usuario 5: Sofía (Twenty One Pilots - Smoke & Mirrors)
+(5, 9, '03-09-2025', 'Valorado'),
+(5, 10, NULL, 'Por valorar');
+
+-- 7.2 Artist_User (relación Usuario-Artista)
+INSERT INTO Artist_User (user_id, artist_id) VALUES 
 -- Usuario 1: Sebastián
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 1, '01-01-2023', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (1, 2, NULL, 'Por valorar');
-
+(1, 1), (1, 2),
 -- Usuario 2: Rodrigo
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 3, '15-03-2023', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (2, 4, NULL, 'Por valorar');
-
+(2, 3), (2, 4),
 -- Usuario 3: Carlos
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 5, '05-05-2024', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (3, 6, NULL, 'Por valorar');
-
+(3, 4),
 -- Usuario 4: Tyler
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 7, '22-07-2024', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (4, 8, NULL, 'Por valorar');
-
+(4, 4),
 -- Usuario 5: Sofía
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 9, '03-09-2025', 'Valorado');
-INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES (5, 10, NULL, 'Por valorar');
+(5, 4), (5, 5);
 
-
-
---7. Insertando relacion Artist_User
-DELETE FROM Artist_User ;
-DELETE FROM Artist_User;
-
--- Usuario 1: Sebastián (álbumes de Michael Jackson y Pink Floyd)
-INSERT INTO Artist_User (user_id, artist_id) VALUES (1, 1);
-INSERT INTO Artist_User (user_id, artist_id) VALUES (1, 2);
-
--- Usuario 2: Rodrigo (álbumes de AC/DC y Twenty One Pilots)
-INSERT INTO Artist_User (user_id, artist_id) VALUES (2, 3);
-INSERT INTO Artist_User (user_id, artist_id) VALUES (2, 4);
-
--- Usuario 3: Carlos (álbumes de Twenty One Pilots)
-INSERT INTO Artist_User (user_id, artist_id) VALUES (3, 4);
-
--- Usuario 4: Tyler (álbumes de Twenty One Pilots e Imagine Dragons)
-INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 4);
-INSERT INTO Artist_User (user_id, artist_id) VALUES (4, 5);
-
--- Usuario 5: Sofía (álbumes de Twenty One Pilots e Imagine Dragons)
-INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 4);
-INSERT INTO Artist_User (user_id, artist_id) VALUES (5, 5);
-
-
-
---8. Insertando relacion Song_User
-DELETE FROM Song_User;
-
+-- 7.3 Song_User (relación Usuario-Canción con puntuaciones)
+INSERT INTO Song_User (user_id, song_id, score) VALUES
 -- Usuario 1: Sebastián – Álbum 1 (Thriller) → Canciones 1–9
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 1, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 2, 70);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 3, 75);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 4, 95);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 5, 90);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 6, 100);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 7, 80);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 8, 78);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (1, 9, 72);
+(1, 1, 85), (1, 2, 70), (1, 3, 75), (1, 4, 95), (1, 5, 90), 
+(1, 6, 100), (1, 7, 80), (1, 8, 78), (1, 9, 72),
 
 -- Usuario 2: Rodrigo – Álbum 3 (Back in Black) → Canciones 20–29
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 20, 92);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 21, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 22, 78);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 23, 80);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 24, 75);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 25, 98);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 26, 100);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 27, 82);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 28, 77);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (2, 29, 85);
+(2, 20, 92), (2, 21, 85), (2, 22, 78), (2, 23, 80), (2, 24, 75), 
+(2, 25, 98), (2, 26, 100), (2, 27, 82), (2, 28, 77), (2, 29, 85),
 
--- Usuario 3: Carlos – Álbum 5 (Scaled and Icy) → Canciones 30–40
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 30, 90);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 31, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 32, 75);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 33, 80);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 34, 70);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 35, 100);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 36, 95);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 37, 88);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 38, 78);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 39, 72);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (3, 40, 82);
+-- Usuario 3: Carlos – Álbum 5 (Scaled and Icy) → Canciones 43–53
+(3, 43, 90), (3, 44, 85), (3, 45, 75), (3, 46, 80), (3, 47, 70), 
+(3, 48, 100), (3, 49, 95), (3, 50, 88), (3, 51, 78), (3, 52, 72), (3, 53, 82),
 
--- Usuario 4: Tyler – Álbum 7 (Blurryface) → Canciones 55–68
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 55, 100);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 56, 95);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 57, 92);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 58, 88);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 59, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 60, 90);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 61, 87);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 62, 80);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 63, 77);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 64, 75);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 65, 70);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 66, 74);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 67, 73);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (4, 68, 69);
+-- Usuario 4: Tyler – Álbum 7 (Blurryface) → Canciones 68-80
+(4, 68, 100), (4, 69, 95), (4, 70, 92), (4, 71, 88), (4, 72, 85), 
+(4, 73, 90), (4, 74, 87), (4, 75, 80), (4, 76, 77), (4, 77, 75), 
+(4, 78, 70), (4, 79, 74), (4, 80, 73),
 
--- Usuario 5: Sofía – Álbum 9 (Twenty One Pilots - self-titled) → Canciones 78–91
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 78, 92);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 79, 90);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 80, 88);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 81, 85);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 82, 80);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 83, 83);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 84, 78);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 85, 75);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 86, 70);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 87, 82);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 88, 79);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 89, 90);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 90, 88);
-INSERT INTO Song_User (user_id, song_id, score) VALUES (5, 91, 84);
+-- Usuario 5: Sofía – Álbum 9 (Twenty One Pilots - self-titled) → Canciones 94-107
+(5, 94, 92), (5, 95, 90), (5, 96, 88), (5, 97, 85), (5, 98, 80), 
+(5, 99, 83), (5, 100, 78), (5, 101, 75), (5, 102, 70), (5, 103, 82), 
+(5, 104, 79), (5, 105, 90), (5, 106, 88), (5, 107, 84);
 
-
-
+-- ============================================
+-- SCRIPT COMPLETADO
+-- ============================================
