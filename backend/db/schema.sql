@@ -70,7 +70,7 @@ CREATE TABLE Album_User (
 CREATE TABLE Song_User (
     user_id INTEGER NOT NULL,
     song_id INTEGER NOT NULL,
-    score INTEGER CHECK(score >= 1 AND score <= 10),
+    score INTEGER CHECK(score >= 1 AND score <= 100),
     PRIMARY KEY (user_id, song_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id),
     FOREIGN KEY (song_id) REFERENCES Song(id)
