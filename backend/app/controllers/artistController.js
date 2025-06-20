@@ -27,58 +27,146 @@ const artistController = {
     },
 
     createArtist: (req, res) => {
-        const artistData = req.body;
-        Artist.create(artistData, function(err) {
+        const { name, genre_id, picture_url, debut_year } = req.body;
+
+        // Validación de datos requeridos
+        if (!name || !genre_id) {
+            res.status(400).json({ 
+                error: 'Missing required fields: name and genre_id are required' 
+            });
+            return;
+        }
+
+        // Validación de tipos
+        if (typeof name !== 'string' || typeof genre_id !== 'number') {
+            res.status(400).json({ 
+                error: 'Invalid data types: name must be string, genre_id must be number' 
+            });
+            return;
+        }
+
+        // Validación opcional de debut_year
+        if (debut_year !== undefined && debut_year !== null && typeof debut_year !== 'number') {
+            res.status(400).json({ 
+                error: 'Invalid data type: debut_year must be a number' 
+            });
+            return;
+        }
+
+        // Validación opcional de picture_url
+        if (picture_url !== undefined && picture_url !== null && typeof picture_url !== 'string') {
+            res.status(400).json({ 
+                error: 'Invalid data type: picture_url must be a string' 
+            });
+            return;
+        }
+
+        // Validar que el género existe antes de crear el artista
+        Artist.validateGenreExists(genre_id, (err, exists) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.status(201).json({ 
-                message: 'Artist created successfully',
-                artistId: this.lastID 
+            if (!exists) {
+                res.status(400).json({ error: 'Genre not found' });
+                return;
+            }
+
+            // Crear el artista
+            Artist.create({ name, genre_id, picture_url, debut_year }, (err, artist) => {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+                res.status(201).json({ 
+                    message: 'Artist created successfully',
+                    artist: artist 
+                });
             });
         });
     },
 
     updateArtist: (req, res) => {
         const { id } = req.params;
-        const artistData = req.body;
-        Artist.update(id, artistData, function(err) {
+        const { name, genre_id, picture_url, debut_year } = req.body;
+
+        // Validación de datos requeridos
+        if (!name || !genre_id) {
+            res.status(400).json({ 
+                error: 'Missing required fields: name and genre_id are required' 
+            });
+            return;
+        }
+
+        // Validación de tipos
+        if (typeof name !== 'string' || typeof genre_id !== 'number') {
+            res.status(400).json({ 
+                error: 'Invalid data types: name must be string, genre_id must be number' 
+            });
+            return;
+        }
+
+        // Validación opcional de debut_year
+        if (debut_year !== undefined && debut_year !== null && typeof debut_year !== 'number') {
+            res.status(400).json({ 
+                error: 'Invalid data type: debut_year must be a number' 
+            });
+            return;
+        }
+
+        // Validación opcional de picture_url
+        if (picture_url !== undefined && picture_url !== null && typeof picture_url !== 'string') {
+            res.status(400).json({ 
+                error: 'Invalid data type: picture_url must be a string' 
+            });
+            return;
+        }
+
+        // Validar que el género existe antes de actualizar el artista
+        Artist.validateGenreExists(genre_id, (err, exists) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Artist not found' });
+            if (!exists) {
+                res.status(400).json({ error: 'Genre not found' });
                 return;
             }
-            res.json({ message: 'Artist updated successfully' });
+
+            // Actualizar el artista
+            Artist.update(id, { name, genre_id, picture_url, debut_year }, (err, artist) => {
+                if (err) {
+                    if (err.message === 'Artist not found') {
+                        res.status(404).json({ error: 'Artist not found' });
+                        return;
+                    }
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+                res.json({ 
+                    message: 'Artist updated successfully',
+                    artist: artist 
+                });
+            });
         });
     },
 
     deleteArtist: (req, res) => {
         const { id } = req.params;
-        Artist.delete(id, function(err) {
-            if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-            }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Artist not found' });
-                return;
-            }
-            res.json({ message: 'Artist deleted successfully' });
-        });
-    },
 
-    getArtistsByGenre: (req, res) => {
-        const { genreId } = req.params;
-        Artist.getByGenreId(genreId, (err, rows) => {
+        Artist.delete(id, (err, deletedArtist) => {
             if (err) {
+                if (err.message === 'Artist not found') {
+                    res.status(404).json({ error: 'Artist not found' });
+                    return;
+                }
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ artists: rows });
+            res.json({ 
+                message: 'Artist deleted successfully',
+                artist: deletedArtist 
+            });
         });
     }
 };
