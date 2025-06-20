@@ -1,7 +1,7 @@
 const db = require('../../config/database');
 
 const Album = {
-    // Obtener todos los álbumes con información de artista y género
+    // Servicio Básico: Obtener todos los álbumes con información de artista y género
     getAll: (callback) => {
         const query = `
         SELECT alb.*, a.name as artist_name, g.name as genre_name
@@ -12,7 +12,7 @@ const Album = {
         db.all(query, callback);
     },
 
-    // Obtener un álbum por ID con información de artista y género
+    // Servicio Básico: Obtener un álbum por ID con información de artista y género
     getById: (id, callback) => {
         const query = `
         SELECT alb.*, a.name as artist_name, g.name as genre_name
@@ -24,34 +24,62 @@ const Album = {
         db.get(query, [id], callback);
     },
 
-    // Crear un nuevo álbum
+    // Servicio Básico: Crear un nuevo álbum
     create: (albumData, callback) => {
+        const { title, release_year, genre_id, cover_url, artist_id } = albumData;
         const query = `
-        INSERT INTO Album (title, artist_id, genre_id, release_date, cover_image)
+        INSERT INTO Album (title, release_year, genre_id, cover_url, artist_id)
         VALUES (?, ?, ?, ?, ?)
         `;
-        const { title, artist_id, genre_id, release_date, cover_image } = albumData;
-        db.run(query, [title, artist_id, genre_id, release_date, cover_image], callback);
+        db.run(query, [title, release_year, genre_id, cover_url, artist_id], function(err) {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            // Obtener el álbum recién creado con información de artista y género
+            Album.getById(this.lastID, callback);
+        });
     },
 
-    // Actualizar un álbum existente
+    // Servicio Básico: Actualizar un álbum existente
     update: (id, albumData, callback) => {
+        const { title, release_year, genre_id, cover_url, artist_id } = albumData;
         const query = `
         UPDATE Album 
-        SET title = ?, artist_id = ?, genre_id = ?, release_date = ?, cover_image = ?
+        SET title = ?, release_year = ?, genre_id = ?, cover_url = ?, artist_id = ?
         WHERE id = ?
         `;
-        const { title, artist_id, genre_id, release_date, cover_image } = albumData;
-        db.run(query, [title, artist_id, genre_id, release_date, cover_image, id], callback);
+        db.run(query, [title, release_year, genre_id, cover_url, artist_id, id], function(err) {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            if (this.changes === 0) {
+                callback(new Error('Album not found'), null);
+                return;
+            }
+            // Obtener el álbum actualizado con información de artista y género
+            Album.getById(id, callback);
+        });
     },
 
-    // Eliminar un álbum
+    // Servicio Básico: Eliminar un álbum
     delete: (id, callback) => {
         const query = `DELETE FROM Album WHERE id = ?`;
-        db.run(query, [id], callback);
+        db.run(query, [id], function(err) {
+            if (err) {
+                callback(err, null);
+                return;
+            }
+            if (this.changes === 0) {
+                callback(new Error('Album not found'), null);
+                return;
+            }
+            callback(null, { message: 'Album deleted successfully', deletedId: id });
+        });
     },
 
-    // Obtener álbumes por artista
+    // Servicio Básico: Obtener álbumes por artista
     getByArtistId: (artistId, callback) => {
         const query = `
         SELECT alb.*, a.name as artist_name, g.name as genre_name
@@ -63,7 +91,7 @@ const Album = {
         db.all(query, [artistId], callback);
     },
 
-    // Obtener álbumes por género
+    // Servicio Básico: Obtener álbumes por género
     getByGenreId: (genreId, callback) => {
         const query = `
         SELECT alb.*, a.name as artist_name, g.name as genre_name

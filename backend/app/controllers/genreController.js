@@ -86,21 +86,6 @@ const genreController = {
             res.json({ message: 'Genre deleted successfully' });
         });
     },
-
-    searchGenres: (req, res) => {
-        const { q } = req.query;
-        if (!q) {
-            res.status(400).json({ error: 'Search term is required' });
-            return;
-        }
-        Genre.searchByName(q, (err, rows) => {
-            if (err) {
-                res.status(500).json({ error: err.message });
-                return;
-            }
-            res.json({ genres: rows });
-        });
-    }
 };
 
 module.exports = genreController;

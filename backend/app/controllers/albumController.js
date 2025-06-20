@@ -27,47 +27,73 @@ const albumController = {
     },
 
     createAlbum: (req, res) => {
-        const albumData = req.body;
-        Album.create(albumData, function(err) {
+        const { title, release_year, genre_id, cover_url, artist_id } = req.body;
+        
+        // Validación básica
+        if (!title || !release_year || !genre_id || !artist_id) {
+            res.status(400).json({ 
+                error: 'Missing required fields: title, release_year, genre_id, artist_id' 
+            });
+            return;
+        }
+
+        const albumData = { title, release_year, genre_id, cover_url, artist_id };
+        
+        Album.create(albumData, (err, album) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
             }
             res.status(201).json({ 
                 message: 'Album created successfully',
-                albumId: this.lastID 
+                album: album 
             });
         });
     },
 
     updateAlbum: (req, res) => {
         const { id } = req.params;
-        const albumData = req.body;
-        Album.update(id, albumData, function(err) {
+        const { title, release_year, genre_id, cover_url, artist_id } = req.body;
+        
+        // Validación básica
+        if (!title || !release_year || !genre_id || !artist_id) {
+            res.status(400).json({ 
+                error: 'Missing required fields: title, release_year, genre_id, artist_id' 
+            });
+            return;
+        }
+
+        const albumData = { title, release_year, genre_id, cover_url, artist_id };
+        
+        Album.update(id, albumData, (err, album) => {
             if (err) {
-                res.status(500).json({ error: err.message });
+                if (err.message === 'Album not found') {
+                    res.status(404).json({ error: 'Album not found' });
+                } else {
+                    res.status(500).json({ error: err.message });
+                }
                 return;
             }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Album not found' });
-                return;
-            }
-            res.json({ message: 'Album updated successfully' });
+            res.json({ 
+                message: 'Album updated successfully',
+                album: album 
+            });
         });
     },
 
     deleteAlbum: (req, res) => {
         const { id } = req.params;
-        Album.delete(id, function(err) {
+        
+        Album.delete(id, (err, result) => {
             if (err) {
-                res.status(500).json({ error: err.message });
+                if (err.message === 'Album not found') {
+                    res.status(404).json({ error: 'Album not found' });
+                } else {
+                    res.status(500).json({ error: err.message });
+                }
                 return;
             }
-            if (this.changes === 0) {
-                res.status(404).json({ error: 'Album not found' });
-                return;
-            }
-            res.json({ message: 'Album deleted successfully' });
+            res.json(result);
         });
     },
 
