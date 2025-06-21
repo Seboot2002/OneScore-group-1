@@ -101,6 +101,16 @@ const Album = {
         WHERE alb.genre_id = ?
         `;
         db.all(query, [genreId], callback);
+    },
+
+    searchByKeyword: (keyword, callback) => {
+        const query = `
+        SELECT id, title, cover_url
+        FROM Album 
+        WHERE title LIKE ?
+        `;
+        const searchTerm = `%${keyword}%`;
+        db.all(query, [searchTerm], callback);
     }
 };
 

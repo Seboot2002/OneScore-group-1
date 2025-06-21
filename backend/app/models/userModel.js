@@ -45,6 +45,25 @@ const User = {
         const query = `DELETE FROM User WHERE user_id = ?`;
         db.run(query, [id], callback);
     },
+
+    login: (login, password, callback) => {
+        const query = `
+        SELECT user_id, name, last_name, nickname, mail, photo_url 
+        FROM User 
+        WHERE (mail = ? OR nickname = ?) AND password = ?
+        `;
+        db.get(query, [login, login, password], callback);
+    },
+
+    searchByKeyword: (keyword, callback) => {
+        const query = `
+        SELECT user_id, photo_url, (name || ' ' || last_name) as full_name
+        FROM User 
+        WHERE name LIKE ? OR nickname LIKE ?
+        `;
+        const searchTerm = `%${keyword}%`;
+        db.all(query, [searchTerm, searchTerm], callback);
+    }
 };
 
 module.exports = User;

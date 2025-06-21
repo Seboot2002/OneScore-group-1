@@ -12,5 +12,6 @@ router.delete('/:id', albumController.deleteAlbum);
 // Rutas específicas
 router.get('/artist/:artistId', albumController.getAlbumsByArtist);
 router.get('/genre/:genreId', albumController.getAlbumsByGenre);
+router.get('/search/:keyword', albumController.searchAlbums);
 
 module.exports = router;

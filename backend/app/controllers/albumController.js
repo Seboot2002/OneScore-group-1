@@ -117,6 +117,23 @@ const albumController = {
             }
             res.json(rows);
         });
+    },
+
+    searchAlbums: (req, res) => {
+        const { keyword } = req.params;
+        
+        if (!keyword) {
+            res.status(400).json({ error: 'Keyword is required' });
+            return;
+        }
+
+        Album.searchByKeyword(keyword, (err, albums) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json(albums);
+        });
     }
 };
 

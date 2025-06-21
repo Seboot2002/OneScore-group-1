@@ -96,6 +96,16 @@ const Artist = {
             }
             callback(null, !!row);
         });
+    },
+
+    searchByKeyword: (keyword, callback) => {
+        const query = `
+        SELECT id, picture_url, name
+        FROM Artist 
+        WHERE name LIKE ?
+        `;
+        const searchTerm = `%${keyword}%`;
+        db.all(query, [searchTerm], callback);
     }
 };
 

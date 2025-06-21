@@ -168,7 +168,25 @@ const artistController = {
                 artist: deletedArtist 
             });
         });
+    },
+
+    searchArtists: (req, res) => {
+        const { keyword } = req.params;
+        
+        if (!keyword) {
+            res.status(400).json({ error: 'Keyword is required' });
+            return;
+        }
+
+        Artist.searchByKeyword(keyword, (err, artists) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json(artists);
+        });
     }
+
 };
 
 module.exports = artistController;
