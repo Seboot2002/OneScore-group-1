@@ -13,5 +13,8 @@ router.delete('/:id', albumController.deleteAlbum);
 router.get('/artist/:artistId', albumController.getAlbumsByArtist);
 router.get('/genre/:genreId', albumController.getAlbumsByGenre);
 router.get('/search/:keyword', albumController.searchAlbums);
+router.post('/user/:userId/:albumId', albumController.addAlbumToUser);
+router.delete('/user/:userId/:albumId', albumController.removeAlbumFromUser);
+router.post('/rate', albumController.rateAlbum);
 
 module.exports = router;

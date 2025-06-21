@@ -106,6 +106,67 @@ const Artist = {
         `;
         const searchTerm = `%${keyword}%`;
         db.all(query, [searchTerm], callback);
+    },
+
+    removeFromUser: (userId, artistId, callback) => {
+        db.serialize(() => {
+            db.run('BEGIN TRANSACTION');
+            
+            // 1. Eliminar relación Artist_User
+            db.run('DELETE FROM Artist_User WHERE user_id = ? AND artist_id = ?', [userId, artistId], function(err) {
+                if (err) {
+                    db.run('ROLLBACK');
+                    callback(err);
+                    return;
+                }
+                
+                // 2. Obtener albums del artista que tiene el usuario
+                db.all('SELECT album_id FROM Album_User au JOIN Album a ON au.album_id = a.id WHERE au.user_id = ? AND a.artist_id = ?', 
+                    [userId, artistId], (err, albums) => {
+                    if (err) {
+                        db.run('ROLLBACK');
+                        callback(err);
+                        return;
+                    }
+                    
+                    if (albums.length === 0) {
+                        db.run('COMMIT');
+                        callback(null, { message: 'Artist relationship removed' });
+                        return;
+                    }
+                    
+                    const albumIds = albums.map(album => album.album_id);
+                    const placeholders = albumIds.map(() => '?').join(',');
+                    
+                    // 3. Eliminar canciones de esos albums
+                    db.run(`DELETE FROM Song_User WHERE user_id = ? AND song_id IN (
+                        SELECT s.id FROM Song s WHERE s.album_id IN (${placeholders})
+                    )`, [userId, ...albumIds], (err) => {
+                        if (err) {
+                            db.run('ROLLBACK');
+                            callback(err);
+                            return;
+                        }
+                        
+                        // 4. Eliminar albums del usuario
+                        db.run(`DELETE FROM Album_User WHERE user_id = ? AND album_id IN (${placeholders})`, 
+                            [userId, ...albumIds], (err) => {
+                            if (err) {
+                                db.run('ROLLBACK');
+                                callback(err);
+                                return;
+                            }
+                            
+                            db.run('COMMIT');
+                            callback(null, { 
+                                message: 'Artist and all related albums and songs removed',
+                                removedAlbums: albums.length
+                            });
+                        });
+                    });
+                });
+            });
+        });
     }
 };
 

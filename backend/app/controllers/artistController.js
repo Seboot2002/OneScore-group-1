@@ -185,6 +185,26 @@ const artistController = {
             }
             res.json(artists);
         });
+    },
+
+    removeArtistFromUser: (req, res) => {
+        const { userId, artistId } = req.params;
+        
+        if (!userId || !artistId) {
+            res.status(400).json({ error: 'User ID and Artist ID are required' });
+            return;
+        }
+
+        Artist.removeFromUser(userId, artistId, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json({
+                message: 'Artist removed from user profile successfully',
+                result: result
+            });
+        });
     }
 
 };

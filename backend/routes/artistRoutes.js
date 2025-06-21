@@ -11,6 +11,6 @@ router.delete('/:id', artistController.deleteArtist);
 
 // Rutas específicas
 router.get('/search/:keyword', artistController.searchArtists);
-
+router.delete('/user/:userId/:artistId', artistController.removeArtistFromUser);
 
 module.exports = router;
