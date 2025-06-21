@@ -50,6 +50,7 @@ CREATE TABLE Song (
 CREATE TABLE Artist_User (
     user_id INTEGER NOT NULL,
     artist_id INTEGER NOT NULL,
+    rank_state TEXT CHECK(rank_state IN ('Valorado', 'Por valorar')),
     PRIMARY KEY (user_id, artist_id),
     FOREIGN KEY (user_id) REFERENCES User(user_id),
     FOREIGN KEY (artist_id) REFERENCES Artist(id)

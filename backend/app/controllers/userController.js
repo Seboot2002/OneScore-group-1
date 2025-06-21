@@ -7,7 +7,7 @@ const userController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ users: rows });
+            res.json(rows);
         });
     },
 
@@ -22,7 +22,7 @@ const userController = {
                 res.status(404).json({ error: 'User not found' });
                 return;
             }
-            res.json({ user: row });
+            res.json(row);
         });
     },
 
@@ -70,6 +70,49 @@ const userController = {
             res.json({ message: 'User deleted successfully' });
         });
     },
+
+    loginUser: (req, res) => {
+        const { login, password } = req.body;
+        
+        if (!login || !password) {
+            res.status(400).json({ 
+                error: 'Missing required fields: login and password are required' 
+            });
+            return;
+        }
+
+        User.login(login, password, (err, user) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            if (!user) {
+                res.status(401).json({ error: 'Invalid credentials' });
+                return;
+            }
+            res.json({
+                message: 'Login successful',
+                user: user
+            });
+        });
+    },
+
+    searchUsers: (req, res) => {
+        const { keyword } = req.params;
+        
+        if (!keyword) {
+            res.status(400).json({ error: 'Keyword is required' });
+            return;
+        }
+
+        User.searchByKeyword(keyword, (err, users) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json(users);
+        });
+    }
 };
 
 module.exports = userController;

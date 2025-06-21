@@ -101,7 +101,302 @@ const Album = {
         WHERE alb.genre_id = ?
         `;
         db.all(query, [genreId], callback);
+    },
+
+    searchByKeyword: (keyword, callback) => {
+        const query = `
+        SELECT id, title, cover_url
+        FROM Album 
+        WHERE title LIKE ?
+        `;
+        const searchTerm = `%${keyword}%`;
+        db.all(query, [searchTerm], callback);
+    },
+
+    addToUser: (userId, albumId, callback) => {
+    db.serialize(() => {
+        db.run('BEGIN TRANSACTION');
+        
+        // 1. Obtener artist_id del album
+        db.get('SELECT artist_id FROM Album WHERE id = ?', [albumId], (err, album) => {
+            if (err) {
+                db.run('ROLLBACK');
+                callback(err);
+                return;
+            }
+            if (!album) {
+                db.run('ROLLBACK');
+                callback(new Error('Album not found'));
+                return;
+            }
+            
+            // 2. Verificar si existe la relación Artist_User, si no existe la crea
+            db.get('SELECT * FROM Artist_User WHERE user_id = ? AND artist_id = ?', 
+                [userId, album.artist_id], (err, artistUser) => {
+                if (err) {
+                    db.run('ROLLBACK');
+                    callback(err);
+                    return;
+                }
+                
+                const insertArtistUser = () => {
+                    // 3. Agregar album al usuario
+                    db.run('INSERT OR IGNORE INTO Album_User (user_id, album_id, rank_state) VALUES (?, ?, "Por valorar")', 
+                        [userId, albumId], (err) => {
+                        if (err) {
+                            db.run('ROLLBACK');
+                            callback(err);
+                            return;
+                        }
+                        
+                        // 4. Obtener todas las canciones del album
+                        db.all('SELECT id FROM Song WHERE album_id = ?', [albumId], (err, songs) => {
+                            if (err) {
+                                db.run('ROLLBACK');
+                                callback(err);
+                                return;
+                            }
+                            
+                            // 5. Agregar todas las canciones del album al usuario (sin score)
+                            if (songs.length > 0) {
+                                const insertSongPromises = songs.map(song => {
+                                    return new Promise((resolve, reject) => {
+                                        db.run('INSERT OR IGNORE INTO Song_User (user_id, song_id) VALUES (?, ?)',
+                                            [userId, song.id], (err) => {
+                                            if (err) reject(err);
+                                            else resolve();
+                                        });
+                                    });
+                                });
+                                
+                                Promise.all(insertSongPromises).then(() => {
+                                    db.run('COMMIT');
+                                    callback(null, { 
+                                        message: 'Album and songs added to user profile',
+                                        albumId: albumId,
+                                        artistId: album.artist_id,
+                                        songsAdded: songs.length
+                                    });
+                                }).catch(err => {
+                                    db.run('ROLLBACK');
+                                    callback(err);
+                                });
+                            } else {
+                                db.run('COMMIT');
+                                callback(null, { 
+                                    message: 'Album added to user profile (no songs found)',
+                                    albumId: albumId,
+                                    artistId: album.artist_id,
+                                    songsAdded: 0
+                                });
+                            }
+                        });
+                    });
+                };
+                
+                // Si no existe la relación Artist_User, la creamos
+                if (!artistUser) {
+                    db.run('INSERT INTO Artist_User (user_id, artist_id, rank_state) VALUES (?, ?, "Por valorar")', 
+                        [userId, album.artist_id], (err) => {
+                        if (err) {
+                            db.run('ROLLBACK');
+                            callback(err);
+                            return;
+                        }
+                        insertArtistUser();
+                    });
+                } else {
+                    // Si ya existe, continuamos con el proceso
+                    insertArtistUser();
+                }
+            });
+        });
+    });
+},
+
+    removeFromUser: (userId, albumId, callback) => {
+        db.serialize(() => {
+            db.run('BEGIN TRANSACTION');
+            
+            // 1. Eliminar relación Album_User
+            db.run('DELETE FROM Album_User WHERE user_id = ? AND album_id = ?', [userId, albumId], function(err) {
+                if (err) {
+                    db.run('ROLLBACK');
+                    callback(err);
+                    return;
+                }
+                
+                // 2. Eliminar todas las canciones de ese album del usuario
+                db.run('DELETE FROM Song_User WHERE user_id = ? AND song_id IN (SELECT id FROM Song WHERE album_id = ?)', 
+                    [userId, albumId], (err) => {
+                    if (err) {
+                        db.run('ROLLBACK');
+                        callback(err);
+                        return;
+                    }
+                    
+                    db.run('COMMIT');
+                    callback(null, { 
+                        message: 'Album and all related songs removed from user profile'
+                    });
+                });
+            });
+        });
+    },
+
+    rateAlbum: (albumId, userId, songRatings, callback) => {
+        db.serialize(() => {
+            db.run('BEGIN TRANSACTION');
+            
+            // 1. Obtener todas las canciones del album
+            db.all('SELECT id FROM Song WHERE album_id = ? ORDER BY n_track', [albumId], (err, albumSongs) => {
+                if (err) {
+                    db.run('ROLLBACK');
+                    callback(err);
+                    return;
+                }
+                
+                if (albumSongs.length === 0) {
+                    db.run('ROLLBACK');
+                    callback(new Error('Album not found or has no songs'));
+                    return;
+                }
+                
+                // 2. Verificar que todas las canciones estén siendo valoradas
+                const albumSongIds = albumSongs.map(song => song.id);
+                const ratedSongIds = songRatings.map(rating => rating.songId);
+                
+                const missingRatings = albumSongIds.filter(id => !ratedSongIds.includes(id));
+                if (missingRatings.length > 0) {
+                    db.run('ROLLBACK');
+                    callback(new Error('No has valorado todas las canciones'));
+                    return;
+                }
+                
+                // 3. Verificar que todas las puntuaciones sean válidas
+                const invalidRatings = songRatings.filter(rating => 
+                    !rating.score || rating.score < 1 || rating.score > 100
+                );
+                if (invalidRatings.length > 0) {
+                    db.run('ROLLBACK');
+                    callback(new Error('Invalid score values. Scores must be between 1 and 100'));
+                    return;
+                }
+                
+                // 4. Calcular promedio
+                const totalScore = songRatings.reduce((sum, rating) => sum + rating.score, 0);
+                const averageScore = Math.round((totalScore / songRatings.length) * 100) / 100;
+                
+                // 5. Obtener fecha actual si es primera valoración
+                db.get('SELECT rank_date FROM Album_User WHERE user_id = ? AND album_id = ?', 
+                    [userId, albumId], (err, existingRating) => {
+                    if (err) {
+                        db.run('ROLLBACK');
+                        callback(err);
+                        return;
+                    }
+                    
+                    const currentDate = existingRating && existingRating.rank_date ? 
+                        existingRating.rank_date : new Date().toISOString().split('T')[0];
+                    
+                    // 6. Eliminar valoraciones previas de canciones
+                    db.run('DELETE FROM Song_User WHERE user_id = ? AND song_id IN (' + 
+                        albumSongIds.map(() => '?').join(',') + ')', 
+                        [userId, ...albumSongIds], (err) => {
+                        if (err) {
+                            db.run('ROLLBACK');
+                            callback(err);
+                            return;
+                        }
+                        
+                        // 7. Insertar nuevas valoraciones de canciones
+                        const insertSongPromises = songRatings.map(rating => {
+                            return new Promise((resolve, reject) => {
+                                db.run('INSERT INTO Song_User (user_id, song_id, score) VALUES (?, ?, ?)',
+                                    [userId, rating.songId, rating.score], (err) => {
+                                    if (err) reject(err);
+                                    else resolve();
+                                });
+                            });
+                        });
+                        
+                        Promise.all(insertSongPromises).then(() => {
+                            // 8. Actualizar Album_User
+                            db.run(`UPDATE Album_User SET rank_date = ?, rank_state = 'Valorado' 
+                                WHERE user_id = ? AND album_id = ?`, 
+                                [currentDate, userId, albumId], (err) => {
+                                if (err) {
+                                    db.run('ROLLBACK');
+                                    callback(err);
+                                    return;
+                                }
+                                
+                                // 9. Verificar si todos los albums del artista están valorados
+                                db.get('SELECT artist_id FROM Album WHERE id = ?', [albumId], (err, album) => {
+                                    if (err) {
+                                        db.run('ROLLBACK');
+                                        callback(err);
+                                        return;
+                                    }
+                                    
+                                    db.get(`SELECT COUNT(*) as total_albums,
+                                        SUM(CASE WHEN au.rank_state = 'Valorado' THEN 1 ELSE 0 END) as rated_albums
+                                        FROM Album_User au 
+                                        JOIN Album a ON au.album_id = a.id
+                                        WHERE au.user_id = ? AND a.artist_id = ?`,
+                                        [userId, album.artist_id], (err, counts) => {
+                                        
+                                        if (err) {
+                                            db.run('ROLLBACK');
+                                            callback(err);
+                                            return;
+                                        }
+                                        
+                                        // 10. Actualizar Artist_User si todos los albums están valorados
+                                        if (counts.total_albums === counts.rated_albums) {
+                                            db.run(`UPDATE Artist_User SET rank_state = 'Valorado' 
+                                                WHERE user_id = ? AND artist_id = ?`,
+                                                [userId, album.artist_id], (err) => {
+                                                if (err) {
+                                                    db.run('ROLLBACK');
+                                                    callback(err);
+                                                    return;
+                                                }
+                                                
+                                                db.run('COMMIT');
+                                                callback(null, {
+                                                    user_id: userId,
+                                                    album_id: albumId,
+                                                    rank_date: currentDate,
+                                                    rank_state: 'Valorado',
+                                                    average_score: averageScore,
+                                                    artist_fully_rated: true
+                                                });
+                                            });
+                                        } else {
+                                            db.run('COMMIT');
+                                            callback(null, {
+                                                user_id: userId,
+                                                album_id: albumId,
+                                                rank_date: currentDate,
+                                                rank_state: 'Valorado',
+                                                average_score: averageScore,
+                                                artist_fully_rated: false
+                                            });
+                                        }
+                                    });
+                                });
+                            });
+                        }).catch(err => {
+                            db.run('ROLLBACK');
+                            callback(err);
+                        });
+                    });
+                });
+            });
+        });
     }
+
 };
 
 module.exports = Album;

@@ -7,7 +7,7 @@ const albumController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ albums: rows });
+            res.json(rows);
         });
     },
 
@@ -22,7 +22,7 @@ const albumController = {
                 res.status(404).json({ error: 'Album not found' });
                 return;
             }
-            res.json({ album: row });
+            res.json(row);
         });
     },
 
@@ -104,7 +104,7 @@ const albumController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ albums: rows });
+            res.json(rows);
         });
     },
 
@@ -115,7 +115,86 @@ const albumController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ albums: rows });
+            res.json(rows);
+        });
+    },
+
+    searchAlbums: (req, res) => {
+        const { keyword } = req.params;
+        
+        if (!keyword) {
+            res.status(400).json({ error: 'Keyword is required' });
+            return;
+        }
+
+        Album.searchByKeyword(keyword, (err, albums) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json(albums);
+        });
+    },
+
+    addAlbumToUser: (req, res) => {
+        const { userId, albumId } = req.params;
+        
+        if (!userId || !albumId) {
+            res.status(400).json({ error: 'User ID and Album ID are required' });
+            return;
+        }
+
+        Album.addToUser(userId, albumId, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json({
+                message: 'Album added to user profile successfully',
+                result: result
+            });
+        });
+    },
+
+    removeAlbumFromUser: (req, res) => {
+        const { userId, albumId } = req.params;
+        
+        if (!userId || !albumId) {
+            res.status(400).json({ error: 'User ID and Album ID are required' });
+            return;
+        }
+
+        Album.removeFromUser(userId, albumId, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json({
+                message: 'Album removed from user profile successfully',
+                result: result
+            });
+        });
+    },
+
+    rateAlbum: (req, res) => {
+        const { albumId, userId, songRatings } = req.body;
+        
+        if (!albumId || !userId || !songRatings || !Array.isArray(songRatings)) {
+            res.status(400).json({ 
+                error: 'Missing required fields: albumId, userId, and songRatings array are required' 
+            });
+            return;
+        }
+
+        Album.rateAlbum(albumId, userId, songRatings, (err, result) => {
+            if (err) {
+                res.status(400).json({ error: err.message });
+                return;
+            }
+            res.json({
+                message: 'Album rated successfully',
+                result: result
+            });
         });
     }
 };

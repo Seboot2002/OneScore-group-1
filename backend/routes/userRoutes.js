@@ -10,4 +10,7 @@ router.put('/:id', userController.updateUser);
 router.delete('/:id', userController.deleteUser);
 
 // Rutas específicas
+router.post('/login', userController.loginUser);
+router.get('/search/:keyword', userController.searchUsers);
+
 module.exports = router;
