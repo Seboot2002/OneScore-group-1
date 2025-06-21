@@ -7,7 +7,7 @@ const artistController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ artists: rows });
+            res.json(rows);
         });
     },
 
@@ -22,7 +22,7 @@ const artistController = {
                 res.status(404).json({ error: 'Artist not found' });
                 return;
             }
-            res.json({ artist: row });
+            res.json(row);
         });
     },
 

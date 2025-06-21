@@ -7,7 +7,7 @@ const songController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ songs: rows });
+            res.json(rows);
         });
     },
 
@@ -22,7 +22,7 @@ const songController = {
                 res.status(404).json({ error: 'Song not found' });
                 return;
             }
-            res.json({ song: row });
+            res.json(row);
         });
     },
 

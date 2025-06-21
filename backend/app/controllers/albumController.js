@@ -7,7 +7,7 @@ const albumController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ albums: rows });
+            res.json(rows);
         });
     },
 
@@ -22,7 +22,7 @@ const albumController = {
                 res.status(404).json({ error: 'Album not found' });
                 return;
             }
-            res.json({ album: row });
+            res.json(row);
         });
     },
 
@@ -104,7 +104,7 @@ const albumController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ albums: rows });
+            res.json(rows);
         });
     },
 
@@ -115,7 +115,7 @@ const albumController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ albums: rows });
+            res.json(rows);
         });
     }
 };

@@ -7,7 +7,7 @@ const genreController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ genres: rows });
+            res.json(rows);
         });
     },
 
@@ -22,7 +22,7 @@ const genreController = {
                 res.status(404).json({ error: 'Genre not found' });
                 return;
             }
-            res.json({ genre: row });
+            res.json(row);
         });
     },
 

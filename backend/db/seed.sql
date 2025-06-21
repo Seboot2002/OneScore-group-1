@@ -377,17 +377,17 @@ INSERT INTO Album_User (user_id, album_id, rank_date, rank_state) VALUES
 (5, 10, NULL, 'Por valorar');
 
 -- 7.2 Artist_User (relación Usuario-Artista)
-INSERT INTO Artist_User (user_id, artist_id) VALUES 
+INSERT INTO Artist_User (user_id, artist_id, rank_state) VALUES
 -- Usuario 1: Sebastián
-(1, 1), (1, 2),
+(1, 1, 'Por valorar'), (1, 2, 'Por valorar'),
 -- Usuario 2: Rodrigo
-(2, 3), (2, 4),
+(2, 3, 'Por valorar'), (2, 4, 'Por valorar'),
 -- Usuario 3: Carlos
-(3, 4),
+(3, 4, 'Por valorar'),
 -- Usuario 4: Tyler
-(4, 4),
+(4, 4, 'Por valorar'),
 -- Usuario 5: Sofía
-(5, 4), (5, 5);
+(5, 4, 'Por valorar'), (5, 5, 'Por valorar');
 
 -- 7.3 Song_User (relación Usuario-Canción con puntuaciones)
 INSERT INTO Song_User (user_id, song_id, score) VALUES

@@ -7,7 +7,7 @@ const userController = {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.json({ users: rows });
+            res.json(rows);
         });
     },
 
@@ -22,7 +22,7 @@ const userController = {
                 res.status(404).json({ error: 'User not found' });
                 return;
             }
-            res.json({ user: row });
+            res.json(row);
         });
     },
 
