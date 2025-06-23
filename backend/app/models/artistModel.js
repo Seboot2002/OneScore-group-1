@@ -22,6 +22,24 @@ const Artist = {
         db.get(query, [id], callback);
     },
 
+    getStatsByArtistId: (artistId, callback) => {
+        const query = `
+            SELECT 
+                a.id AS artist_id,
+                a.name AS artist_name,
+                a.picture_url,
+                a.debut_year,
+                COUNT(DISTINCT al.id) AS album_count,
+                COUNT(s.id) AS song_count
+            FROM Artist a
+            LEFT JOIN Album al ON al.artist_id = a.id
+            LEFT JOIN Song s ON s.album_id = al.id
+            WHERE a.id = ?
+            GROUP BY a.id
+        `;
+        db.get(query, [artistId], callback);
+    },
+
     // Servicio Básico: Crear nuevo artista
     create: (artistData, callback) => {
         const { name, genre_id, picture_url, debut_year } = artistData;
@@ -36,6 +54,25 @@ const Artist = {
             }
             // Retornar el artista creado con su información completa
             Artist.getById(this.lastID, callback);
+        });
+    },
+
+    addToUser: (artistId, userId, callback) => {
+        const query = `
+            INSERT OR IGNORE INTO Artist_User (user_id, artist_id, rank_state)
+            VALUES (?, ?, 'Por valorar')
+        `;
+        db.run(query, [userId, artistId], function(err) {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            if (this.changes === 0) {
+                callback(null, { message: 'Artist already associated with user' });
+            } else {
+                callback(null, { message: 'Artist added to user successfully' });
+            }
         });
     },
 

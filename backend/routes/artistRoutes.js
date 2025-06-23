@@ -12,5 +12,7 @@ router.delete('/:id', artistController.deleteArtist);
 // Rutas específicas
 router.get('/search/:keyword', artistController.searchArtists);
 router.delete('/user/:userId/:artistId', artistController.removeArtistFromUser);
+router.get('/artist-stats/:id', artistController.getStatsByArtistId);
+router.post('/artist-add-user/:id/:user_id', artistController.addToUser);
 
 module.exports = router;

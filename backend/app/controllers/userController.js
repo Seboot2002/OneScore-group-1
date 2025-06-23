@@ -26,6 +26,58 @@ const userController = {
         });
     },
 
+    getBasicInfoById: (req, res) => {
+        const { id } = req.params;
+        User.getBasicInfoById(id, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            }
+            if (!result) {
+                res.status(404).json({ error: 'User not found' });
+            }
+            res.json(result);
+        });
+    },
+
+    getUserStats: (req, res) => {
+        const { id } = req.params;
+        User.getUserStats(id, (err, stats) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            }
+            if (!stats) {
+                res.status(404).json({ error: 'UserData not found' });
+            }
+            res.json(stats);
+        });
+    },
+
+    getAlbumsByUserId: (req, res) => {
+        const { id } = req.params;
+        User.getAlbumsByUserId(id, (err, albums) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            }
+            if (!albums) {
+                res.status(404).json({ error: 'UserData not found' });
+            }
+            res.json(albums);
+        });
+    },
+
+    getArtistsByUserId: (req, res) => {
+        const { id } = req.params;
+        User.getArtistsByUserId(id, (err, artists) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+            }
+            if (!artists) {
+                res.status(404).json({ error: 'UserData not found' });
+            }
+            res.json(artists);
+        });
+    },
+
     createUser: (req, res) => {
         const userData = req.body;
         User.create(userData, function(err) {

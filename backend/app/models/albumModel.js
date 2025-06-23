@@ -24,6 +24,16 @@ const Album = {
         db.get(query, [id], callback);
     },
 
+    getSongsByAlbumId: (id, callback) => {
+        const query = `
+            SELECT id, title, n_track, album_id
+            FROM Song
+            WHERE album_id = ?
+            ORDER BY n_track ASC
+        `;
+        db.all(query, [id], callback);
+    },
+
     // Servicio Básico: Crear un nuevo álbum
     create: (albumData, callback) => {
         const { title, release_year, genre_id, cover_url, artist_id } = albumData;

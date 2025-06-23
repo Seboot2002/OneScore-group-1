@@ -26,6 +26,21 @@ const albumController = {
         });
     },
 
+    getSongsByAlbumId: (req, res) => {
+        const { id } = req.params;
+        Album.getSongsByAlbumId(id, (err, songs) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            if (!songs) {
+                res.status(404).json({ error: 'AlbumData not found' });
+                return;
+            }
+            res.json(songs);
+        });
+    },
+
     createAlbum: (req, res) => {
         const { title, release_year, genre_id, cover_url, artist_id } = req.body;
         

@@ -16,5 +16,6 @@ router.get('/search/:keyword', albumController.searchAlbums);
 router.post('/user/:userId/:albumId', albumController.addAlbumToUser);
 router.delete('/user/:userId/:albumId', albumController.removeAlbumFromUser);
 router.post('/rate', albumController.rateAlbum);
+router.get('/album-songs/:id', albumController.getSongsByAlbumId);
 
 module.exports = router;

@@ -20,6 +20,61 @@ const User = {
         db.get(query, [id], callback);
     },
 
+    getBasicInfoById: (id, callback) => {
+        const query = `
+        SELECT photo_url, nickname, (name || ' ' || last_name) AS full_name
+        FROM User
+        WHERE user_id = ?
+        `;
+        db.get(query, [id], callback);
+    },
+
+    getUserStats: (id, callback) => {
+        const query = `
+        SELECT 
+            (SELECT COUNT(*) FROM Album_User WHERE user_id = ?) AS album_count,
+            (SELECT COUNT(*) FROM Artist_User WHERE user_id = ?) AS artist_count,
+            (SELECT COUNT(*) FROM Song_User WHERE user_id = ?) AS song_count
+        `;
+        db.get(query, [id, id, id], callback);
+    },
+
+    getAlbumsByUserId: (id, callback) => {
+        const query = `
+            SELECT 
+                a.id AS album_id,
+                a.title AS album_title,
+                a.cover_url,
+                a.release_year,
+                au.rank_state,
+                ar.id AS artist_id,
+                ar.name AS artist_name,
+                ar.picture_url AS artist_picture_url
+            FROM Album_User au
+            JOIN Album a ON a.id = au.album_id
+            JOIN Artist ar ON ar.id = a.artist_id
+            WHERE au.user_id = ?
+        `;
+        db.all(query, [id], callback);
+    },
+
+    getArtistsByUserId: (id, callback) => {
+        const query = `
+            SELECT 
+                ar.id AS artist_id,
+                ar.name AS artist_name,
+                ar.picture_url,
+                ar.genre_id,
+                ar.debut_year,
+                au.rank_state
+            FROM Artist_User au
+            JOIN Artist ar ON ar.id = au.artist_id
+            WHERE au.user_id = ?
+        `;
+        db.all(query, [id], callback);
+    },
+
+
     create: (userData, callback) => {
         const query = `
         INSERT INTO User (name, last_name, nickname, mail, password, photo_url)

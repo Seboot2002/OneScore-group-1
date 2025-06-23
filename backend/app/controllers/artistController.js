@@ -26,6 +26,21 @@ const artistController = {
         });
     },
 
+    getStatsByArtistId: (req, res) => {
+        const { id } = req.params;
+        Artist.getStatsByArtistId(id, (err, stats) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            if (!stats) {
+                res.status(404).json({ error: 'Artist not found' });
+                return;
+            }
+            res.json(stats);
+        });
+    },
+
     createArtist: (req, res) => {
         const { name, genre_id, picture_url, debut_year } = req.body;
 
@@ -82,6 +97,21 @@ const artistController = {
                     message: 'Artist created successfully',
                     artist: artist 
                 });
+            });
+        });
+    },
+
+    addToUser: (req, res) => {
+        const { id, user_id } = req.params;
+        
+        Artist.addToUser(id, user_id, (err, result) => {
+
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.status(201).json({ 
+                message: result.message
             });
         });
     },
