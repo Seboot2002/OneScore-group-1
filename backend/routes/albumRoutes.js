@@ -1,5 +1,6 @@
 const express = require('express');
 const albumController = require('../app/controllers/albumController');
+const userController = require('../app/controllers/userController');
 const router = express.Router();
 
 // Rutas básicas CRUD
@@ -17,5 +18,6 @@ router.post('/user/:userId/:albumId', albumController.addAlbumToUser);
 router.delete('/user/:userId/:albumId', albumController.removeAlbumFromUser);
 router.post('/rate', albumController.rateAlbum);
 router.get('/album-songs/:id', albumController.getSongsByAlbumId);
+
 
 module.exports = router;
