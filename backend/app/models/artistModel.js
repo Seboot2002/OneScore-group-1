@@ -204,6 +204,32 @@ const Artist = {
                 });
             });
         });
+    },
+
+    recommendArtistToUser: (userId, callback) => {
+        const query = `
+            SELECT a.id, a.name, a.picture_url
+            FROM Artist a
+            WHERE a.id NOT IN (
+                SELECT artist_id FROM Artist_User WHERE user_id = ?
+            )
+            ORDER BY RANDOM()
+            LIMIT 1
+        `;
+        db.get(query, [userId], (err, artist) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            if (!artist) {
+                // El usuario ya tiene todos los artistas
+                callback(null, null);
+                return;
+            }
+
+            callback(null, artist);
+        });
     }
 };
 

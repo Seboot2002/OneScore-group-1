@@ -153,8 +153,6 @@ const User = {
         const query = `UPDATE User SET password = ? WHERE user_id = ?`;
         db.run(query, [password, id], callback);
     }
-
-    
 };
 
 module.exports = User;
