@@ -8,6 +8,7 @@ const artistRoutes = require('./routes/artistRoutes');
 const albumRoutes = require('./routes/albumRoutes');
 const songRoutes = require('./routes/songRoutes');
 const genreRoutes = require('./routes/genreRoutes');
+const recommendationRoutes = require('./routes/recommendationRoutes');
 
 const app = express();
 
@@ -41,6 +42,7 @@ app.use('/api/artists', artistRoutes);
 app.use('/api/albums', albumRoutes);
 app.use('/api/songs', songRoutes);
 app.use('/api/genres', genreRoutes);
+app.use('/api/recommendations', recommendationRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
