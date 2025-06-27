@@ -217,22 +217,23 @@ const userController = {
             res.json({ message: 'User updated successfully' });
         });
     },
-   updateUserProfile(req, res) {
-    const { id } = req.params;
-    const userData = req.body;
 
-    User.updateUserProfile(id, userData, function(err) {
-        if (err) {
-            return res.status(500).json({ error: err.message || "Something went wrong!" });
-        }
+    updateUserProfile(req, res) {
+        const { id } = req.params;
+        const userData = req.body;
 
-        if (this.changes === 0) {
-            return res.status(404).json({ error: 'User not found' });
-        }
+        User.updateUserProfile(id, userData, function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message || "Something went wrong!" });
+            }
 
-        res.json({ message: 'User updated successfully' });
-    });
-}
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            res.json({ message: 'User updated successfully' });
+        });
+    }
 
 
 };

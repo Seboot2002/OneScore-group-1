@@ -129,20 +129,30 @@ const User = {
     },
 
     updateUserProfile: (id, userData, callback) => {
-        const query = `
-            UPDATE User 
-            SET name = ?, last_name = ?, mail = ?, photo_url = ?
-            WHERE user_id = ?
-        `;
-        const { name, last_name, mail, photo_url } = userData;
-        db.run(query, [name, last_name, mail, photo_url, id], callback);
+        const fields = [];
+        const values = [];
+
+        for (const key of ['name', 'last_name', 'mail', 'photo_url']) {
+            if (userData[key] !== undefined) {
+                fields.push(`${key} = ?`);
+                values.push(userData[key]);
+            }
+        }
+
+        if (fields.length === 0) {
+            return callback(new Error("No fields to update"));
+        }
+
+        const query = `UPDATE User SET ${fields.join(', ')} WHERE user_id = ?`;
+        values.push(id);
+
+        db.run(query, values, callback);
     },
+    
     updateUserPassword: (id, password, callback) => {
         const query = `UPDATE User SET password = ? WHERE user_id = ?`;
         db.run(query, [password, id], callback);
     }
-
-    
 };
 
 module.exports = User;

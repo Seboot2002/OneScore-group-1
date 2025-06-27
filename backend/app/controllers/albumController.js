@@ -211,6 +211,31 @@ const albumController = {
                 result: result
             });
         });
+    },
+
+    recommendAlbumsToUser: (req, res) => {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
+
+        Album.recommendAlbumsToUser(userId, (err, albums) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            if (!albums || albums.length === 0) {
+                return res.json({ message: "No podemos recomendarte nada" });
+            }
+
+            // Solo devolvemos id, title y cover_url
+            res.json(albums.map(album => ({
+                id: album.id,
+                title: album.title,
+                cover_url: album.cover_url
+            })));
+        });
     }
 };
 

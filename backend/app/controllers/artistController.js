@@ -235,6 +235,30 @@ const artistController = {
                 result: result
             });
         });
+    },
+
+    recommendArtistToUser: (req, res) => {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
+
+        Artist.recommendArtistToUser(userId, (err, artist) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            if (!artist) {
+                return res.json({ message: "No podemos recomendarte nada" });
+            }
+
+            res.json({
+                id: artist.id,
+                name: artist.name,
+                picture_url: artist.picture_url
+            });
+        });
     }
 
 };
