@@ -405,6 +405,32 @@ const Album = {
                 });
             });
         });
+    },
+
+    recommendAlbumsToUser: (userId, callback) => {
+        const query = `
+            SELECT al.id, al.title, al.cover_url
+            FROM Album al
+            WHERE al.id NOT IN (
+                SELECT album_id FROM Album_User WHERE user_id = ?
+            )
+            ORDER BY RANDOM()
+            LIMIT 2
+        `;
+        db.all(query, [userId], (err, albums) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            if (!albums || albums.length === 0) {
+                // El usuario ya tiene todos los álbumes
+                callback(null, null);
+                return;
+            }
+
+            callback(null, albums);
+        });
     }
 
 };
