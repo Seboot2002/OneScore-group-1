@@ -1,3 +1,4 @@
+const { param } = require('../../routes/userRoutes');
 const User = require('../models/userModel');
 
 const userController = {
@@ -164,7 +165,76 @@ const userController = {
             }
             res.json(users);
         });
-    }
+    },
+    //para registerNewUser, favor de mandar un objeto que tenga un objeto User dentro y un String llamado 'repeatPassword' //
+    registerNewUser: (req, res) => {
+        const { repeatPassword, user } = req.body;
+
+        if (!user || !repeatPassword) {
+            return res.status(400).json({ error: 'Missing user data or repeatPassword' });
+        }
+
+        if (user.password !== repeatPassword) {
+            return res.status(400).json({ error: 'Passwords do not match' });
+        }
+
+        User.registerNewUser(user, function(err, lastID) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.status(201).json({
+                message: 'User created successfully',
+                userId: lastID
+            });
+        });
+    },
+    //enviar objeto user, id, newPassword y repeatNewPassword
+    updateUserPassword: (req, res) => {
+        const { id } = req.params;
+        const { user, newPassword, repeatNewPassword } = req.body;
+
+        if (!id || !user || !newPassword || !repeatNewPassword) {
+            return res.status(400).json({ error: 'Missing user data or repeatPassword' });
+        }
+
+        if (user.password === newPassword) {
+            return res.status(400).json({ error: 'The new password is the same as the old one' });
+        }
+
+        if (newPassword !== repeatNewPassword) {
+            return res.status(400).json({ error: 'newPassword and repeatNewPassword do not match' });
+        }
+
+        User.updateUserPassword(id, newPassword, function(err) {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (this.changes === 0) {
+                return res.status(404).json({ error: 'User not found' });
+            }
+
+            res.json({ message: 'User updated successfully' });
+        });
+    },
+   updateUserProfile(req, res) {
+    const { id } = req.params;
+    const userData = req.body;
+
+    User.updateUserProfile(id, userData, function(err) {
+        if (err) {
+            return res.status(500).json({ error: err.message || "Something went wrong!" });
+        }
+
+        if (this.changes === 0) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        res.json({ message: 'User updated successfully' });
+    });
+}
+
+
 };
 
 module.exports = userController;

@@ -74,7 +74,6 @@ const User = {
         db.all(query, [id], callback);
     },
 
-
     create: (userData, callback) => {
         const query = `
         INSERT INTO User (name, last_name, nickname, mail, password, photo_url)
@@ -118,7 +117,32 @@ const User = {
         `;
         const searchTerm = `%${keyword}%`;
         db.all(query, [searchTerm, searchTerm], callback);
+    },
+
+    registerNewUser: (userData, callback) =>{
+        const query = `
+        INSERT INTO User (name, last_name, nickname, mail, password)
+        VALUES (?, ?, ?, ?, ?)
+        `;
+        const { name, last_name, nickname, mail, password, } = userData;
+        db.run(query, [name, last_name, nickname, mail, password], callback);
+    },
+
+    updateUserProfile: (id, userData, callback) => {
+        const query = `
+            UPDATE User 
+            SET name = ?, last_name = ?, mail = ?, photo_url = ?
+            WHERE user_id = ?
+        `;
+        const { name, last_name, mail, photo_url } = userData;
+        db.run(query, [name, last_name, mail, photo_url, id], callback);
+    },
+    updateUserPassword: (id, password, callback) => {
+        const query = `UPDATE User SET password = ? WHERE user_id = ?`;
+        db.run(query, [password, id], callback);
     }
+
+    
 };
 
 module.exports = User;
