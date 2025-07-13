@@ -36,8 +36,8 @@ class SuggestController extends GetxController {
 
     try {
 
-      final albumData = await _musicService.getRecomendedAlbums();
-      final artistData = await _musicService.getRecomendedArtists();
+      final albumData = await _musicService.getRecomendedAlbums(userId);
+      final artistData = await _musicService.getRecomendedArtists(userId);
       final songData = await _musicService.getAllSongsByUser(userId);
 
       albumCount.value = albumData.length;

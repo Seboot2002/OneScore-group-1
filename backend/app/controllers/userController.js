@@ -79,6 +79,32 @@ const userController = {
         });
     },
 
+    getSongsByUserId: (req, res) => {
+        const { id } = req.params;
+        User.getSongsByUserId(id, (err, songs) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (!songs) {
+                return res.status(404).json({ error: 'UserData not found' });
+            }
+            res.json(songs);
+        });
+    },
+
+    getSongsByUserId: (req, res) => {
+        const { id } = req.params;
+        User.getSongsByUserId(id, (err, songs) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+            if (!songs) {
+                return res.status(404).json({ error: 'UserData not found' });
+            }
+            res.json(songs);
+        });
+    },
+
     createUser: (req, res) => {
         const userData = req.body;
 

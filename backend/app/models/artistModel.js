@@ -230,7 +230,63 @@ const Artist = {
 
             callback(null, artist);
         });
+    },
+    
+    getUserArtistsByState: (userId, callback) => {
+        const query = `
+            SELECT 
+                ar.id AS artist_id,
+                ar.name,
+                ar.picture_url,
+                ar.genre_id,
+                ar.debut_year,
+                au.rank_state,
+                (
+                    SELECT COUNT(*) 
+                    FROM Album a 
+                    JOIN Album_User au2 ON a.id = au2.album_id 
+                    WHERE a.artist_id = ar.id AND au2.user_id = ?
+                ) AS user_album_count,
+                (
+                    SELECT COUNT(*) 
+                    FROM Album a 
+                    JOIN Album_User au2 ON a.id = au2.album_id 
+                    WHERE a.artist_id = ar.id AND au2.user_id = ? AND au2.rank_state = 'Valorado'
+                ) AS valued_album_count
+            FROM Artist_User au
+            JOIN Artist ar ON ar.id = au.artist_id
+            WHERE au.user_id = ?
+        `;
+
+        db.all(query, [userId, userId, userId], (err, rows) => {
+            if (err) return callback(err);
+
+            const listened = [];
+            const pending = [];
+
+            rows.forEach(row => {
+                const artist = {
+                    artistId: row.artist_id,
+                    name: row.name,
+                    pictureUrl: row.picture_url,
+                    genreId: row.genre_id,
+                    debutYear: row.debut_year,
+                };
+
+                const hasAlbums = row.user_album_count > 0;
+                const allValued = row.user_album_count === row.valued_album_count;
+
+                if (hasAlbums && allValued) {
+                    listened.push(artist);
+                } else {
+                    pending.push(artist);
+                }
+            });
+
+            callback(null, { listened, pending });
+        });
     }
+
 };
 
 module.exports = Artist;

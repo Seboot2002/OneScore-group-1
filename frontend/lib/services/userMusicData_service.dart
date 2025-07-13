@@ -1,309 +1,246 @@
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
 import 'package:onescore/models/entities/album.dart';
 import 'package:onescore/models/entities/artist.dart';
+import 'package:http/http.dart' as http;
 
 class UserMusicDataService {
+
+  final String baseUrl = "https://onescore.loca.lt/";
+
   Future<List<Map<String, dynamic>>> getAllAlbumsByUser(int userId) async {
-    final albumJson = await rootBundle.loadString('assets/jsons/album.json');
-    final userAlbumJson = await rootBundle.loadString(
-      'assets/jsons/albumUser.json',
-    );
+    final url = Uri.parse('${baseUrl}api/users/user-albums/$userId');
 
-    final List<dynamic> allAlbums = json.decode(albumJson);
-    final List<dynamic> userAlbumsRelations = json.decode(userAlbumJson);
+    try {
+      final response = await http.get(url);
 
-    print('📦 Todos los albums: $allAlbums');
-    print('🔗 Relaciones usuario-album: $userAlbumsRelations');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
 
-    final userAlbumIds =
-        userAlbumsRelations
-            .where((relation) => relation['userId'] == userId)
-            .map((relation) => relation['albumId'])
-            .toSet();
+        print('🎯 Albums recibidos para el usuario $userId: $data');
 
-    print('🆔 AlbumIds del usuario $userId: $userAlbumIds');
+        return data.map<Map<String, dynamic>>((album) {
+          return {
+            'albumId': album['album_id'] ?? 0,
+            'name': album['album_title'] ?? '',
+            'image': album['cover_url'] ?? '',
+            'rating': album['rank_state'] ?? 0,
+            'artist': {
+              'id': album['artist_id'],
+              'name': album['artist_name'],
+              'image': album['artist_picture_url'],
+            }
+          };
+        }).toList();
+      } else if (response.statusCode == 404) {
+        print('❌ No se encontraron álbumes para el usuario $userId');
+        return [];
+      } else {
+        print('❌ Error inesperado: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('❌ Error al conectar con el servidor: $e');
+      return [];
+    }
 
-    final filteredAlbums =
-        allAlbums
-            .where((album) => userAlbumIds.contains(album['albumId']))
-            .toList();
-
-    print('🎯 Albums filtrados para el usuario: $filteredAlbums');
-
-    return filteredAlbums
-        .map<Map<String, dynamic>>(
-          (album) => {
-            'albumId': album['albumId'] ?? 0,
-            'name': album['title'] ?? '',
-            'image': album['coverUrl'] ?? '',
-            'rating': album['rating'] ?? 0,
-          },
-        )
-        .toList();
   }
 
   Future<List<Map<String, dynamic>>> getAllArtistsByUser(int userId) async {
-    final artistJson = await rootBundle.loadString('assets/jsons/artist.json');
-    final userArtistJson = await rootBundle.loadString(
-      'assets/jsons/artistUser.json',
-    );
+    final url = Uri.parse('${baseUrl}api/users/user-artists/$userId');
 
-    final List<dynamic> allArtists = json.decode(artistJson);
-    final List<dynamic> userArtistRelations = json.decode(userArtistJson);
+    try {
+      final response = await http.get(url);
 
-    print('🎨 Todos los artistas: $allArtists');
-    print('🔗 Relaciones usuario-artista: $userArtistRelations');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
 
-    final userArtistIds =
-        userArtistRelations
-            .where((relation) => relation['userId'] == userId)
-            .map((relation) => relation['artistId'])
-            .toSet();
+        print('🎯 Artistas recibidos para el usuario $userId: $data');
 
-    print('🆔 ArtistIds del usuario $userId: $userArtistIds');
-
-    final filteredArtists =
-        allArtists
-            .where((artist) => userArtistIds.contains(artist['artistId']))
-            .toList();
-
-    print('🎯 Artistas filtrados para el usuario: $filteredArtists');
-
-    return filteredArtists
-        .map<Map<String, dynamic>>(
-          (artist) => {
-            'artistId': artist['artistId'] ?? 0,
-            'name': artist['name'] ?? '',
-            'image': artist['pictureUrl'] ?? '',
-          },
-        )
-        .toList();
+        return data.map<Map<String, dynamic>>((artist) {
+          return {
+            'artistId': artist['artist_id'] ?? 0,
+            'name': artist['artist_name'] ?? '',
+            'image': artist['picture_url'] ?? '',
+            'genreId': artist['genre_id'],
+            'debutYear': artist['debut_year'],
+            'rating': artist['rank_state'],
+          };
+        }).toList();
+      } else if (response.statusCode == 404) {
+        print('❌ No se encontraron artistas para el usuario $userId');
+        return [];
+      } else {
+        print('❌ Error inesperado: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('❌ Error al conectar con el servidor: $e');
+      return [];
+    }
   }
 
   Future<List<Map<String, dynamic>>> getAllSongsByUser(int userId) async {
-    final songJson = await rootBundle.loadString('assets/jsons/song.json');
-    final userSongJson = await rootBundle.loadString(
-      'assets/jsons/songUser.json',
-    );
+    final url = Uri.parse('${baseUrl}api/users/user-songs/$userId');
 
-    final List<dynamic> allSongs = json.decode(songJson);
-    final List<dynamic> userSongRelations = json.decode(userSongJson);
+    try {
+      final response = await http.get(url);
 
-    print('🎨 Todas las canciones: $allSongs');
-    print('🔗 Relaciones usuario-cancion: $userSongRelations');
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
 
-    final Map<int, int> userScores = {
-      for (var rel in userSongRelations)
-        if (rel['userId'] == userId) rel['songId']: rel['score'],
-    };
-
-    final userSongIds = userScores.keys.toSet();
-
-    final filteredSongs =
-        allSongs
-            .where((song) => userSongIds.contains(song['songId']))
-            .map<Map<String, dynamic>>(
-              (song) => {
-                'songId': song['songId'],
-                'title': song['title'] ?? '',
-                'nTrack': song['nTrack'],
-                'albumId': song['albumId'],
-                'score': userScores[song['songId']] ?? 0,
-              },
-            )
-            .toList();
-
-    print('🎯 Canciones filtradas para el usuario: $filteredSongs');
-
-    return filteredSongs;
+        return data.map<Map<String, dynamic>>((song) {
+          return {
+            'songId': song['song_id'],
+            'title': song['title'] ?? '',
+            'nTrack': song['n_track'],
+            'albumId': song['album_id'],
+            'score': song['score'],
+          };
+        }).toList();
+      } else {
+        print('❌ Error cargando canciones del usuario: ${response.body}');
+        return [];
+      }
+    } catch (e) {
+      print('❌ Error de conexión: $e');
+      return [];
+    }
   }
 
-  Future<List<Map<String, dynamic>>> getRecomendedAlbums() async {
-    final albumJson = await rootBundle.loadString('assets/jsons/album.json');
-    final userAlbumJson = await rootBundle.loadString(
-      'assets/jsons/albumUser.json',
-    );
+  Future<List<Map<String, dynamic>>> getRecomendedAlbums(int userId) async {
+    final url = Uri.parse('${baseUrl}/api/albums/recommend-albums/$userId');
 
-    final List<dynamic> allAlbums = json.decode(albumJson);
+    try {
+      final response = await http.get(url);
 
-    allAlbums.shuffle();
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-    print('📦 Todos los albums: $allAlbums');
-
-    final List<Map<String, dynamic>> randomAlbums =
-        allAlbums
-            .take(2)
-            .map<Map<String, dynamic>>(
-              (album) => {
-                'albumId': album['albumId'] ?? 0,
-                'name': album['title'] ?? '',
-                'image': album['coverUrl'] ?? '',
-                'rating': album['rating'] ?? 0,
-              },
-            )
-            .toList();
-
-    print("2 albumes aleatorios: $randomAlbums");
-
-    return randomAlbums;
+        if (data is List) {
+          return data.map<Map<String, dynamic>>((album) {
+            return {
+              'albumId': album['id'] ?? 0,
+              'name': album['title'] ?? '',
+              'image': album['cover_url'] ?? '',
+              'rating': 0,
+            };
+          }).toList();
+        } else if (data is Map && data.containsKey('message')) {
+          print('ℹ️ Sin recomendaciones: ${data['message']}');
+          return [];
+        } else {
+          print('⚠️ Respuesta inesperada: $data');
+          return [];
+        }
+      } else {
+        print('❌ Error del servidor: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('❌ Error al conectar: $e');
+      return [];
+    }
   }
 
-  Future<List<Map<String, dynamic>>> getRecomendedArtists() async {
-    final artistJson = await rootBundle.loadString('assets/jsons/artist.json');
-    final userArtistJson = await rootBundle.loadString(
-      'assets/jsons/artistUser.json',
-    );
+  Future<List<Map<String, dynamic>>> getRecomendedArtists(int userId) async {
+    final url = Uri.parse('${baseUrl}/api/artists/recommend/$userId');
 
-    final List<dynamic> allArtists = json.decode(artistJson);
+    try {
+      final response = await http.get(url);
 
-    allArtists.shuffle();
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-    print('📦 Todos los artistas: $allArtists');
+        // Verificamos que el servidor devolvió un artista
+        if (data is Map && data.containsKey('id')) {
+          final artist = {
+            'artistId': data['id'] ?? 0,
+            'name': data['name'] ?? '',
+            'image': data['picture_url'] ?? '',
+          };
 
-    final List<Map<String, dynamic>> randomArtists =
-        allArtists
-            .take(1)
-            .map<Map<String, dynamic>>(
-              (artist) => {
-                'artistId': artist['artistId'] ?? 0,
-                'name': artist['name'] ?? '',
-                'image': artist['pictureUrl'] ?? '',
-              },
-            )
-            .toList();
+          return [artist]; // Devolvemos una lista con un solo artista
+        }
 
-    print("1 artista aleatorios: $randomArtists");
+        // Si el servidor devuelve un mensaje diciendo que no hay recomendaciones
+        if (data is Map && data.containsKey('message')) {
+          print('ℹ️ Sin recomendaciones: ${data['message']}');
+          return [];
+        }
 
-    return randomArtists;
+        print('⚠️ Formato inesperado de respuesta: $data');
+        return [];
+      } else {
+        print('❌ Error del servidor: ${response.statusCode}');
+        return [];
+      }
+    } catch (e) {
+      print('❌ Error al conectar: $e');
+      return [];
+    }
   }
 
   Future<Map<String, List<Album>>> getUserAlbumsByState(int userId) async {
-    final albumsJson = await rootBundle.loadString('assets/jsons/album.json');
-    final albumUserJson = await rootBundle.loadString(
-      'assets/jsons/albumUser.json',
-    );
+    final url = Uri.parse('${baseUrl}/api/albums/user-albums-by-state/$userId');
 
-    final List<dynamic> albumsData = json.decode(albumsJson);
-    final List<dynamic> albumUserData = json.decode(albumUserJson);
+    try {
+      final response = await http.get(url);
 
-    final allAlbums = albumsData.map((e) => Album.fromJson(e)).toList();
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-    final userAlbumRelations =
-        albumUserData
-            .where((relation) => relation['userId'] == userId)
+        final valuedAlbums = (data['valued'] as List)
+            .map((albumJson) => Album.fromJson(albumJson))
             .toList();
 
-    print('🔗 Relaciones del usuario $userId: $userAlbumRelations');
-
-    final valuedAlbumIds =
-        userAlbumRelations
-            .where((relation) => relation['rankState'] == 'valued')
-            .map<int>((relation) => relation['albumId'])
-            .toSet();
-
-    final pendingAlbumIds =
-        userAlbumRelations
-            .where((relation) => relation['rankState'] == 'pending')
-            .map<int>((relation) => relation['albumId'])
-            .toSet();
-
-    final valuedAlbums =
-        allAlbums
-            .where((album) => valuedAlbumIds.contains(album.albumId))
+        final pendingAlbums = (data['pending'] as List)
+            .map((albumJson) => Album.fromJson(albumJson))
             .toList();
 
-    final pendingAlbums =
-        allAlbums
-            .where((album) => pendingAlbumIds.contains(album.albumId))
-            .toList();
-
-    print('🎯 Albums valorados: ${valuedAlbums.length}');
-    print('⏳ Albums pendientes: ${pendingAlbums.length}');
-
-    return {'valued': valuedAlbums, 'pending': pendingAlbums};
+        return {
+          'valued': valuedAlbums,
+          'pending': pendingAlbums,
+        };
+      } else {
+        print('❌ Error: ${response.statusCode}');
+        return {'valued': [], 'pending': []};
+      }
+    } catch (e) {
+      print('❌ Error en conexión: $e');
+      return {'valued': [], 'pending': []};
+    }
   }
 
   Future<Map<String, List<Artist>>> getUserArtistsByState(int userId) async {
-    final artistsJson = await rootBundle.loadString('assets/jsons/artist.json');
-    final artistUserJson = await rootBundle.loadString(
-      'assets/jsons/artistUser.json',
-    );
-    final albumsJson = await rootBundle.loadString('assets/jsons/album.json');
-    final albumUserJson = await rootBundle.loadString(
-      'assets/jsons/albumUser.json',
-    );
+    final url = Uri.parse('$baseUrl/api/artists/user-artists-by-state/$userId');
 
-    final List<dynamic> artistsData = json.decode(artistsJson);
-    final List<dynamic> artistUserData = json.decode(artistUserJson);
-    final List<dynamic> albumsData = json.decode(albumsJson);
-    final List<dynamic> albumUserData = json.decode(albumUserJson);
+    try {
+      final response = await http.get(url);
 
-    final allArtists = artistsData.map((e) => Artist.fromJson(e)).toList();
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-    final userArtistIds =
-        artistUserData
-            .where((relation) => relation['userId'] == userId)
-            .map<int>((relation) => relation['artistId'])
-            .toSet();
-
-    print('🎨 ArtistIds del usuario $userId: $userArtistIds');
-
-    final userArtists =
-        allArtists
-            .where((artist) => userArtistIds.contains(artist.artistId))
+        final listenedArtists = (data['listened'] as List)
+            .map((json) => Artist.fromJson(json))
             .toList();
 
-    List<Artist> listenedArtists = [];
-    List<Artist> pendingArtists = [];
+        final pendingArtists = (data['pending'] as List)
+            .map((json) => Artist.fromJson(json))
+            .toList();
 
-    for (Artist artist in userArtists) {
-      final artistAlbumIds =
-          albumsData
-              .where((album) => album['artistId'] == artist.artistId)
-              .map<int>((album) => album['albumId'])
-              .toSet();
-
-      print('🎵 Albums del artista ${artist.name}: $artistAlbumIds');
-
-      final userArtistAlbums =
-          albumUserData
-              .where(
-                (relation) =>
-                    relation['userId'] == userId &&
-                    artistAlbumIds.contains(relation['albumId']),
-              )
-              .toList();
-
-      print(
-        '📚 Albums del artista ${artist.name} que tiene el usuario: $userArtistAlbums',
-      );
-
-      if (userArtistAlbums.isEmpty) {
-        pendingArtists.add(artist);
-        continue;
-      }
-
-      bool allValued = userArtistAlbums.every(
-        (relation) => relation['rankState'] == 'valued',
-      );
-      bool hasPending = userArtistAlbums.any(
-        (relation) => relation['rankState'] == 'pending',
-      );
-
-      if (allValued && !hasPending) {
-        listenedArtists.add(artist);
-        print('✅ Artista ${artist.name} completamente escuchado');
+        return {
+          'listened': listenedArtists,
+          'pending': pendingArtists,
+        };
       } else {
-        pendingArtists.add(artist);
-        print('⏳ Artista ${artist.name} tiene albums pendientes');
+        print('❌ Error HTTP: ${response.statusCode}');
+        return {'listened': [], 'pending': []};
       }
+    } catch (e) {
+      print('❌ Error de red: $e');
+      return {'listened': [], 'pending': []};
     }
-
-    print('🎯 Artistas escuchados: ${listenedArtists.length}');
-    print('⏳ Artistas pendientes: ${pendingArtists.length}');
-
-    return {'listened': listenedArtists, 'pending': pendingArtists};
   }
+
 }

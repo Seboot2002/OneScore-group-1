@@ -20,4 +20,6 @@ router.post('/rate', albumController.rateAlbum);
 router.get('/album-songs/:id', albumController.getSongsByAlbumId);
 router.get('/recommend-albums/:userId', albumController.recommendAlbumsToUser);
 
+router.get('/user-albums-by-state/:userId', albumController.getUserAlbumsByState);
+
 module.exports = router;

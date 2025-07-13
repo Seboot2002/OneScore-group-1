@@ -16,4 +16,6 @@ router.get('/artist-stats/:id', artistController.getStatsByArtistId);
 router.post('/artist-add-user/:id/:user_id', artistController.addToUser);
 router.get('/recommend/:userId', artistController.recommendArtistToUser);
 
+router.get('/user-artists-by-state/:userId', artistController.getUserArtistsByState);
+
 module.exports = router;

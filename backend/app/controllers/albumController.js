@@ -236,7 +236,24 @@ const albumController = {
                 cover_url: album.cover_url
             })));
         });
+    },
+
+    getUserAlbumsByState: (req, res) => {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({ error: "User ID is required" });
+        }
+
+        Album.getUserAlbumsByState(userId, (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.json(result);
+        });
     }
+
 };
 
 module.exports = albumController;

@@ -259,6 +259,22 @@ const artistController = {
                 picture_url: artist.picture_url
             });
         });
+    },
+
+    getUserArtistsByState: (req, res) => {
+        const { userId } = req.params;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is required' });
+        }
+
+        Artist.getUserArtistsByState(userId, (err, result) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.json(result);
+        });
     }
 
 };

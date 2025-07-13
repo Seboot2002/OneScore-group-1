@@ -74,6 +74,21 @@ const User = {
         db.all(query, [id], callback);
     },
 
+    getSongsByUserId: (userId, callback) => {
+        const query = `
+            SELECT 
+                s.id AS song_id,
+                s.title,
+                s.n_track,
+                s.album_id,
+                su.score
+            FROM Song_User su
+            JOIN Song s ON s.id = su.song_id
+            WHERE su.user_id = ?
+        `;
+        db.all(query, [userId], callback);
+    },
+
     existsByEmailOrNickname: (mail, nickname, callback) => {
         const query = `
             SELECT 1 FROM User 
