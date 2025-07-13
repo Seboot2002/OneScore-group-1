@@ -17,12 +17,12 @@ class Album {
 
   factory Album.fromJson(Map<String, dynamic> json) {
     return Album(
-      albumId: json['albumId'],
-      title: json['title'],
-      releaseYear: json['releaseYear'],
-      genreId: json['genreId'],
-      coverUrl: json['coverUrl'],
-      artistId: json['artistId'],
+      albumId: json['albumId'] ?? 0,
+      title: json['title'] ?? '',
+      releaseYear: json['releaseYear'] ?? 0,
+      genreId: json['genreId'] ?? 0,
+      coverUrl: json['coverUrl'] ?? '',
+      artistId: json['artistId'] ?? 0,
     );
   }
 

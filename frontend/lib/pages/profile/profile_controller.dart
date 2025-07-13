@@ -58,10 +58,9 @@ class ProfileController extends GetxController {
               albumScores[albumId]!.add(score);
             }
             final scores = albumScores[albumId] ?? [];
-            final avgScore =
-                scores.isNotEmpty
-                    ? scores.reduce((a, b) => a + b) / scores.length
-                    : 0.0;
+            final avgScore = scores.isNotEmpty
+                ? double.parse((scores.reduce((a, b) => a + b) / scores.length).toStringAsFixed(2))
+                : 0.0;
 
             return AlbumCard(
               name: album['name'],

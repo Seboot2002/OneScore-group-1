@@ -431,6 +431,44 @@ const Album = {
 
             callback(null, albums);
         });
+    },
+
+    getUserAlbumsByState: (userId, callback) => {
+        const query = `
+            SELECT 
+                a.id AS album_id,
+                a.title,
+                a.cover_url,
+                a.release_year,
+                au.rank_state
+            FROM Album_User au
+            JOIN Album a ON a.id = au.album_id
+            WHERE au.user_id = ?
+        `;
+
+        db.all(query, [userId], (err, rows) => {
+            if (err) return callback(err);
+
+            const valued = [];
+            const pending = [];
+
+            rows.forEach(row => {
+                const album = {
+                    albumId: row.album_id,
+                    title: row.title,
+                    coverUrl: row.cover_url,
+                    releaseYear: row.release_year,
+                };
+
+                if (row.rank_state === 'Valorado') {
+                    valued.push(album);
+                } else if (row.rank_state === 'Por valorar') {
+                    pending.push(album);
+                }
+            });
+
+            callback(null, { valued, pending });
+        });
     }
 
 };
