@@ -81,14 +81,32 @@ const userController = {
 
     createUser: (req, res) => {
         const userData = req.body;
-        User.create(userData, function(err) {
+
+        const { mail, nickname } = userData;
+
+        User.existsByEmailOrNickname(mail, nickname, (err, exists) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
             }
-            res.status(201).json({ 
-                message: 'User created successfully',
-                userId: this.lastID 
+
+            if (exists) {
+                res.status(409).json({
+                    error: 'Ya existe un usuario con ese correo o nickname'
+                });
+                return;
+            }
+
+            User.create(userData, function (err) {
+                if (err) {
+                    res.status(500).json({ error: err.message });
+                    return;
+                }
+
+                res.status(201).json({
+                    message: 'User created successfully',
+                    userId: this.lastID
+                });
             });
         });
     },

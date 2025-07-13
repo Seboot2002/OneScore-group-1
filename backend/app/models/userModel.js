@@ -74,6 +74,18 @@ const User = {
         db.all(query, [id], callback);
     },
 
+    existsByEmailOrNickname: (mail, nickname, callback) => {
+        const query = `
+            SELECT 1 FROM User 
+            WHERE mail = ? OR nickname = ?
+            LIMIT 1
+        `;
+        db.get(query, [mail, nickname], (err, row) => {
+            if (err) return callback(err);
+            callback(null, !!row);
+        });
+    },
+
     create: (userData, callback) => {
         const query = `
         INSERT INTO User (name, last_name, nickname, mail, password, photo_url)

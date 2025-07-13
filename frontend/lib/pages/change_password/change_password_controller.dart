@@ -55,6 +55,7 @@ class ChangePasswordController extends GetxController {
         usuario: currentUser,
         currentPassword: contrasenaVieja,
         newPassword: contrasenaNueva,
+        repeatNewPassword: repiteContrasena
       );
 
       if (response.status == 200) {
