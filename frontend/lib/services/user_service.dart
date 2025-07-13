@@ -4,8 +4,148 @@ import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import '../models/entities/user.dart';
 import '../models/httpresponse/service_http_response.dart';
+import 'package:http/http.dart' as http;
 
 class UserService {
+
+  final String baseUrl = "https://onescore.loca.lt/";
+
+  int _generateNewUserId(List<User> allUsers) {
+    if (allUsers.isEmpty) return 1;
+    try {
+      final maxId = allUsers
+          .map((u) => u.userId)
+          .reduce((a, b) => a > b ? a : b);
+      return maxId + 1;
+    } catch (e) {
+      print('Error generating userId: $e');
+      return allUsers.length + 1;
+    }
+  }
+
+  Future<ServiceHttpResponse> registerUser(User newUser) async {
+    final url = Uri.parse('$baseUrl/api/users');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'name': newUser.name,
+          'last_name': newUser.lastName,
+          'nickname': newUser.nickname,
+          'mail': newUser.mail,
+          'password': newUser.password,
+          'photo_url': newUser.photoUrl,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        final data = jsonDecode(response.body);
+        return ServiceHttpResponse(
+          status: 201,
+          body: 'Usuario creado con ID ${data["userId"]}',
+        );
+      } else if (response.statusCode == 409) {
+        return ServiceHttpResponse(
+          status: 409,
+          body: 'Ya existe un usuario con ese correo o nickname',
+        );
+      } else {
+        return ServiceHttpResponse(
+          status: response.statusCode,
+          body: 'Error inesperado: ${response.body}',
+        );
+      }
+
+    } catch (e) {
+      return ServiceHttpResponse(
+        status: 500,
+        body: 'Error de red: $e',
+      );
+    }
+  }
+
+  Future<ServiceHttpResponse> changePassword({
+    required User usuario,
+    required String currentPassword,
+    required String newPassword,
+    required String repeatNewPassword,
+  }) async {
+    final url = Uri.parse('$baseUrl/api/users/updateUserPassword/${usuario.userId}');
+
+    try {
+      final response = await http.put(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'user': {
+            'password': currentPassword,
+          },
+          'newPassword': newPassword,
+          'repeatNewPassword': repeatNewPassword,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        return ServiceHttpResponse(
+          status: 200,
+          body: 'Contraseña actualizada exitosamente',
+        );
+      } else {
+        final data = jsonDecode(response.body);
+        return ServiceHttpResponse(
+          status: response.statusCode,
+          body: data['error'] ?? 'Error al cambiar la contraseña',
+        );
+      }
+    } catch (e) {
+      return ServiceHttpResponse(
+        status: 500,
+        body: 'Error al conectar con el servidor: $e',
+      );
+    }
+  }
+
+  Future<ServiceHttpResponse> logIn(String identifier, String password) async {
+    final url = Uri.parse('$baseUrl/api/users/login');
+
+    try {
+      final response = await http.post(
+        url,
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({
+          'login': identifier,
+          'password': password,
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final user = User.fromJson(data['user']);
+        return ServiceHttpResponse(status: 200, body: user);
+      } else if (response.statusCode == 401) {
+        return ServiceHttpResponse(
+          status: 401,
+          body: 'Usuario o contraseña incorrectos',
+        );
+      } else {
+        return ServiceHttpResponse(
+          status: response.statusCode,
+          body: 'Error inesperado: ${response.body}',
+        );
+      }
+
+    } catch (e) {
+      return ServiceHttpResponse(
+        status: 500,
+        body: 'Error al conectar con el servidor: $e',
+      );
+    }
+  }
+
+  // LOCAL
+
   Future<File> _getLocalFile() async {
     final directory = await getApplicationDocumentsDirectory();
     return File('${directory.path}/user.json');
@@ -111,177 +251,6 @@ class UserService {
     } catch (e) {
       print('Error saving local users: $e');
       throw Exception('Error al guardar usuarios locales');
-    }
-  }
-
-  int _generateNewUserId(List<User> allUsers) {
-    if (allUsers.isEmpty) return 1;
-    try {
-      final maxId = allUsers
-          .map((u) => u.userId)
-          .reduce((a, b) => a > b ? a : b);
-      return maxId + 1;
-    } catch (e) {
-      print('Error generating userId: $e');
-      return allUsers.length + 1;
-    }
-  }
-
-  Future<ServiceHttpResponse> registerUser(User newUser) async {
-    try {
-      final allUsers = await _readUsers();
-      final localUsers = await _loadLocalUsers();
-
-      print('Current total users count: ${allUsers.length}');
-      print('Current local users count: ${localUsers.length}');
-
-      final alreadyExists = allUsers.any(
-        (u) =>
-            u.mail.toLowerCase() == newUser.mail.toLowerCase() ||
-            u.nickname.toLowerCase() == newUser.nickname.toLowerCase(),
-      );
-
-      if (alreadyExists) {
-        print(
-          'User already exists with email: ${newUser.mail} or nickname: ${newUser.nickname}',
-        );
-        return ServiceHttpResponse(
-          status: 409,
-          body: 'Ya existe un usuario con ese correo o nickname',
-        );
-      }
-
-      final newUserId = _generateNewUserId(allUsers);
-      print('Generated new userId: $newUserId');
-
-      final userWithId = User(
-        userId: newUserId,
-        name: newUser.name,
-        lastName: newUser.lastName,
-        nickname: newUser.nickname,
-        mail: newUser.mail,
-        password: newUser.password,
-        photoUrl: newUser.photoUrl,
-      );
-
-      localUsers.add(userWithId);
-      await _saveLocalUsers(localUsers);
-
-      print('Successfully registered new user: ${userWithId.nickname}');
-      print('Total local users after registration: ${localUsers.length}');
-
-      return ServiceHttpResponse(
-        status: 200,
-        body: 'Usuario registrado exitosamente',
-      );
-    } catch (e) {
-      print('Error in registerUser: $e');
-      return ServiceHttpResponse(
-        status: 500,
-        body: 'Error al registrar usuario: $e',
-      );
-    }
-  }
-
-  Future<ServiceHttpResponse> changePassword({
-    required usuario,
-    required String currentPassword,
-    required String newPassword,
-  }) async {
-    try {
-      final userNickname = usuario.nickname;
-      final localUsers = await _loadLocalUsers();
-
-      final userIndex = localUsers.indexWhere(
-        (u) =>
-            (u.mail.toLowerCase() == userNickname.toLowerCase() ||
-                u.nickname.toLowerCase() == userNickname.toLowerCase()) &&
-            u.password == currentPassword,
-      );
-
-      if (userIndex == -1) {
-        return ServiceHttpResponse(
-          status: 403,
-          body: 'Credenciales incorrectas',
-        );
-      }
-
-      final updatedUser = User(
-        userId: usuario.userId,
-        name: usuario.name,
-        lastName: usuario.lastName,
-        nickname: usuario.nickname,
-        mail: usuario.mail,
-        password: newPassword,
-        photoUrl: usuario.photoUrl,
-      );
-      localUsers[userIndex] = updatedUser;
-      await _saveLocalUsers(localUsers);
-
-      return ServiceHttpResponse(
-        status: 200,
-        body: 'Contraseña actualizada exitosamente',
-      );
-    } catch (e) {
-      return ServiceHttpResponse(
-        status: 500,
-        body: 'Error al cambiar la contraseña: $e',
-      );
-    }
-  }
-
-  Future<ServiceHttpResponse> logIn(String identifier, String password) async {
-    try {
-      final users = await _readUsers();
-
-      print('=== LOGIN DEBUG ===');
-      print('Total users loaded: ${users.length}');
-      print('Looking for identifier: "$identifier" with password: "$password"');
-      print('Available users:');
-      for (var user in users) {
-        print(
-          '  - ID: ${user.userId}, Nickname: "${user.nickname}", Email: "${user.mail}", Password: "${user.password}"',
-        );
-      }
-      print('==================');
-
-      User? matchedUser;
-      for (var user in users) {
-        final emailMatch = user.mail.toLowerCase() == identifier.toLowerCase();
-        final nicknameMatch =
-            user.nickname.toLowerCase() == identifier.toLowerCase();
-        final passwordMatch = user.password == password;
-
-        print('Checking user ${user.nickname}:');
-        print('  Email match ("$identifier" vs "${user.mail}"): $emailMatch');
-        print(
-          '  Nickname match ("$identifier" vs "${user.nickname}"): $nicknameMatch',
-        );
-        print('  Password match: $passwordMatch');
-
-        if ((emailMatch || nicknameMatch) && passwordMatch) {
-          matchedUser = user;
-          print('  ✓ MATCH FOUND!');
-          break;
-        }
-      }
-
-      if (matchedUser != null) {
-        print('Login successful for user: ${matchedUser.nickname}');
-        return ServiceHttpResponse(status: 200, body: matchedUser);
-      } else {
-        print('Login failed - no matching user found');
-        return ServiceHttpResponse(
-          status: 401,
-          body: 'Usuario o contraseña incorrectos',
-        );
-      }
-    } catch (e) {
-      print('Login error: $e');
-      return ServiceHttpResponse(
-        status: 500,
-        body: 'Error al procesar los datos: $e',
-      );
     }
   }
 
