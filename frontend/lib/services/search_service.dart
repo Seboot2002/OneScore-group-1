@@ -60,32 +60,24 @@ class SearchService {
   static Future<List<Artist>> searchArtists(String query) async {
     if (query.trim().isEmpty) return [];
 
-    final String data = await rootBundle.loadString('assets/jsons/artist.json');
-    final List<dynamic> jsonList = json.decode(data);
+    final Uri url = Uri.parse('${Config.baseUrl}/api/artists/search/$query');
+    print("🎤 Consultando artistas: $url");
 
-    List<Map<String, dynamic>> artistsWithScore = [];
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body);
+        print("✅ Artistas encontrados: ${data.length}");
 
-    for (var json in jsonList) {
-      final artist = Artist.fromJson(json);
-
-      double nameScore = _calculateMatch(artist.name, query);
-      double yearScore =
-          artist.debutYear.toString() == query
-              ? 100.0
-              : artist.debutYear.toString().contains(query)
-              ? 60.0
-              : 0.0;
-
-      double maxScore = nameScore > yearScore ? nameScore : yearScore;
-
-      if (maxScore > 0) {
-        artistsWithScore.add({'artist': artist, 'score': maxScore});
+        return data.map((item) => Artist.fromSearchJson(item)).toList();
+      } else {
+        print("⚠️ Error ${response.statusCode}: ${response.reasonPhrase}");
+        return [];
       }
+    } catch (e) {
+      print("❌ Excepción al buscar artistas: $e");
+      return [];
     }
-
-    artistsWithScore.sort((a, b) => b['score'].compareTo(a['score']));
-
-    return artistsWithScore.map((item) => item['artist'] as Artist).toList();
   }
 
   static Future<List<User>> searchUsers(String query) async {

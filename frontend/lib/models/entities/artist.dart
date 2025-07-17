@@ -23,6 +23,16 @@ class Artist {
     );
   }
 
+  factory Artist.fromSearchJson(Map<String, dynamic> json) {
+    return Artist(
+      artistId: json['id'],
+      name: json['name'],
+      genreId: 0, // No lo incluye la búsqueda
+      pictureUrl: json['picture_url'],
+      debutYear: 0, // No lo incluye la búsqueda
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'artistId': artistId,
