@@ -51,14 +51,15 @@ class SignUpController extends GetxController {
       mail: email,
       password: password,
       photoUrl:
-          'https://www.shutterstock.com/image-vector/sakura-cherry-tree-blossom-enso-600nw-2442234723.jpg',
+          'https://m.media-amazon.com/images/I/61Ym0lrtUwL.__AC_SX300_SY300_QL70_ML2_.jpg',
     );
 
     final response = await _userService.registerUser(newUser);
 
     isLoading.value = false;
 
-    if (response.status == 200) {
+    // ✅ Aceptamos también status 201 (creación exitosa)
+    if (response.status == 200 || response.status == 201) {
       Get.snackbar(
         'Éxito',
         'Usuario registrado correctamente',
@@ -70,9 +71,14 @@ class SignUpController extends GetxController {
 
       Get.offNamed('/log-in');
     } else {
+      // 🔍 Imprimir en consola para debug
+      print(
+        '❌ Error en registro. Código: ${response.status}, Body: ${response.body}',
+      );
+
       Get.snackbar(
         'Error',
-        response.body.toString(),
+        'No se pudo registrar el usuario. Inténtalo de nuevo.',
         backgroundColor: Color(0xFF524E4E),
         colorText: Colors.white,
       );
