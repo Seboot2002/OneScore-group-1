@@ -222,32 +222,80 @@ const Album = {
             });
         });
     });
-},
+    },
 
     removeFromUser: (userId, albumId, callback) => {
         db.serialize(() => {
             db.run('BEGIN TRANSACTION');
-            
-            // 1. Eliminar relación Album_User
-            db.run('DELETE FROM Album_User WHERE user_id = ? AND album_id = ?', [userId, albumId], function(err) {
-                if (err) {
+
+            // Paso 1: obtener el artista del álbum
+            db.get('SELECT artist_id FROM Album WHERE id = ?', [albumId], (err, row) => {
+                if (err || !row) {
                     db.run('ROLLBACK');
-                    callback(err);
+                    callback(err || new Error('Album not found'));
                     return;
                 }
-                
-                // 2. Eliminar todas las canciones de ese album del usuario
-                db.run('DELETE FROM Song_User WHERE user_id = ? AND song_id IN (SELECT id FROM Song WHERE album_id = ?)', 
-                    [userId, albumId], (err) => {
+
+                const artistId = row.artist_id;
+
+                // Paso 2: eliminar relación Album_User
+                db.run('DELETE FROM Album_User WHERE user_id = ? AND album_id = ?', [userId, albumId], function(err) {
                     if (err) {
                         db.run('ROLLBACK');
                         callback(err);
                         return;
                     }
-                    
-                    db.run('COMMIT');
-                    callback(null, { 
-                        message: 'Album and all related songs removed from user profile'
+
+                    // Paso 3: eliminar canciones del usuario que son de ese álbum
+                    db.run('DELETE FROM Song_User WHERE user_id = ? AND song_id IN (SELECT id FROM Song WHERE album_id = ?)', 
+                        [userId, albumId], function(err) {
+                        if (err) {
+                            db.run('ROLLBACK');
+                            callback(err);
+                            return;
+                        }
+
+                        // Paso 4: verificar si quedan otros álbumes del mismo artista para el usuario
+                        db.get(
+                            `SELECT COUNT(*) as count FROM Album_User 
+                            JOIN Album ON Album.id = Album_User.album_id 
+                            WHERE Album_User.user_id = ? AND Album.artist_id = ?`,
+                            [userId, artistId],
+                            (err, countRow) => {
+                                if (err) {
+                                    db.run('ROLLBACK');
+                                    callback(err);
+                                    return;
+                                }
+
+                                const albumCount = countRow.count;
+
+                                if (albumCount === 0) {
+                                    // Paso 5: eliminar relación Artist_User si ya no tiene álbumes del artista
+                                    db.run(
+                                        'DELETE FROM Artist_User WHERE user_id = ? AND artist_id = ?',
+                                        [userId, artistId],
+                                        (err) => {
+                                            if (err) {
+                                                db.run('ROLLBACK');
+                                                callback(err);
+                                                return;
+                                            }
+
+                                            db.run('COMMIT');
+                                            callback(null, {
+                                                message: 'Album, songs, and artist (if no other albums) removed from user profile'
+                                            });
+                                        }
+                                    );
+                                } else {
+                                    db.run('COMMIT');
+                                    callback(null, {
+                                        message: 'Album and songs removed from user profile (artist kept)'
+                                    });
+                                }
+                            }
+                        );
                     });
                 });
             });
