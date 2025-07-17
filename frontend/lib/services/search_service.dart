@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import '../../models/entities/album.dart';
 import '../../models/entities/artist.dart';
 import '../../models/entities/user.dart';
+import 'package:http/http.dart' as http;
+import '../../config.dart'; // Asegúrate que este import esté correcto
 
 class SearchService {
   static double _calculateMatch(String text, String query) {
@@ -152,5 +154,25 @@ class SearchService {
     usersWithScore.sort((a, b) => b['score'].compareTo(a['score']));
 
     return usersWithScore.map((item) => item['user'] as User).toList();
+  }
+
+  static Future<void> fetchAlbumsFromApi(String keyword) async {
+    final Uri url = Uri.parse('$baseUrl/api/albums/search/$keyword');
+
+    print("🌐 Consultando endpoint: $url");
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        print("🧪 Resultado desde API: $data");
+      } else {
+        print(
+          "⚠️ Error desde API: ${response.statusCode} ${response.reasonPhrase}",
+        );
+      }
+    } catch (e) {
+      print("❌ Excepción en búsqueda remota: $e");
+    }
   }
 }

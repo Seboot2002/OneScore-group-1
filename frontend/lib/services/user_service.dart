@@ -7,8 +7,7 @@ import '../models/httpresponse/service_http_response.dart';
 import 'package:http/http.dart' as http;
 
 class UserService {
-
-  final String baseUrl = "https://onescore.loca.lt/";
+  final String baseUrl = "https://onescore.loca.lt";
 
   int _generateNewUserId(List<User> allUsers) {
     if (allUsers.isEmpty) return 1;
@@ -57,12 +56,8 @@ class UserService {
           body: 'Error inesperado: ${response.body}',
         );
       }
-
     } catch (e) {
-      return ServiceHttpResponse(
-        status: 500,
-        body: 'Error de red: $e',
-      );
+      return ServiceHttpResponse(status: 500, body: 'Error de red: $e');
     }
   }
 
@@ -72,16 +67,16 @@ class UserService {
     required String newPassword,
     required String repeatNewPassword,
   }) async {
-    final url = Uri.parse('$baseUrl/api/users/updateUserPassword/${usuario.userId}');
+    final url = Uri.parse(
+      '$baseUrl/api/users/updateUserPassword/${usuario.userId}',
+    );
 
     try {
       final response = await http.put(
         url,
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'user': {
-            'password': currentPassword,
-          },
+          'user': {'password': currentPassword},
           'newPassword': newPassword,
           'repeatNewPassword': repeatNewPassword,
         }),
@@ -114,10 +109,7 @@ class UserService {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'login': identifier,
-          'password': password,
-        }),
+        body: jsonEncode({'login': identifier, 'password': password}),
       );
 
       if (response.statusCode == 200) {
@@ -135,7 +127,6 @@ class UserService {
           body: 'Error inesperado: ${response.body}',
         );
       }
-
     } catch (e) {
       return ServiceHttpResponse(
         status: 500,
