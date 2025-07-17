@@ -9,7 +9,6 @@ import 'results_controller.dart';
 
 class ResultsPage extends StatelessWidget {
   ResultsPage({super.key});
-  final ResultsController control = Get.put(ResultsController());
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +34,8 @@ class ResultsPage extends StatelessWidget {
               width: screenWidth * 0.9,
               height: screenHeight * 0.90,
               child: GetBuilder<ResultsController>(
+                init:
+                    ResultsController(), // 👈 esto fuerza una nueva instancia con nuevos argumentos
                 builder:
                     (ctrl) => ScrollConfiguration(
                       behavior: const ScrollBehavior().copyWith(
@@ -46,16 +47,12 @@ class ResultsPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const BackButtonWidget(),
-
                             const TitleWidget(text: "Búsqueda"),
-
                             SizedBox(height: screenHeight * 0.006),
-
                             if (ctrl.hasResults)
                               _buildResultsContent(ctrl, context)
                             else
                               _buildNoResults(),
-
                             const SizedBox(height: 30),
                           ],
                         ),
@@ -88,7 +85,6 @@ class ResultsPage extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 20),
-
         MusicItemsGridStructure(
           buttonsData: ctrl.buttonsData,
           onButtonChanged: (updatedButtons) {

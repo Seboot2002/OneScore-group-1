@@ -4,7 +4,7 @@ import '../../models/entities/album.dart';
 import '../../models/entities/artist.dart';
 import '../../models/entities/user.dart';
 import 'package:http/http.dart' as http;
-import '../../config.dart'; // Asegúrate que este import esté correcto
+import '../../config.dart';
 
 class SearchService {
   static double _calculateMatch(String text, String query) {
@@ -55,37 +55,6 @@ class SearchService {
     }
 
     return 0.0;
-  }
-
-  static Future<List<Album>> searchAlbums(String query) async {
-    if (query.trim().isEmpty) return [];
-
-    final String data = await rootBundle.loadString('assets/jsons/album.json');
-    final List<dynamic> jsonList = json.decode(data);
-
-    List<Map<String, dynamic>> albumsWithScore = [];
-
-    for (var json in jsonList) {
-      final album = Album.fromJson(json);
-
-      double titleScore = _calculateMatch(album.title, query);
-      double yearScore =
-          album.releaseYear.toString() == query
-              ? 100.0
-              : album.releaseYear.toString().contains(query)
-              ? 60.0
-              : 0.0;
-
-      double maxScore = titleScore > yearScore ? titleScore : yearScore;
-
-      if (maxScore > 0) {
-        albumsWithScore.add({'album': album, 'score': maxScore});
-      }
-    }
-
-    albumsWithScore.sort((a, b) => b['score'].compareTo(a['score']));
-
-    return albumsWithScore.map((item) => item['album'] as Album).toList();
   }
 
   static Future<List<Artist>> searchArtists(String query) async {
@@ -156,23 +125,26 @@ class SearchService {
     return usersWithScore.map((item) => item['user'] as User).toList();
   }
 
-  static Future<void> fetchAlbumsFromApi(String keyword) async {
-    final Uri url = Uri.parse('$baseUrl/api/albums/search/$keyword');
-
+  // Funciones finales
+  static Future<List<Album>> fetchAlbumsFromApi(String keyword) async {
+    final Uri url = Uri.parse('${Config.baseUrl}/api/albums/search/$keyword');
     print("🌐 Consultando endpoint: $url");
 
     try {
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+        final List<dynamic> data = jsonDecode(response.body);
         print("🧪 Resultado desde API: $data");
+        return data.map((item) => Album.fromSearchJson(item)).toList();
       } else {
         print(
           "⚠️ Error desde API: ${response.statusCode} ${response.reasonPhrase}",
         );
+        return [];
       }
     } catch (e) {
       print("❌ Excepción en búsqueda remota: $e");
+      return [];
     }
   }
 }

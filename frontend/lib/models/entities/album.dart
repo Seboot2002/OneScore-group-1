@@ -26,6 +26,18 @@ class Album {
     );
   }
 
+  /// ✅ Constructor alternativo solo para resultados de búsqueda
+  factory Album.fromSearchJson(Map<String, dynamic> json) {
+    return Album(
+      albumId: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      releaseYear: 0,
+      genreId: 0,
+      coverUrl: json['cover_url'] ?? '',
+      artistId: 0,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'albumId': albumId,

@@ -5,9 +5,10 @@ import 'package:path_provider/path_provider.dart';
 import '../models/entities/user.dart';
 import '../models/httpresponse/service_http_response.dart';
 import 'package:http/http.dart' as http;
+import '../config.dart'; // Asegúrate que esto esté arriba
 
 class UserService {
-  final String baseUrl = "https://onescore.loca.lt";
+  final String baseUrl = Config.baseUrl;
 
   int _generateNewUserId(List<User> allUsers) {
     if (allUsers.isEmpty) return 1;

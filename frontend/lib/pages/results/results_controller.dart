@@ -18,6 +18,13 @@ class ResultsController extends GetxController {
     _loadArguments();
   }
 
+  @override
+  void onReady() {
+    super.onReady();
+    _loadArguments(); // Carga nueva búsqueda si navegas de nuevo aquí
+    update(); // Actualiza la UI
+  }
+
   void _loadArguments() {
     final arguments = Get.arguments;
     if (arguments != null) {

@@ -42,8 +42,7 @@ class SearchBarController extends GetxController {
 
       switch (tipoBusqueda) {
         case 'Albums':
-          resultados = await SearchService.searchAlbums(textoBusqueda);
-          await SearchService.fetchAlbumsFromApi(textoBusqueda);
+          resultados = await SearchService.fetchAlbumsFromApi(textoBusqueda);
           break;
         case 'Artistas':
           resultados = await SearchService.searchArtists(textoBusqueda);
@@ -52,10 +51,9 @@ class SearchBarController extends GetxController {
           resultados = await SearchService.searchUsers(textoBusqueda);
           break;
         case 'Todos':
-          final albums = await SearchService.searchAlbums(textoBusqueda);
+          final albums = await SearchService.fetchAlbumsFromApi(textoBusqueda);
           final artists = await SearchService.searchArtists(textoBusqueda);
           final users = await SearchService.searchUsers(textoBusqueda);
-          await SearchService.fetchAlbumsFromApi(textoBusqueda);
 
           resultados = [
             ...albums.map((album) => {'type': 'album', 'data': album}),
