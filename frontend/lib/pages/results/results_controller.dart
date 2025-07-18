@@ -21,21 +21,39 @@ class ResultsController extends GetxController {
   @override
   void onReady() {
     super.onReady();
-    _loadArguments(); // Carga nueva búsqueda si navegas de nuevo aquí
-    update(); // Actualiza la UI
+    // ✅ Forzar nueva carga cada vez que se navega a esta página
+    _loadArguments();
+    update();
   }
 
   void _loadArguments() {
     final arguments = Get.arguments;
+
+    // ✅ Limpiar datos anteriores ANTES de cargar los nuevos
+    results.clear();
+    searchType = '';
+    searchQuery = '';
+
     if (arguments != null) {
-      results = arguments['results'] ?? [];
+      results = List<dynamic>.from(arguments['results'] ?? []);
       searchType = arguments['searchType'] ?? '';
       searchQuery = arguments['searchQuery'] ?? '';
 
       print("🔍 Tipo de búsqueda: $searchType");
       print("📝 Query de búsqueda: $searchQuery");
       print("📦 Cantidad de resultados: ${results.length}");
+    } else {
+      print("⚠️ No se recibieron argumentos en ResultsController");
     }
+  }
+
+  // ✅ Método para limpiar datos cuando se salga de la página
+  @override
+  void onClose() {
+    results.clear();
+    searchType = '';
+    searchQuery = '';
+    super.onClose();
   }
 
   String get displaySearchType {
@@ -54,29 +72,24 @@ class ResultsController extends GetxController {
   }
 
   List<Widget> get albumWidgets {
-    List<Album> albums;
+    List<dynamic> albumItems;
     if (searchType == 'Todos') {
-      albums =
-          results
-              .where((item) => item['type'] == 'album')
-              .map((item) => item['data'] as Album)
-              .toList();
+      albumItems = results.where((item) => item['type'] == 'album').toList();
     } else if (searchType == 'Albums') {
-      albums = results.cast<Album>();
+      albumItems = results;
     } else {
-      albums = [];
+      albumItems = [];
     }
 
-    return albums
-        .map(
-          (album) => AlbumCard(
-            name: album.title,
-            image: album.coverUrl ?? '',
-            rating: 0.0,
-            albumId: album.albumId,
-          ),
-        )
-        .toList();
+    return albumItems.map((item) {
+      final album = Album.fromSearchJson(item['data']);
+      return AlbumCard(
+        name: album.title,
+        image: album.coverUrl ?? '',
+        rating: 0.0,
+        albumId: album.albumId,
+      );
+    }).toList();
   }
 
   List<Widget> get artistWidgets {

@@ -11,9 +11,12 @@ import '../../controllers/bottom_navigation_controller.dart';
 import 'album_result_controller.dart';
 
 class AlbumResultPage extends StatelessWidget {
-  final AlbumResultController control = Get.put(AlbumResultController());
+  late final AlbumResultController control;
 
-  AlbumResultPage({super.key});
+  AlbumResultPage({super.key}) {
+    final albumId = Get.arguments as int; // ✅ obtener argumento
+    control = Get.put(AlbumResultController(albumId)); // ✅ pasarlo
+  }
 
   Widget _buildBody(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -142,17 +145,42 @@ class AlbumResultPage extends StatelessWidget {
 
                         const SizedBox(height: 30),
 
-                        Obx(
-                          () => Center(
+                        Obx(() {
+                          final isFollowing =
+                              control.isUserFollowingAlbum.value;
+                          final rankState = control.albumRankState.value;
+
+                          String buttonLabel = 'Agregar álbum';
+                          VoidCallback onPressed = control.toggleFollowAlbum;
+
+                          if (isFollowing) {
+                            if (rankState == 'Por valorar') {
+                              buttonLabel = 'Valorar álbum';
+                              onPressed = () {
+                                print('⭐ Acción: Valorar álbum');
+                                // TODO: Aquí llamas a la función de valorar
+                              };
+                            } else if (rankState == 'Valorado') {
+                              buttonLabel = 'Actualizar álbum';
+                              onPressed = () {
+                                print('🔁 Acción: Actualizar álbum');
+                                // TODO: Aquí llamas a la función de revalorar
+                              };
+                            }
+                          } else {
+                            buttonLabel = 'Agregar álbum';
+                            onPressed =
+                                control
+                                    .toggleFollowAlbum; // la función de agregar
+                          }
+
+                          return Center(
                             child: ButtonWidget(
-                              text:
-                                  control.isUserFollowingAlbum.value
-                                      ? 'Guardar álbum'
-                                      : 'Agregar álbum',
-                              onPressed: control.toggleFollowAlbum,
+                              text: buttonLabel,
+                              onPressed: onPressed,
                             ),
-                          ),
-                        ),
+                          );
+                        }),
 
                         Obx(() {
                           if (control.isUserFollowingAlbum.value) {

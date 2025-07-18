@@ -6,8 +6,14 @@ import '../../models/entities/song.dart';
 import '../../models/entities/albumUser.dart';
 import '../../controllers/auth_controller.dart';
 import '../../controllers/bottom_navigation_controller.dart';
+import 'package:http/http.dart' as http;
+import '../../config.dart';
 
 class AlbumResultController extends GetxController {
+  final int albumId;
+
+  AlbumResultController(this.albumId); // 👈 AÑADIDO
+
   var isLoading = true.obs;
   var album = Rxn<Album>();
   var songs = <Song>[].obs;
@@ -16,6 +22,7 @@ class AlbumResultController extends GetxController {
   var genreName = ''.obs;
   var albumRating = 0.0.obs;
   var isUserFollowingAlbum = false.obs;
+  var albumRankState = RxnString(); // 👈 Para saber si está valorado o no
   var songCount = 0.obs;
 
   final AuthController _authController = Get.find<AuthController>();
@@ -24,33 +31,24 @@ class AlbumResultController extends GetxController {
   void onInit() {
     super.onInit();
 
-    // Asegurar que el BottomNavigationController esté disponible
     try {
       Get.find<BottomNavigationController>();
     } catch (e) {
       Get.put(BottomNavigationController());
     }
 
-    loadAlbumData();
+    loadAlbumData(); // ✅ ahora funciona porque albumId ya está disponible
   }
 
   Future<void> loadAlbumData() async {
     try {
+      isUserFollowingAlbum.value = false;
+      listenYear.value = 0;
+
       isLoading.value = true;
 
-      // Obtener el albumId de los argumentos de navegación
-      int albumId = Get.arguments ?? 1;
-
-      // Cargar datos del álbum
-      await loadAlbum(albumId);
-
-      // Cargar canciones del álbum
+      await loadAlbum(albumId); // ✅ usamos la propiedad directamente
       await loadSongs(albumId);
-
-      // Cargar datos del artista
-      await loadArtistData();
-
-      // Cargar año de escucha y verificar si el usuario sigue el álbum
       await loadUserAlbumData(albumId);
 
       isLoading.value = false;
@@ -62,108 +60,129 @@ class AlbumResultController extends GetxController {
 
   Future<void> loadAlbum(int albumId) async {
     try {
-      final String response = await rootBundle.loadString(
-        'assets/jsons/album.json',
-      );
-      final List<dynamic> data = json.decode(response);
+      final Uri url = Uri.parse('${Config.baseUrl}/api/albums/$albumId');
+      final response = await http.get(url);
 
-      final albumData = data.firstWhere(
-        (item) => item['albumId'] == albumId,
-        orElse: () => null,
-      );
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
 
-      if (albumData != null) {
-        album.value = Album.fromJson(albumData);
-        albumRating.value = (albumData['rating'] ?? 0.0).toDouble();
+        final adapted = {
+          'albumId': data['id'],
+          'title': data['title'],
+          'releaseYear': data['release_year'],
+          'genreId': data['genre_id'],
+          'coverUrl': data['cover_url'],
+          'artistId': data['artist_id'],
+        };
+
+        print('🎵 AlbumData (adapted): ${jsonEncode(adapted)}');
+
+        album.value = Album.fromJson(adapted);
+        albumRating.value = 0.0; // si luego tu API lo tiene, lo colocamos
+
+        // Llamamos al género luego de obtener el album
+        await loadGenre(data['genre_id']);
+      } else {
+        print('❌ Error loading album. Status: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error loading album: $e');
+      print('❌ Error loading album: $e');
+    }
+  }
+
+  Future<void> loadGenre(int genreId) async {
+    try {
+      final Uri url = Uri.parse('${Config.baseUrl}/api/genres/$genreId');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        final adapted = {'genreId': data['id'], 'name': data['name']};
+
+        print('🎼 Genre (adapted): ${jsonEncode(adapted)}');
+        genreName.value = adapted['name'] ?? '';
+      } else {
+        print('❌ Error loading genre. Status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error loading genre: $e');
     }
   }
 
   Future<void> loadSongs(int albumId) async {
     try {
-      final String response = await rootBundle.loadString(
-        'assets/jsons/song.json',
+      final Uri url = Uri.parse(
+        '${Config.baseUrl}/api/albums/album-songs/$albumId',
       );
-      final List<dynamic> data = json.decode(response);
+      final response = await http.get(url);
 
-      final albumSongs =
-          data
-              .where((item) => item['albumId'] == albumId)
-              .map((item) => Song.fromJson(item))
-              .toList();
+      if (response.statusCode == 200) {
+        final List<dynamic> data = json.decode(response.body);
 
-      // Ordenar por número de track
-      albumSongs.sort((a, b) => a.nTrack.compareTo(b.nTrack));
+        // Adaptamos los campos a lo que espera el modelo Song
+        final List<Song> albumSongs =
+            data.map((item) {
+              final adapted = {
+                'songId': item['id'],
+                'title': item['title'],
+                'nTrack': item['n_track'],
+                'albumId': item['album_id'],
+              };
+              return Song.fromJson(adapted);
+            }).toList();
 
-      songs.value = albumSongs;
-      songCount.value = albumSongs.length;
-    } catch (e) {
-      print('Error loading songs: $e');
-    }
-  }
+        // Ordenar por número de track
+        albumSongs.sort((a, b) => a.nTrack.compareTo(b.nTrack));
 
-  Future<void> loadArtistData() async {
-    try {
-      if (album.value == null) return;
+        songs.value = albumSongs;
+        songCount.value = albumSongs.length;
 
-      // Cargar datos del artista
-      final String artistResponse = await rootBundle.loadString(
-        'assets/jsons/artist.json',
-      );
-      final List<dynamic> artistData = json.decode(artistResponse);
-
-      final artist = artistData.firstWhere(
-        (item) => item['artistId'] == album.value!.artistId,
-        orElse: () => null,
-      );
-
-      if (artist != null) {
-        artistName.value = artist['name'] ?? '';
-
-        // Cargar género
-        final String genreResponse = await rootBundle.loadString(
-          'assets/jsons/genre.json',
-        );
-        final List<dynamic> genreData = json.decode(genreResponse);
-
-        final genre = genreData.firstWhere(
-          (item) => item['genreId'] == artist['genreId'],
-          orElse: () => null,
-        );
-
-        if (genre != null) {
-          genreName.value = genre['name'] ?? '';
+        print('🎶 Songs loaded from backend (${albumSongs.length}):');
+        for (var song in albumSongs) {
+          print(song.toJson());
         }
+      } else {
+        print('❌ Failed to load songs. Status: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error loading artist data: $e');
+      print('Error fetching songs: $e');
     }
   }
 
   Future<void> loadUserAlbumData(int albumId) async {
     try {
-      final String response = await rootBundle.loadString(
-        'assets/jsons/albumUser.json',
-      );
-      final List<dynamic> data = json.decode(response);
-
       final currentUserId = _authController.userId;
       if (currentUserId == null) return;
 
-      final albumUserData = data.firstWhere(
-        (item) => item['albumId'] == albumId && item['userId'] == currentUserId,
-        orElse: () => null,
+      final Uri url = Uri.parse(
+        '${Config.baseUrl}/api/albums/check-user-album/$currentUserId/$albumId',
       );
 
-      if (albumUserData != null) {
-        final albumUser = AlbumUser.fromJson(albumUserData);
-        listenYear.value = albumUser.listenYear;
-        isUserFollowingAlbum.value = true;
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+
+        if (data['exists'] == true) {
+          print('✅ Álbum está en la biblioteca del usuario');
+          isUserFollowingAlbum.value = true;
+
+          if (data.containsKey('rank_state')) {
+            final state = data['rank_state'];
+            print('📌 Estado del álbum: $state');
+            albumRankState.value = state; // ✅ GUARDAMOS el estado
+          }
+
+          listenYear.value = 2024; // dummy
+        } else {
+          print('ℹ️ Álbum NO está en la biblioteca del usuario');
+          isUserFollowingAlbum.value = false;
+          albumRankState.value = null; // ✨ BORRAMOS cualquier estado previo
+          listenYear.value = 0;
+        }
       } else {
-        listenYear.value = 0;
-        isUserFollowingAlbum.value = false;
+        print('❌ Error consultando user-album. Status: ${response.statusCode}');
       }
     } catch (e) {
       print('Error loading user album data: $e');

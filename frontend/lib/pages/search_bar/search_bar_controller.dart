@@ -4,7 +4,6 @@ import '../../services/search_service.dart';
 
 class SearchBarController extends GetxController {
   final searchController = TextEditingController();
-
   final List<Map<String, dynamic>> checkboxes = [
     {'label': 'Todos', 'value': true},
     {'label': 'Albums', 'value': false},
@@ -54,9 +53,8 @@ class SearchBarController extends GetxController {
           final albums = await SearchService.fetchAlbumsFromApi(textoBusqueda);
           final artists = await SearchService.searchArtists(textoBusqueda);
           final users = await SearchService.searchUsers(textoBusqueda);
-
           resultados = [
-            ...albums.map((album) => {'type': 'album', 'data': album}),
+            ...albums,
             ...artists.map((artist) => {'type': 'artist', 'data': artist}),
             ...users.map((user) => {'type': 'user', 'data': user}),
           ];
@@ -65,14 +63,21 @@ class SearchBarController extends GetxController {
 
       print("📦 Resultados encontrados: ${resultados.length}");
 
-      Get.toNamed(
+      // ✅ Agregar timestamp para forzar nueva navegación
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      await Get.toNamed(
         '/results',
         arguments: {
           'results': resultados,
           'searchType': tipoBusqueda,
           'searchQuery': textoBusqueda,
+          'timestamp': timestamp, // ✅ Hace que cada búsqueda sea única
         },
       );
+
+      // ✅ Limpiar el texto del buscador
+      searchController.clear();
     } catch (e) {
       print("❌ Error en la búsqueda: $e");
       Get.snackbar(

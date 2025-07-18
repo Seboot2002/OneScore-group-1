@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../pages/album_result/album_result_page.dart';
+import '../pages/album_result/album_result_controller.dart';
 
 class AlbumCard extends StatelessWidget {
   final String name;
@@ -21,7 +22,16 @@ class AlbumCard extends StatelessWidget {
   Widget _buildContext(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(() => AlbumResultPage(), arguments: albumId);
+        Get.to(
+          () => AlbumResultPage(),
+          arguments: albumId,
+          binding: BindingsBuilder(() {
+            if (Get.isRegistered<AlbumResultController>()) {
+              Get.delete<AlbumResultController>();
+            }
+            Get.put(AlbumResultController(albumId)); // 👈 PASO CLAVE
+          }),
+        );
       },
       child: SizedBox(
         height: 200,

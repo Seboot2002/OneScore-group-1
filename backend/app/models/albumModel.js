@@ -517,8 +517,42 @@ const Album = {
 
             callback(null, { valued, pending });
         });
-    }
+    },
 
+    getUserAlbumRankState: (userId, albumId) => {
+        return new Promise((resolve, reject) => {
+            const query = `
+                SELECT rank_state
+                FROM Album_User
+                WHERE user_id = ? AND album_id = ?
+            `;
+            db.get(query, [userId, albumId], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row); // puede ser undefined si no existe
+                }
+            });
+        });
+    },
+
+    getUserAlbumRating: (userId, albumId, callback) => {
+        const query = `
+            SELECT us.score
+            FROM Song s
+            INNER JOIN Song_User us ON s.id = us.song_id
+            WHERE s.album_id = ? AND us.user_id = ?
+        `;
+        db.all(query, [albumId, userId], (err, rows) => {
+            if (err) return callback(err);
+
+            if (rows.length === 0) return callback(null, { average: 0 });
+
+            const sum = rows.reduce((acc, row) => acc + row.score, 0);
+            const average = parseFloat((sum / rows.length).toFixed(2));
+            callback(null, { average });
+        });
+    },
 };
 
 module.exports = Album;

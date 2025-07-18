@@ -268,21 +268,26 @@ class UserService {
   }
 
   Future<User?> getUserById(int userId) async {
+    final url = Uri.parse('$baseUrl/api/users/$userId');
+
     try {
-      final users = await _readUsers();
+      final response = await http.get(url);
 
-      print('🔍 Buscando usuario con ID: $userId');
-      print('👥 Total usuarios disponibles: ${users.length}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
 
-      final matchedUser = users.firstWhere(
-        (user) => user.userId == userId,
-        orElse: () => throw StateError('Usuario no encontrado'),
-      );
+        print('🎯 Usuario recibido: $data');
 
-      print('✅ Usuario encontrado: ${matchedUser.nickname}');
-      return matchedUser;
+        return User.fromJson(data);
+      } else if (response.statusCode == 404) {
+        print('❌ Usuario no encontrado');
+        return null;
+      } else {
+        print('❌ Error inesperado: ${response.body}');
+        return null;
+      }
     } catch (e) {
-      print('❌ Error al buscar usuario con ID $userId: $e');
+      print('❌ Error de red: $e');
       return null;
     }
   }
