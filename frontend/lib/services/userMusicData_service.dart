@@ -5,7 +5,6 @@ import 'package:onescore/models/entities/artist.dart';
 import 'package:http/http.dart' as http;
 
 class UserMusicDataService {
-
   final String baseUrl = "https://onescore.loca.lt/";
 
   Future<List<Map<String, dynamic>>> getAllAlbumsByUser(int userId) async {
@@ -29,7 +28,7 @@ class UserMusicDataService {
               'id': album['artist_id'],
               'name': album['artist_name'],
               'image': album['artist_picture_url'],
-            }
+            },
           };
         }).toList();
       } else if (response.statusCode == 404) {
@@ -43,7 +42,6 @@ class UserMusicDataService {
       print('❌ Error al conectar con el servidor: $e');
       return [];
     }
-
   }
 
   Future<List<Map<String, dynamic>>> getAllArtistsByUser(int userId) async {
@@ -190,18 +188,17 @@ class UserMusicDataService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        final valuedAlbums = (data['valued'] as List)
-            .map((albumJson) => Album.fromJson(albumJson))
-            .toList();
+        final valuedAlbums =
+            (data['valued'] as List)
+                .map((albumJson) => Album.fromJson(albumJson))
+                .toList();
 
-        final pendingAlbums = (data['pending'] as List)
-            .map((albumJson) => Album.fromJson(albumJson))
-            .toList();
+        final pendingAlbums =
+            (data['pending'] as List)
+                .map((albumJson) => Album.fromJson(albumJson))
+                .toList();
 
-        return {
-          'valued': valuedAlbums,
-          'pending': pendingAlbums,
-        };
+        return {'valued': valuedAlbums, 'pending': pendingAlbums};
       } else {
         print('❌ Error: ${response.statusCode}');
         return {'valued': [], 'pending': []};
@@ -221,18 +218,17 @@ class UserMusicDataService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
 
-        final listenedArtists = (data['listened'] as List)
-            .map((json) => Artist.fromJson(json))
-            .toList();
+        final listenedArtists =
+            (data['listened'] as List)
+                .map((json) => Artist.fromJson(json))
+                .toList();
 
-        final pendingArtists = (data['pending'] as List)
-            .map((json) => Artist.fromJson(json))
-            .toList();
+        final pendingArtists =
+            (data['pending'] as List)
+                .map((json) => Artist.fromJson(json))
+                .toList();
 
-        return {
-          'listened': listenedArtists,
-          'pending': pendingArtists,
-        };
+        return {'listened': listenedArtists, 'pending': pendingArtists};
       } else {
         print('❌ Error HTTP: ${response.statusCode}');
         return {'listened': [], 'pending': []};
@@ -243,4 +239,16 @@ class UserMusicDataService {
     }
   }
 
+  Future<double> getUserAlbumRating(int albumId, int userId) async {
+    final response = await http.get(
+      Uri.parse('$baseUrl/api/albums/average-rating/$userId/$albumId'),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      return (data['average'] ?? 0).toDouble();
+    } else {
+      throw Exception('Error al obtener promedio del álbum');
+    }
+  }
 }
