@@ -43,32 +43,25 @@ class ProfileController extends GetxController {
       artistCount.value = artistData.length;
       songCount.value = songData.length;
 
-      Map<int, List<double>> albumScores = {};
+      albums.value = await Future.wait(
+        albumData.map((album) async {
+          final albumId = album['albumId'] as int;
 
-      albums.value =
-          albumData.map((album) {
-            final albumId = album['albumId'] as int;
+          double avgScore = 0.0;
+          try {
+            avgScore = await _musicService.getUserAlbumRating(albumId, userId);
+          } catch (e) {
+            print('Error obteniendo score del álbum $albumId: $e');
+          }
 
-            for (var song in songData) {
-              final score = (song['score'] ?? 0).toDouble();
-
-              if (!albumScores.containsKey(albumId)) {
-                albumScores[albumId] = [];
-              }
-              albumScores[albumId]!.add(score);
-            }
-            final scores = albumScores[albumId] ?? [];
-            final avgScore = scores.isNotEmpty
-                ? double.parse((scores.reduce((a, b) => a + b) / scores.length).toStringAsFixed(2))
-                : 0.0;
-
-            return AlbumCard(
-              name: album['name'],
-              image: album['image'],
-              rating: avgScore,
-              albumId: album['albumId'],
-            );
-          }).toList();
+          return AlbumCard(
+            name: album['name'],
+            image: album['image'],
+            rating: avgScore,
+            albumId: albumId,
+          );
+        }),
+      );
 
       artists.value =
           artistData
