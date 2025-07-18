@@ -49,13 +49,7 @@ class HomeController extends GetxController {
 
           double avgScore = 0.0;
           try {
-            avgScore = double.parse(
-              (await _musicService.getUserAlbumRating(
-                albumId,
-                userId,
-              )).toStringAsFixed(2),
-            );
-            print('🟢 Promedio del álbum $albumId: $avgScore');
+            avgScore = await _musicService.getUserAlbumRating(albumId, userId);
           } catch (e) {
             print('Error obteniendo score de álbum $albumId: $e');
           }
