@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:onescore/components/album_card.dart';
 import 'package:onescore/controllers/auth_controller.dart';
+import 'package:onescore/services/artist_service.dart';
 import 'package:onescore/services/userMusicData_service.dart';
 
 class ArtistResultController extends GetxController {
@@ -16,78 +17,70 @@ class ArtistResultController extends GetxController {
   var isUserFollowingArtist = false.obs;
 
   final UserMusicDataService _musicService = UserMusicDataService();
+  final ArtistService _artistService = ArtistService();
   final AuthController _authController = Get.find<AuthController>();
   late int artistId;
+  late int userId;
 
   @override
   void onInit() {
     super.onInit();
     artistId = (Get.arguments as Map<String, dynamic>)['artistId'];
+    userId = _authController.user!.userId;
     print('ArtistResultController inicializado con artistId: $artistId');
     getArtistData();
+    print("artistId: $artistId");
   }
 
   Future<void> getArtistData() async {
-    artist.value = null;
+    artist.value = {};
     albums.clear();
     albumCount.value = 0;
     songCount.value = 0;
     foundationYear.value = '';
-    isUserFollowingArtist.value = false;
-    print("Iniciando carga de datos del artista con ID: $artistId");
     isLoading.value = true;
 
     try {
-      final artistJson = await rootBundle.loadString(
-        'assets/jsons/artist.json',
-      );
-      final genreJson = await rootBundle.loadString('assets/jsons/genre.json');
-      final List<dynamic> allArtists = json.decode(artistJson);
-      final List<dynamic> allGenres = json.decode(genreJson);
-
-      final artistData = allArtists.firstWhere(
-        (artist) => artist['artistId'] == artistId,
-        orElse: () => null,
-      );
-
-      if (artistData == null) {
-        print("❌ Artista con ID $artistId no encontrado");
-        Get.snackbar(
-          'Error',
-          'Artista no encontrado',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-        return;
-      }
-
-      final genreId = artistData['genreId'];
-      final genreData = allGenres.firstWhere(
-        (genre) => genre['genreId'] == genreId,
-        orElse: () => null,
-      );
-
-      final genreName = genreData != null ? genreData['name'] : 'Sin género';
-      final debutYear = artistData['debutYear']?.toString() ?? '';
+      final artistData = await _artistService.getArtistById(artistId);
+      final statsData = await _artistService.getArtistStats(artistId);
+      final albumList = await _artistService.getAlbumsByArtist(artistId);
 
       artist.value = {
-        'artistId': artistData['artistId'],
-        'name': artistData['name'] ?? '',
-        'pictureUrl': artistData['pictureUrl'] ?? '',
-        'genre': genreName,
-        'foundationYear': debutYear,
+        'artistId': artistData?['id'],
+        'name': artistData?['name'],
+        'pictureUrl': artistData?['picture_url'],
+        'genre': artistData?['genre_name'],
+        'foundationYear': artistData?['debut_year'].toString(),
       };
 
-      foundationYear.value = debutYear;
+      foundationYear.value = artistData!['debut_year'].toString();
+      albumCount.value = statsData?['album_count'] ?? 0;
+      songCount.value = statsData?['song_count'] ?? 0;
 
-      print("✅ Artista cargado: ${artist.value!['name']}");
-      print("- Género: $genreName");
-      print("- Año de fundación: $debutYear");
+      // 👇 Cargar ratings para cada álbum individualmente
+      final List<Widget> albumWidgets = [];
 
-      await checkIfUserFollowsArtist();
+      for (var album in albumList) {
+        final albumId = album['id'];
+        double rating = await _artistService.getAlbumAverageRating(userId, albumId);
 
-      await getArtistMusicData();
+        albumWidgets.add(
+          AlbumCard(
+            name: album['title'] ?? '',
+            image: album['cover_url'] ?? '',
+            rating: rating,
+            albumId: albumId,
+          ),
+        );
+      }
+
+      albums.value = albumWidgets;
+
+      print("✅ Artista cargado: ${artist.value?['name']}");
+      print("- Álbumes: ${albumCount.value}");
+      print("- Canciones: ${songCount.value}");
     } catch (e) {
-      print("Error al obtener datos del artista: $e");
+      print("❌ Error al cargar datos del artista: $e");
       Get.snackbar(
         'Error',
         'No se pudieron cargar los datos del artista',
@@ -95,105 +88,35 @@ class ArtistResultController extends GetxController {
       );
     } finally {
       isLoading.value = false;
-      print("Carga finalizada para artista ID: $artistId");
     }
   }
 
-  Future<void> checkIfUserFollowsArtist() async {
-    try {
-      final artistUserJson = await rootBundle.loadString(
-        'assets/jsons/artistUser.json',
-      );
-      final List<dynamic> artistUserRelations = json.decode(artistUserJson);
+  Future<void> toggleFollowArtist() async {
+    final currentUserId = _authController.userId;
+    final currentArtistId = artist.value?['artistId'];
 
-      final currentUserId = _authController.userId;
-      if (currentUserId == null) return;
+    if (currentUserId == null || currentArtistId == null) return;
 
-      final relation = artistUserRelations.firstWhere(
-        (relation) =>
-            relation['userId'] == currentUserId &&
-            relation['artistId'] == artistId,
-        orElse: () => null,
-      );
-
-      isUserFollowingArtist.value = relation != null;
-      print(
-        "Usuario $currentUserId ${isUserFollowingArtist.value ? 'sigue' : 'no sigue'} al artista $artistId",
-      );
-    } catch (e) {
-      print("Error al verificar si el usuario sigue al artista: $e");
-    }
-  }
-
-  Future<void> getArtistMusicData() async {
-    print("Iniciando carga de datos musicales para artista ID: $artistId");
+    final artistName = artist.value?['name'];
 
     try {
-      final albumJson = await rootBundle.loadString('assets/jsons/album.json');
-      final songJson = await rootBundle.loadString('assets/jsons/song.json');
+      if (isUserFollowingArtist.value) {
+        print("👎 Usuario con ID $currentUserId dejó de seguir a $artistName");
+        await _artistService.unfollowArtist(currentArtistId, currentUserId);
+      } else {
+        print("👍 Usuario con ID $currentUserId empezó a seguir a $artistName");
+        await _artistService.followArtist(currentArtistId, currentUserId);
+      }
 
-      final List<dynamic> allAlbums = json.decode(albumJson);
-      final List<dynamic> allSongs = json.decode(songJson);
-
-      final artistAlbums =
-          allAlbums.where((album) => album['artistId'] == artistId).toList();
-      albumCount.value = artistAlbums.length;
-
-      final artistSongs =
-          allSongs
-              .where(
-                (song) => artistAlbums.any(
-                  (album) => album['albumId'] == song['albumId'],
-                ),
-              )
-              .toList();
-      songCount.value = artistSongs.length;
-
-      albums.value =
-          artistAlbums.map((album) {
-            final albumSongs =
-                allSongs
-                    .where((song) => song['albumId'] == album['albumId'])
-                    .toList();
-            double avgRating = 0.0;
-            if (albumSongs.isNotEmpty) {
-              avgRating = (album['rating'] ?? 0).toDouble();
-            }
-
-            return AlbumCard(
-              name: album['title'] ?? '',
-              image: album['coverUrl'] ?? '',
-              rating: avgRating,
-              albumId: album['albumId'],
-            );
-          }).toList();
-
-      print("Datos musicales del artista cargados exitosamente:");
-      print("- Albums: ${albumCount.value}");
-      print("- Canciones: ${songCount.value}");
+      isUserFollowingArtist.value = !isUserFollowingArtist.value;
     } catch (e) {
-      print("Error durante la carga de datos musicales del artista: $e");
+      print("❌ Error al actualizar el estado de seguimiento: $e");
       Get.snackbar(
         'Error',
-        'No se pudieron cargar los datos musicales del artista',
+        'No se pudo actualizar el seguimiento del artista',
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-  }
-
-  void toggleFollowArtist() {
-    final currentUserId = _authController.userId;
-    if (currentUserId == null || artist.value == null) return;
-
-    final artistName = artist.value!['name'];
-
-    if (isUserFollowingArtist.value) {
-      print("Usuario con ID $currentUserId eliminó al artista $artistName");
-    } else {
-      print("Usuario con ID $currentUserId agregó al artista $artistName");
-    }
-
-    isUserFollowingArtist.value = !isUserFollowingArtist.value;
   }
 
   @override
