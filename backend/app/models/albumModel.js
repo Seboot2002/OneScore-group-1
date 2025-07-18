@@ -517,8 +517,24 @@ const Album = {
 
             callback(null, { valued, pending });
         });
-    }
+    },
 
+    getUserAlbumRankState: (userId, albumId) => {
+        return new Promise((resolve, reject) => {
+            const query = `
+                SELECT rank_state
+                FROM Album_User
+                WHERE user_id = ? AND album_id = ?
+            `;
+            db.get(query, [userId, albumId], (err, row) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(row); // puede ser undefined si no existe
+                }
+            });
+        });
+    },
 };
 
 module.exports = Album;

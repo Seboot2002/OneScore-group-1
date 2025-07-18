@@ -11,9 +11,12 @@ import '../../controllers/bottom_navigation_controller.dart';
 import 'album_result_controller.dart';
 
 class AlbumResultPage extends StatelessWidget {
-  final AlbumResultController control = Get.put(AlbumResultController());
+  late final AlbumResultController control;
 
-  AlbumResultPage({super.key});
+  AlbumResultPage({super.key}) {
+    final albumId = Get.arguments as int; // ✅ obtener argumento
+    control = Get.put(AlbumResultController(albumId)); // ✅ pasarlo
+  }
 
   Widget _buildBody(BuildContext context) {
     final screenHeight = MediaQuery.of(context).size.height;
@@ -147,7 +150,7 @@ class AlbumResultPage extends StatelessWidget {
                             child: ButtonWidget(
                               text:
                                   control.isUserFollowingAlbum.value
-                                      ? 'Guardar álbum'
+                                      ? 'Valorar álbum'
                                       : 'Agregar álbum',
                               onPressed: control.toggleFollowAlbum,
                             ),

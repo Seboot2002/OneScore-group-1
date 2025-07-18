@@ -252,8 +252,23 @@ const albumController = {
 
             res.json(result);
         });
-    }
+    },
 
+    getUserAlbumRankState: async (req, res) => {
+        const { userId, albumId } = req.params;
+
+        try {
+            const result = await Album.getUserAlbumRankState(userId, albumId);
+            if (result) {
+                res.json({ exists: true, rank_state: result.rank_state });
+            } else {
+                res.json({ exists: false });
+            }
+        } catch (err) {
+            console.error('Error getting album rank_state:', err);
+            res.status(500).json({ error: 'Error fetching album rank_state' });
+        }
+    }, 
 };
 
 module.exports = albumController;
