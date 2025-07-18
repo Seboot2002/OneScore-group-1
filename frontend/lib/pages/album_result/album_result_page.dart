@@ -12,10 +12,30 @@ import 'album_result_controller.dart';
 
 class AlbumResultPage extends StatelessWidget {
   late final AlbumResultController control;
+  // 🆕 NUEVO: Mapa para almacenar los controllers de cada canción
+  final Map<int, TextEditingController> songControllers = {};
 
   AlbumResultPage({super.key}) {
-    final albumId = Get.arguments as int; // ✅ obtener argumento
-    control = Get.put(AlbumResultController(albumId)); // ✅ pasarlo
+    final albumId = Get.arguments as int;
+    control = Get.put(AlbumResultController(albumId));
+  }
+
+  // 🆕 NUEVO: Método para obtener o crear el controller de una canción
+  TextEditingController _getControllerForSong(int songId) {
+    if (!songControllers.containsKey(songId)) {
+      songControllers[songId] = TextEditingController();
+      print('🎛️ Controller creado para canción ID: $songId');
+    }
+    return songControllers[songId]!;
+  }
+
+  // 🆕 NUEVO: Método para limpiar todos los controllers
+  void _disposeControllers() {
+    for (var controller in songControllers.values) {
+      controller.dispose();
+    }
+    songControllers.clear();
+    print('🧹 Controllers limpiados');
   }
 
   Widget _buildBody(BuildContext context) {
@@ -133,11 +153,18 @@ class AlbumResultPage extends StatelessWidget {
                             itemCount: control.songs.length,
                             itemBuilder: (context, index) {
                               final song = control.songs[index];
+                              // 🆕 NUEVO: Usar el songId para crear el controller
+                              final controller = _getControllerForSong(
+                                song.songId,
+                              );
+
                               return Padding(
                                 padding: const EdgeInsets.only(bottom: 15.0),
                                 child: TrackListItemWidget(
                                   trackName: song.title,
-                                  ratingController: TextEditingController(),
+                                  songId:
+                                      song.songId, // 🆕 NUEVO: Pasar el songId
+                                  ratingController: controller,
                                 ),
                               );
                             },
@@ -146,42 +173,66 @@ class AlbumResultPage extends StatelessWidget {
 
                         const SizedBox(height: 30),
 
+                        // 🆕 NUEVO: Mostrar indicador de loading durante el rating
+                        Obx(() {
+                          if (control.isRatingAlbum.value) {
+                            return const Center(
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        }),
+
                         Obx(() {
                           final isFollowing =
                               control.isUserFollowingAlbum.value;
                           final rankState = control.albumRankState.value;
+                          final isRating = control.isRatingAlbum.value;
 
                           String buttonLabel = '';
-                          VoidCallback onPressed = () {};
+                          VoidCallback? onPressed;
 
                           if (!isFollowing) {
                             buttonLabel = 'Agregar álbum';
-                            onPressed = control.addAlbumToUser;
+                            onPressed =
+                                isRating ? null : control.addAlbumToUser;
                           } else {
                             switch (rankState) {
                               case 'Por valorar':
                                 buttonLabel = 'Valorar álbum';
-                                onPressed = () {
-                                  print('⭐ Acción: Valorar álbum');
-                                  // TODO: implementar valoración real
-                                };
+                                onPressed =
+                                    isRating
+                                        ? null
+                                        : () async {
+                                          print('⭐ Acción: Valorar álbum');
+                                          await control.rateAlbum();
+                                        };
                                 break;
                               case 'Valorado':
-                                buttonLabel = 'Actualizar álbum';
-                                onPressed = () {
-                                  print('🔁 Acción: Actualizar álbum');
-                                  // TODO: implementar actualización real
-                                };
+                                buttonLabel = 'Actualizar valoración';
+                                onPressed =
+                                    isRating
+                                        ? null
+                                        : () async {
+                                          print(
+                                            '🔁 Acción: Actualizar valoración',
+                                          );
+                                          await control.rateAlbum();
+                                        };
                                 break;
                               default:
                                 buttonLabel = '—';
+                                onPressed = null;
                             }
                           }
 
                           return Center(
                             child: ButtonWidget(
                               text: buttonLabel,
-                              onPressed: onPressed,
+                              onPressed: onPressed ?? () {},
                             ),
                           );
                         }),
@@ -193,6 +244,8 @@ class AlbumResultPage extends StatelessWidget {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
+                                    // 🆕 NUEVO: Limpiar controllers al eliminar álbum
+                                    _disposeControllers();
                                     control.deleteAlbumFromUser();
                                   },
                                   child: Text(
