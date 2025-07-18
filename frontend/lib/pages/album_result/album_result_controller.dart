@@ -167,6 +167,7 @@ class AlbumResultController extends GetxController {
         if (data['exists'] == true) {
           print('✅ Álbum está en la biblioteca del usuario');
           isUserFollowingAlbum.value = true;
+          await fetchUserAlbumRating(currentUserId, albumId);
 
           if (data.containsKey('rank_state')) {
             final state = data['rank_state'];
@@ -214,5 +215,29 @@ class AlbumResultController extends GetxController {
 
     isUserFollowingAlbum.value = false;
     listenYear.value = 0;
+  }
+
+  Future<void> fetchUserAlbumRating(int userId, int albumId) async {
+    try {
+      final Uri url = Uri.parse(
+        '${Config.baseUrl}/api/albums/average-rating/$userId/$albumId',
+      );
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final double avg = (data['average'] ?? 0).toDouble();
+        print('⭐️ Álbum rating promedio del usuario: $avg');
+        albumRating.value = avg;
+      } else {
+        print(
+          '❌ Error obteniendo rating del álbum. Status: ${response.statusCode}',
+        );
+        albumRating.value = 0.0;
+      }
+    } catch (e) {
+      print('❌ Error en fetchUserAlbumRating: $e');
+      albumRating.value = 0.0;
+    }
   }
 }

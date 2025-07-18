@@ -83,7 +83,8 @@ class AlbumResultPage extends StatelessWidget {
                                 label: 'Rating',
                                 numberLabel:
                                     control.isUserFollowingAlbum.value
-                                        ? control.albumRating.value.toString()
+                                        ? control.albumRating.value
+                                            .toStringAsFixed(2)
                                         : '—',
                                 backgroundColor: const Color(0xFF6E6E6E),
                                 textColor: Colors.white,
