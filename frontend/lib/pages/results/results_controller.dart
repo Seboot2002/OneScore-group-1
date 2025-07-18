@@ -6,22 +6,29 @@ import '../../models/entities/user.dart';
 import '../../components/album_card.dart';
 import '../../components/artist_card.dart';
 import '../../components/user_card.dart';
+import '../../controllers/auth_controller.dart';
+import '../../services/userMusicData_service.dart';
 
 class ResultsController extends GetxController {
   List<dynamic> results = [];
   String searchType = '';
   String searchQuery = '';
 
+  final UserMusicDataService _musicService = UserMusicDataService();
+  late AuthController authControl;
+  late int userId;
+
   @override
   void onInit() {
     super.onInit();
+    authControl = Get.find<AuthController>();
+    userId = authControl.user!.userId;
     _loadArguments();
   }
 
   @override
   void onReady() {
     super.onReady();
-    // ✅ Forzar nueva carga cada vez que se navega a esta página
     _loadArguments();
     update();
   }
@@ -29,7 +36,6 @@ class ResultsController extends GetxController {
   void _loadArguments() {
     final arguments = Get.arguments;
 
-    // ✅ Limpiar datos anteriores ANTES de cargar los nuevos
     results.clear();
     searchType = '';
     searchQuery = '';
@@ -47,7 +53,6 @@ class ResultsController extends GetxController {
     }
   }
 
-  // ✅ Método para limpiar datos cuando se salga de la página
   @override
   void onClose() {
     results.clear();
@@ -81,13 +86,24 @@ class ResultsController extends GetxController {
       albumItems = [];
     }
 
-    return albumItems.map((item) {
+    return albumItems.map<Widget>((item) {
       final album = Album.fromSearchJson(item['data']);
-      return AlbumCard(
-        name: album.title,
-        image: album.coverUrl ?? '',
-        rating: 0.0,
-        albumId: album.albumId,
+
+      return FutureBuilder<double>(
+        future: _musicService.getUserAlbumRating(album.albumId, userId),
+        builder: (context, snapshot) {
+          final rating =
+              snapshot.hasData
+                  ? double.parse(snapshot.data!.toStringAsFixed(2))
+                  : 0.0;
+
+          return AlbumCard(
+            name: album.title,
+            image: album.coverUrl ?? '',
+            rating: rating,
+            albumId: album.albumId,
+          );
+        },
       );
     }).toList();
   }
@@ -174,6 +190,5 @@ class ResultsController extends GetxController {
   }
 
   bool get hasResults => results.isNotEmpty;
-
   int get totalResults => results.length;
 }
