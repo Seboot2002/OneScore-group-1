@@ -293,92 +293,63 @@ class UserService {
   }
 
   Future<ServiceHttpResponse> updateUser(
-    User updatedUser,
-    User originalUser,
-  ) async {
+      User updatedUser,
+      User originalUser,
+      ) async {
     try {
+      // Comparar cambios
       List<String> changes = [];
       if (updatedUser.name != originalUser.name) {
         changes.add('nombre de "${originalUser.name}" a "${updatedUser.name}"');
       }
       if (updatedUser.lastName != originalUser.lastName) {
-        changes.add(
-          'apellido de "${originalUser.lastName}" a "${updatedUser.lastName}"',
-        );
+        changes.add('apellido de "${originalUser.lastName}" a "${updatedUser.lastName}"');
       }
       if (updatedUser.mail != originalUser.mail) {
         changes.add('correo de "${originalUser.mail}" a "${updatedUser.mail}"');
       }
 
+      // Imprimir cambios detectados
       if (changes.isNotEmpty) {
         print('========== ACTUALIZACIÓN DE PERFIL ==========');
-        print(
-          'El usuario "${updatedUser.name}" con ID "${updatedUser.userId}" cambió los siguientes campos:',
-        );
+        print('El usuario con ID "${updatedUser.userId}" cambió:');
         for (String change in changes) {
           print('- $change');
         }
         print('============================================');
       } else {
-        print(
-          'El usuario "${updatedUser.name}" con ID "${updatedUser.userId}" no realizó cambios',
-        );
+        print('🔎 No hay cambios en los datos del usuario.');
       }
 
-      print('🔍 Buscando usuario con ID: ${updatedUser.userId}');
+      // Preparar cuerpo del PUT
+      final body = {
+        "name": updatedUser.name,
+        "last_name": updatedUser.lastName,
+        "nickname": updatedUser.nickname,
+        "mail": updatedUser.mail,
+      };
 
-      final initialUsers = await _loadInitialUsers();
-      final localUsers = await _loadLocalUsers();
-
-      print('📁 Usuarios iniciales (assets): ${initialUsers.length}');
-      print('📁 Usuarios locales (archivo): ${localUsers.length}');
-
-      bool userExistsInAssets = initialUsers.any(
-        (user) => user.userId.toString() == updatedUser.userId.toString(),
+      final response = await http.put(
+        Uri.parse('$baseUrl/api/users/${updatedUser.userId}'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(body),
       );
 
-      if (userExistsInAssets) {
-        print('✅ Usuario encontrado en assets - moviendo a archivo local');
-
-        localUsers.removeWhere(
-          (user) => user.userId.toString() == updatedUser.userId.toString(),
-        );
-
-        localUsers.add(updatedUser);
-
-        await _saveLocalUsers(localUsers);
-
-        return ServiceHttpResponse(
-          status: 200,
-          body: 'Usuario actualizado correctamente (movido de assets a local)',
-        );
-      }
-
-      int userIndex = localUsers.indexWhere(
-        (user) => user.userId.toString() == updatedUser.userId.toString(),
-      );
-
-      if (userIndex != -1) {
-        print('✅ Usuario encontrado en archivo local en posición $userIndex');
-
-        localUsers[userIndex] = updatedUser;
-
-        await _saveLocalUsers(localUsers);
-
+      if (response.statusCode == 200) {
+        print('✅ Usuario actualizado en el servidor');
         return ServiceHttpResponse(
           status: 200,
           body: 'Usuario actualizado correctamente',
         );
+      } else {
+        print('❌ Error al actualizar usuario: ${response.body}');
+        return ServiceHttpResponse(
+          status: response.statusCode,
+          body: 'Error al actualizar usuario: ${response.body}',
+        );
       }
-
-      print('❌ Usuario con ID ${updatedUser.userId} no encontrado');
-
-      return ServiceHttpResponse(
-        status: 404,
-        body: 'Usuario no encontrado. ID buscado: ${updatedUser.userId}',
-      );
     } catch (e) {
-      print('Error updating user: $e');
+      print('❌ Excepción al actualizar usuario: $e');
       return ServiceHttpResponse(
         status: 500,
         body: 'Error interno del servidor: $e',
