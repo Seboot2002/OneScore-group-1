@@ -553,6 +553,16 @@ const Album = {
             callback(null, { average });
         });
     },
+
+    getSongRatingsByUserAndAlbum: (userId, albumId, callback) => {
+        const query = `
+            SELECT s.id as song_id, s.title as song_title, su.score
+            FROM Song s
+            LEFT JOIN Song_User su ON s.id = su.song_id AND su.user_id = ?
+            WHERE s.album_id = ?
+        `;
+        db.all(query, [userId, albumId], callback);
+    },
 };
 
 module.exports = Album;

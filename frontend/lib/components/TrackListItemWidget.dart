@@ -5,13 +5,13 @@ import '../pages/album_result/album_result_controller.dart';
 
 class TrackListItemWidget extends StatefulWidget {
   final String trackName;
-  final int songId; // 🆕 NUEVO: Necesitamos el ID de la canción
+  final int songId;
   final TextEditingController ratingController;
 
   const TrackListItemWidget({
     super.key,
     required this.trackName,
-    required this.songId, // 🆕 NUEVO
+    required this.songId,
     required this.ratingController,
   });
 
@@ -27,13 +27,9 @@ class _TrackListItemWidgetState extends State<TrackListItemWidget> {
     super.initState();
     controller = Get.find<AlbumResultController>();
 
-    // 🆕 NUEVO: Inicializar el controller con el rating existente
     final existingRating = controller.getSongRating(widget.songId);
-    if (existingRating > 0) {
-      widget.ratingController.text = existingRating.toString();
-    }
+    widget.ratingController.text = existingRating.toString();
 
-    // 🆕 NUEVO: Listener para actualizar el rating cuando cambie el texto
     widget.ratingController.addListener(_onRatingChanged);
 
     print(
@@ -54,12 +50,10 @@ class _TrackListItemWidgetState extends State<TrackListItemWidget> {
     );
 
     if (text.isEmpty) {
-      // Si está vacío, establecer rating en 0
       controller.updateSongRating(widget.songId, 0);
       return;
     }
 
-    // Intentar parsear el número
     final rating = int.tryParse(text);
     if (rating != null) {
       if (rating >= 0 && rating <= 100) {
@@ -67,7 +61,6 @@ class _TrackListItemWidgetState extends State<TrackListItemWidget> {
         print('✅ Rating válido guardado: $rating');
       } else {
         print('❌ Rating fuera de rango (0-100): $rating');
-        // Opcional: mostrar feedback visual
       }
     } else {
       print('❌ Rating no es un número válido: "$text"');
@@ -125,10 +118,8 @@ class _TrackListItemWidgetState extends State<TrackListItemWidget> {
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     maxLength: 3,
-                    // 🆕 NUEVO: Restricción de input solo números
                     inputFormatters: [
                       FilteringTextInputFormatter.digitsOnly,
-                      // 🆕 NUEVO: Formatter personalizado para limitar a 100
                       _RatingInputFormatter(),
                     ],
                     style: const TextStyle(
@@ -144,12 +135,10 @@ class _TrackListItemWidgetState extends State<TrackListItemWidget> {
                       isCollapsed: true,
                       contentPadding: EdgeInsets.zero,
                     ),
-                    // 🆕 NUEVO: Validación en tiempo real
                     onChanged: (value) {
                       if (value.isNotEmpty) {
                         final rating = int.tryParse(value);
                         if (rating != null && rating > 100) {
-                          // Si el usuario intenta escribir más de 100, limitar a 100
                           widget.ratingController.text = '100';
                           widget
                               .ratingController
@@ -172,7 +161,6 @@ class _TrackListItemWidgetState extends State<TrackListItemWidget> {
   }
 }
 
-// 🆕 NUEVO: Formatter personalizado para limitar valores a 100
 class _RatingInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(

@@ -11,7 +11,7 @@ import '../../config.dart';
 
 class AlbumResultController extends GetxController {
   final int albumId;
-
+  var ratingsLoaded = false.obs;
   AlbumResultController(this.albumId);
 
   var isLoading = true.obs;
@@ -25,7 +25,6 @@ class AlbumResultController extends GetxController {
   var albumRankState = RxnString();
   var songCount = 0.obs;
 
-  // 🆕 NUEVO: Mapa para almacenar los ratings de cada canción
   var songRatings = <int, int>{}.obs; // songId -> rating
   var isRatingAlbum = false.obs; // Para mostrar loading durante el rating
 
@@ -44,7 +43,6 @@ class AlbumResultController extends GetxController {
     loadAlbumData();
   }
 
-  // 🆕 NUEVO: Método para actualizar el rating de una canción
   void updateSongRating(int songId, int rating) {
     print('📝 Actualizando rating de canción $songId: $rating');
 
@@ -58,12 +56,10 @@ class AlbumResultController extends GetxController {
     print('🎵 Ratings actuales: $songRatings');
   }
 
-  // 🆕 NUEVO: Método para obtener el rating de una canción
   int getSongRating(int songId) {
     return songRatings[songId] ?? 0;
   }
 
-  // 🆕 NUEVO: Método para verificar si todas las canciones tienen rating
   bool areAllSongsRated() {
     print('🔍 Verificando si todas las canciones tienen rating...');
     print('💿 Total de canciones: ${songs.length}');
@@ -81,7 +77,6 @@ class AlbumResultController extends GetxController {
     return true;
   }
 
-  // 🆕 NUEVO: Método para valorar el álbum completo
   Future<void> rateAlbum() async {
     print('🎯 Iniciando proceso de valoración de álbum...');
 
@@ -98,7 +93,6 @@ class AlbumResultController extends GetxController {
       return;
     }
 
-    // Verificar que todas las canciones tengan rating
     if (!areAllSongsRated()) {
       print('❌ No todas las canciones tienen rating');
       Get.snackbar('Error', 'Debes valorar todas las canciones');
@@ -174,44 +168,106 @@ class AlbumResultController extends GetxController {
     }
   }
 
-  // 🆕 NUEVO: Método para cargar ratings existentes del usuario
   Future<void> loadExistingSongRatings() async {
-    print('🔄 Cargando ratings existentes...');
-
-    final currentUserId = _authController.userId;
-    if (currentUserId == null) return;
-
     try {
-      // Aquí puedes implementar la carga de ratings existentes si tu API lo permite
-      // Por ahora, inicializamos con 0
-      songRatings.clear();
-      for (var song in songs) {
-        songRatings[song.songId] = 0;
+      final currentUserId = _authController.userId;
+      if (currentUserId == null) {
+        print('❌ No hay usuario autenticado');
+        ratingsLoaded.value = true;
+        return;
       }
-      print('📝 Ratings inicializados para ${songs.length} canciones');
+
+      // Solo cargar ratings si el usuario está siguiendo el álbum
+      if (!isUserFollowingAlbum.value) {
+        print('ℹ️ Usuario no sigue el álbum, no se cargan ratings');
+        ratingsLoaded.value = true;
+        return;
+      }
+
+      final url =
+          '${Config.baseUrl}/api/albums/song-ratings/$currentUserId/$albumId';
+      final response = await http.get(Uri.parse(url));
+
+      print('🔍 Respuesta loadExistingSongRatings: ${response.statusCode}');
+      print('📄 Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final dynamic responseData = jsonDecode(response.body);
+
+        // Verificar si la respuesta es una lista
+        if (responseData is List) {
+          final List<dynamic> jsonData = responseData;
+
+          for (var rating in jsonData) {
+            // Verificar que los campos existan y no sean null
+            if (rating != null && rating is Map<String, dynamic>) {
+              final songIdValue = rating['song_id'];
+              final scoreValue = rating['score'];
+
+              if (songIdValue != null && scoreValue != null) {
+                final int songId =
+                    songIdValue is int
+                        ? songIdValue
+                        : int.tryParse(songIdValue.toString()) ?? 0;
+                final int score =
+                    scoreValue is int
+                        ? scoreValue
+                        : int.tryParse(scoreValue.toString()) ?? 0;
+
+                if (songId > 0) {
+                  songRatings[songId] = score;
+                  print('✅ Rating cargado: Canción $songId = $score');
+                }
+              }
+            }
+          }
+
+          print('📊 Total ratings cargados: ${songRatings.length}');
+        } else {
+          print('ℹ️ Respuesta no es una lista, probablemente sin ratings');
+        }
+
+        ratingsLoaded.value = true;
+      } else if (response.statusCode == 404) {
+        print('ℹ️ No se encontraron ratings para este álbum');
+        ratingsLoaded.value = true;
+      } else {
+        print('❌ Error al obtener ratings. Status: ${response.statusCode}');
+        ratingsLoaded.value = true;
+      }
     } catch (e) {
-      print('❌ Error cargando ratings existentes: $e');
+      print('❌ Error en loadExistingSongRatings: $e');
+      ratingsLoaded.value = true;
     }
   }
 
   Future<void> loadAlbumData() async {
     try {
+      // Reiniciar estados
       isUserFollowingAlbum.value = false;
       listenYear.value = 0;
+      songRatings.clear();
+      ratingsLoaded.value = false;
 
       isLoading.value = true;
 
+      // Cargar datos básicos del álbum
       await loadAlbum(albumId);
       await loadSongs(albumId);
+
+      // Cargar datos del usuario-álbum
       await loadUserAlbumData(albumId);
 
-      // 🆕 NUEVO: Cargar ratings existentes después de cargar las canciones
+      // Solo cargar ratings si el usuario sigue el álbum
       await loadExistingSongRatings();
 
       isLoading.value = false;
+
+      print('✅ Datos del álbum cargados completamente');
     } catch (e) {
-      print('Error loading album data: $e');
+      print('❌ Error loading album data: $e');
       isLoading.value = false;
+      ratingsLoaded.value = true;
     }
   }
 
@@ -434,12 +490,14 @@ class AlbumResultController extends GetxController {
 
       if (response.statusCode == 200) {
         print('🗑 Álbum eliminado con éxito de la biblioteca');
+
+        // Limpiar todos los estados relacionados
         isUserFollowingAlbum.value = false;
         albumRankState.value = null;
         listenYear.value = 0;
         albumRating.value = 0.0;
 
-        // 🆕 NUEVO: Limpiar ratings al eliminar álbum
+        // Limpiar ratings
         songRatings.clear();
 
         Get.snackbar('Eliminado', 'Álbum eliminado correctamente');

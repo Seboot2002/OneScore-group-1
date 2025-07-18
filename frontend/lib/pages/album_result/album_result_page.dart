@@ -12,7 +12,6 @@ import 'album_result_controller.dart';
 
 class AlbumResultPage extends StatelessWidget {
   late final AlbumResultController control;
-  // 🆕 NUEVO: Mapa para almacenar los controllers de cada canción
   final Map<int, TextEditingController> songControllers = {};
 
   AlbumResultPage({super.key}) {
@@ -20,7 +19,6 @@ class AlbumResultPage extends StatelessWidget {
     control = Get.put(AlbumResultController(albumId));
   }
 
-  // 🆕 NUEVO: Método para obtener o crear el controller de una canción
   TextEditingController _getControllerForSong(int songId) {
     if (!songControllers.containsKey(songId)) {
       songControllers[songId] = TextEditingController();
@@ -29,7 +27,6 @@ class AlbumResultPage extends StatelessWidget {
     return songControllers[songId]!;
   }
 
-  // 🆕 NUEVO: Método para limpiar todos los controllers
   void _disposeControllers() {
     for (var controller in songControllers.values) {
       controller.dispose();
@@ -137,6 +134,12 @@ class AlbumResultPage extends StatelessWidget {
                         const SizedBox(height: 16),
 
                         Obx(() {
+                          if (!control.ratingsLoaded.value) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+
                           if (control.songs.isEmpty) {
                             return const Text(
                               'No se encontraron canciones para este álbum.',
@@ -153,7 +156,6 @@ class AlbumResultPage extends StatelessWidget {
                             itemCount: control.songs.length,
                             itemBuilder: (context, index) {
                               final song = control.songs[index];
-                              // 🆕 NUEVO: Usar el songId para crear el controller
                               final controller = _getControllerForSong(
                                 song.songId,
                               );
@@ -162,8 +164,7 @@ class AlbumResultPage extends StatelessWidget {
                                 padding: const EdgeInsets.only(bottom: 15.0),
                                 child: TrackListItemWidget(
                                   trackName: song.title,
-                                  songId:
-                                      song.songId, // 🆕 NUEVO: Pasar el songId
+                                  songId: song.songId,
                                   ratingController: controller,
                                 ),
                               );
@@ -173,7 +174,6 @@ class AlbumResultPage extends StatelessWidget {
 
                         const SizedBox(height: 30),
 
-                        // 🆕 NUEVO: Mostrar indicador de loading durante el rating
                         Obx(() {
                           if (control.isRatingAlbum.value) {
                             return const Center(
