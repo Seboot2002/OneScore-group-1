@@ -29,6 +29,21 @@ class User {
     );
   }
 
+  factory User.fromSearchJson(Map<String, dynamic> json) {
+    final fullName = json['full_name']?.toString() ?? '';
+    final nameParts = fullName.split(' ');
+
+    return User(
+      userId: _parseUserId(json['user_id']),
+      name: nameParts.isNotEmpty ? nameParts.first : '',
+      lastName: nameParts.length > 1 ? nameParts.sublist(1).join(' ') : '',
+      nickname: '',
+      mail: '',
+      password: '',
+      photoUrl: json['photo_url']?.toString() ?? '',
+    );
+  }
+
   static int _parseUserId(dynamic value) {
     if (value == null) return 0;
     if (value is int) return value;
