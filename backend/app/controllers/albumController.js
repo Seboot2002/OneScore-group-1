@@ -281,6 +281,17 @@ const albumController = {
             res.json(result); // { average: 0 } o { average: 78.5 }
         });
     },
+
+    getSongRatingsByUserAndAlbum: (req, res) => {
+        const { userId, albumId } = req.params;
+        Album.getSongRatingsByUserAndAlbum(userId, albumId, (err, rows) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json(rows);
+        });
+    },
 };
 
 module.exports = albumController;
