@@ -20,6 +20,7 @@ router.post('/rate', albumController.rateAlbum);
 router.get('/album-songs/:id', albumController.getSongsByAlbumId);
 router.get('/recommend-albums/:userId', albumController.recommendAlbumsToUser);
 router.get('/check-user-album/:userId/:albumId', albumController.getUserAlbumRankState);
+router.get('/average-rating/:userId/:albumId', albumController.getUserAlbumAverageRating);
 
 router.get('/user-albums-by-state/:userId', albumController.getUserAlbumsByState);
 

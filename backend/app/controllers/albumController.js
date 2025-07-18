@@ -269,6 +269,18 @@ const albumController = {
             res.status(500).json({ error: 'Error fetching album rank_state' });
         }
     }, 
+
+    getUserAlbumAverageRating: (req, res) => {
+        const { userId, albumId } = req.params;
+
+        Album.getUserAlbumRating(userId, albumId, (err, result) => {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json(result); // { average: 0 } o { average: 78.5 }
+        });
+    },
 };
 
 module.exports = albumController;
