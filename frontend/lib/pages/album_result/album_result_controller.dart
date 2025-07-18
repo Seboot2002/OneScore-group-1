@@ -240,4 +240,60 @@ class AlbumResultController extends GetxController {
       albumRating.value = 0.0;
     }
   }
+
+  Future<void> addAlbumToUser() async {
+    final currentUserId = _authController.userId;
+    if (currentUserId == null || album.value == null) return;
+
+    final int albumId = album.value!.albumId;
+    final Uri url = Uri.parse(
+      '${Config.baseUrl}/api/albums/user/$currentUserId/$albumId',
+    );
+
+    try {
+      final response = await http.post(url);
+
+      if (response.statusCode == 200) {
+        print('✅ Álbum agregado con éxito a la biblioteca');
+        isUserFollowingAlbum.value = true;
+        albumRankState.value = 'Por valorar';
+
+        await fetchUserAlbumRating(currentUserId, albumId);
+      } else {
+        print('❌ Error al agregar álbum. Status: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('❌ Error al agregar álbum: $e');
+    }
+  }
+
+  Future<void> deleteAlbumFromUser() async {
+    final currentUserId = _authController.userId;
+    if (currentUserId == null || album.value == null) return;
+
+    final int albumId = album.value!.albumId;
+    final Uri url = Uri.parse(
+      '${Config.baseUrl}/api/albums/user/$currentUserId/$albumId',
+    );
+
+    try {
+      final response = await http.delete(url);
+
+      if (response.statusCode == 200) {
+        print('🗑 Álbum eliminado con éxito de la biblioteca');
+        isUserFollowingAlbum.value = false;
+        albumRankState.value = null;
+        listenYear.value = 0;
+        albumRating.value = 0.0;
+
+        Get.snackbar('Eliminado', 'Álbum eliminado correctamente');
+      } else {
+        print('❌ Error al eliminar álbum. Status: ${response.statusCode}');
+        Get.snackbar('Error', 'No se pudo eliminar el álbum');
+      }
+    } catch (e) {
+      print('❌ Error al eliminar álbum: $e');
+      Get.snackbar('Error', 'Error de red al eliminar álbum');
+    }
+  }
 }

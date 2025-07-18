@@ -151,28 +151,31 @@ class AlbumResultPage extends StatelessWidget {
                               control.isUserFollowingAlbum.value;
                           final rankState = control.albumRankState.value;
 
-                          String buttonLabel = 'Agregar álbum';
-                          VoidCallback onPressed = control.toggleFollowAlbum;
+                          String buttonLabel = '';
+                          VoidCallback onPressed = () {};
 
-                          if (isFollowing) {
-                            if (rankState == 'Por valorar') {
-                              buttonLabel = 'Valorar álbum';
-                              onPressed = () {
-                                print('⭐ Acción: Valorar álbum');
-                                // TODO: Aquí llamas a la función de valorar
-                              };
-                            } else if (rankState == 'Valorado') {
-                              buttonLabel = 'Actualizar álbum';
-                              onPressed = () {
-                                print('🔁 Acción: Actualizar álbum');
-                                // TODO: Aquí llamas a la función de revalorar
-                              };
-                            }
-                          } else {
+                          if (!isFollowing) {
                             buttonLabel = 'Agregar álbum';
-                            onPressed =
-                                control
-                                    .toggleFollowAlbum; // la función de agregar
+                            onPressed = control.addAlbumToUser;
+                          } else {
+                            switch (rankState) {
+                              case 'Por valorar':
+                                buttonLabel = 'Valorar álbum';
+                                onPressed = () {
+                                  print('⭐ Acción: Valorar álbum');
+                                  // TODO: implementar valoración real
+                                };
+                                break;
+                              case 'Valorado':
+                                buttonLabel = 'Actualizar álbum';
+                                onPressed = () {
+                                  print('🔁 Acción: Actualizar álbum');
+                                  // TODO: implementar actualización real
+                                };
+                                break;
+                              default:
+                                buttonLabel = '—';
+                            }
                           }
 
                           return Center(
@@ -189,7 +192,9 @@ class AlbumResultPage extends StatelessWidget {
                               padding: const EdgeInsets.only(top: 12),
                               child: Center(
                                 child: GestureDetector(
-                                  onTap: control.removeAlbum,
+                                  onTap: () {
+                                    control.deleteAlbumFromUser();
+                                  },
                                   child: Text(
                                     'eliminar álbum',
                                     style: TextStyle(
