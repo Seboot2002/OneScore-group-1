@@ -22,6 +22,7 @@ class AlbumResultController extends GetxController {
   var genreName = ''.obs;
   var albumRating = 0.0.obs;
   var isUserFollowingAlbum = false.obs;
+  var albumRankState = RxnString(); // 👈 Para saber si está valorado o no
   var songCount = 0.obs;
 
   final AuthController _authController = Get.find<AuthController>();
@@ -165,22 +166,19 @@ class AlbumResultController extends GetxController {
 
         if (data['exists'] == true) {
           print('✅ Álbum está en la biblioteca del usuario');
-
           isUserFollowingAlbum.value = true;
 
-          // Si necesitas el estado, puedes guardarlo también
           if (data.containsKey('rank_state')) {
             final state = data['rank_state'];
             print('📌 Estado del álbum: $state');
-
-            // Opcional: si quieres mostrarlo en algún lado, guarda en otra variable.
+            albumRankState.value = state; // ✅ GUARDAMOS el estado
           }
 
-          // Por ahora seteamos un año dummy si está en la biblioteca
-          listenYear.value = 2024;
+          listenYear.value = 2024; // dummy
         } else {
           print('ℹ️ Álbum NO está en la biblioteca del usuario');
           isUserFollowingAlbum.value = false;
+          albumRankState.value = null; // ✨ BORRAMOS cualquier estado previo
           listenYear.value = 0;
         }
       } else {

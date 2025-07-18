@@ -145,17 +145,42 @@ class AlbumResultPage extends StatelessWidget {
 
                         const SizedBox(height: 30),
 
-                        Obx(
-                          () => Center(
+                        Obx(() {
+                          final isFollowing =
+                              control.isUserFollowingAlbum.value;
+                          final rankState = control.albumRankState.value;
+
+                          String buttonLabel = 'Agregar álbum';
+                          VoidCallback onPressed = control.toggleFollowAlbum;
+
+                          if (isFollowing) {
+                            if (rankState == 'Por valorar') {
+                              buttonLabel = 'Valorar álbum';
+                              onPressed = () {
+                                print('⭐ Acción: Valorar álbum');
+                                // TODO: Aquí llamas a la función de valorar
+                              };
+                            } else if (rankState == 'Valorado') {
+                              buttonLabel = 'Actualizar álbum';
+                              onPressed = () {
+                                print('🔁 Acción: Actualizar álbum');
+                                // TODO: Aquí llamas a la función de revalorar
+                              };
+                            }
+                          } else {
+                            buttonLabel = 'Agregar álbum';
+                            onPressed =
+                                control
+                                    .toggleFollowAlbum; // la función de agregar
+                          }
+
+                          return Center(
                             child: ButtonWidget(
-                              text:
-                                  control.isUserFollowingAlbum.value
-                                      ? 'Valorar álbum'
-                                      : 'Agregar álbum',
-                              onPressed: control.toggleFollowAlbum,
+                              text: buttonLabel,
+                              onPressed: onPressed,
                             ),
-                          ),
-                        ),
+                          );
+                        }),
 
                         Obx(() {
                           if (control.isUserFollowingAlbum.value) {
