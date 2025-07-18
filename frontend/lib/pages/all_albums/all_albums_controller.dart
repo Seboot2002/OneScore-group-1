@@ -13,13 +13,11 @@ class AllAlbumsController extends GetxController {
   Future<void> loadUserAlbums(int userId) async {
     try {
       isLoading.value = true;
-
       final Map<String, List<Album>> albumsData = await _userMusicDataService
           .getUserAlbumsByState(userId);
 
       ratedAlbums.value = albumsData['valued'] ?? [];
       pendingAlbums.value = albumsData['pending'] ?? [];
-
       allAlbums.value = [...ratedAlbums, ...pendingAlbums];
     } catch (e) {
       print('Error cargando albums del usuario: $e');
@@ -39,5 +37,10 @@ class AllAlbumsController extends GetxController {
       default:
         return allAlbums;
     }
+  }
+
+  // Nuevo método para obtener el rating promedio del álbum
+  Future<double> getUserAlbumRating(int albumId, int userId) async {
+    return await _userMusicDataService.getUserAlbumRating(albumId, userId);
   }
 }

@@ -61,42 +61,59 @@ class AllAlbumsPage extends StatelessWidget {
                 );
               }
 
-              final buttonsData = [
-                {
-                  'label': 'Albums',
-                  'value': true,
-                  'data': _buildAlbumCards(controller.allAlbums, context),
-                },
-                {
-                  'label': 'Escuchados',
-                  'value': false,
-                  'data': _buildAlbumCards(controller.ratedAlbums, context),
-                },
-                {
-                  'label': 'Por valorar',
-                  'value': false,
-                  'data': _buildAlbumCards(controller.pendingAlbums, context),
-                },
-              ];
+              return FutureBuilder<List<List<Widget>>>(
+                future: _loadAlbumCardsWithRatings(controller, context),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-              return ScrollConfiguration(
-                behavior: NoGlowScrollBehavior(),
-                child: SingleChildScrollView(
-                  physics: const ClampingScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const BackButtonWidget(),
-                      const TitleWidget(text: 'Albums'),
-                      const SizedBox(height: 40),
-                      MusicItemsGridStructure(
-                        buttonsData: buttonsData,
-                        onButtonChanged: (newButtonsData) {},
+                  if (snapshot.hasError) {
+                    return const Center(
+                      child: Text('Error cargando ratings de albums'),
+                    );
+                  }
+
+                  final albumCards = snapshot.data!;
+
+                  final buttonsData = [
+                    {
+                      'label': 'Albums',
+                      'value': true,
+                      'data': albumCards[0], // allAlbums cards
+                    },
+                    {
+                      'label': 'Valorados',
+                      'value': false,
+                      'data': albumCards[1], // ratedAlbums cards
+                    },
+                    {
+                      'label': 'Por valorar',
+                      'value': false,
+                      'data': albumCards[2], // pendingAlbums cards
+                    },
+                  ];
+
+                  return ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: SingleChildScrollView(
+                      physics: const ClampingScrollPhysics(),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const BackButtonWidget(),
+                          const TitleWidget(text: 'Albums'),
+                          const SizedBox(height: 40),
+                          MusicItemsGridStructure(
+                            buttonsData: buttonsData,
+                            onButtonChanged: (newButtonsData) {},
+                          ),
+                          const SizedBox(height: 30),
+                        ],
                       ),
-                      const SizedBox(height: 30),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
             }),
           ),
@@ -105,7 +122,30 @@ class AllAlbumsPage extends StatelessWidget {
     );
   }
 
-  List<Widget> _buildAlbumCards(List<Album> albums, BuildContext context) {
+  Future<List<List<Widget>>> _loadAlbumCardsWithRatings(
+    AllAlbumsController controller,
+    BuildContext context,
+  ) async {
+    final allAlbumsCards = await _buildAlbumCards(
+      controller.allAlbums,
+      context,
+    );
+    final ratedAlbumsCards = await _buildAlbumCards(
+      controller.ratedAlbums,
+      context,
+    );
+    final pendingAlbumsCards = await _buildAlbumCards(
+      controller.pendingAlbums,
+      context,
+    );
+
+    return [allAlbumsCards, ratedAlbumsCards, pendingAlbumsCards];
+  }
+
+  Future<List<Widget>> _buildAlbumCards(
+    List<Album> albums,
+    BuildContext context,
+  ) async {
     if (albums.isEmpty) {
       return [
         const Center(
@@ -120,23 +160,38 @@ class AllAlbumsPage extends StatelessWidget {
       ];
     }
 
-    return albums.map((album) {
-      return GestureDetector(
-        onTap: () {
-          Navigator.pushNamed(
-            context,
-            '/albumResult',
-            arguments: album.albumId,
+    // Obtener el controlador para acceder al servicio
+    final controller = Get.find<AllAlbumsController>();
+
+    return await Future.wait(
+      albums.map((album) async {
+        double avgScore = 0.0;
+        try {
+          avgScore = await controller.getUserAlbumRating(
+            album.albumId,
+            user.userId,
           );
-        },
-        child: AlbumCard(
-          name: album.title,
-          image: album.coverUrl,
-          rating: 5.0,
-          albumId: album.albumId,
-        ),
-      );
-    }).toList();
+        } catch (e) {
+          print('Error obteniendo score de álbum ${album.albumId}: $e');
+        }
+
+        return GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(
+              context,
+              '/albumResult',
+              arguments: album.albumId,
+            );
+          },
+          child: AlbumCard(
+            name: album.title,
+            image: album.coverUrl,
+            rating: avgScore,
+            albumId: album.albumId,
+          ),
+        );
+      }),
+    );
   }
 }
 
